@@ -1,11 +1,10 @@
 package weapp
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"net/http"
-	"encoding/json"
 	"net/url"
 	"os"
 	"strings"
@@ -15,7 +14,6 @@ var (
 	baseURL    = "https://api.weixin.qq.com"
 	codeAPI    = "/sns/jscode2session"
 	appCodeAPI = "/wxa/getwxacode"
-
 )
 
 // Response 请求微信返回基础数据
@@ -110,15 +108,11 @@ func (app *WeApp) Login(code string) (string, string, error) {
 // width 图片宽度
 // autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
+// token access_token
 // 返回小程序码HTTP请求
-func (app WeApp) AppCode(path string, width int, autoColor bool, lineColor string) (res *http.Response, error) {
+func (app WeApp) AppCode(path string, width int, autoColor bool, lineColor string, token string) (res *http.Response, err error) {
 
 	api, err := url.Parse(baseURL + appCodeAPI)
-	if err != nil {
-		return res, err
-	}
-
-	token, err := app.AccessToken()
 	if err != nil {
 		return res, err
 	}

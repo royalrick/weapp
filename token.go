@@ -1,6 +1,7 @@
 package weapp
 
 import (
+	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
@@ -14,8 +15,8 @@ var (
 // 获取 access_token 成功返回数据
 type accessTokenResponse struct {
 	Response
-	AccessToken string `json:"access_token"`
-	ExpireIn    time.Duration    `json:"expires_in"`
+	AccessToken string        `json:"access_token"`
+	ExpireIn    time.Duration `json:"expires_in"`
 }
 
 // 通过微信服务器获取 access_token 以及其有效期
