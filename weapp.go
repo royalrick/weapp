@@ -33,6 +33,7 @@ type WeApp struct {
 }
 
 // New 返回小程序实例
+// 需要把下列变量放到全局 WEAPP_APPID WEAPP_SECRET WEAPP_TOKEN WEAPP_AES_KEY
 func New() *WeApp {
 	return &WeApp{
 		AppID:  os.Getenv("WEAPP_APPID"),

@@ -14,15 +14,10 @@ go get github.com/medivhzhan/weapp
 import "github.com/medivhzhan/weapp"
 ```
 
-- 新建实例
-
-需要把下列变量配置到全局
-    WEAPP_APPID
-    WEAPP_SECRET
-    WEAPP_TOKEN
-    WEAPP_AES_KEY
+- 获取小程序实例
 
 ```go
+// 需要把下列变量放到全局 WEAPP_APPID WEAPP_SECRET WEAPP_TOKEN WEAPP_AES_KEY
 app := weapp.New()
 ```
 
