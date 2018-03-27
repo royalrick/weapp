@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"os"
 	"strings"
 )
 
@@ -30,15 +29,14 @@ type WeApp struct {
 	AesKey string
 }
 
-// New 返回小程序实例
-// 需要把下列变量放到全局 WEAPP_APPID WEAPP_SECRET WEAPP_TOKEN WEAPP_AES_KEY
-func New() *WeApp {
-	return &WeApp{
-		AppID:  os.Getenv("WEAPP_APPID"),
-		Secret: os.Getenv("WEAPP_SECRET"),
-		Token:  os.Getenv("WEAPP_TOKEN"),
-		AesKey: os.Getenv("WEAPP_AES_KEY"),
-	}
+var app WeApp
+
+// Init 初始化小程序
+func Init(appID, secret, token, aesKey string) {
+	app.AppID = appID
+	app.Secret = secret
+	app.Token = token
+	app.AesKey = aesKey
 }
 
 // code2url 拼接 获取 session_key 的 URL
@@ -69,7 +67,7 @@ type loginForm struct {
 
 // Login 小程序登陆
 // 返回 微信端 openid 和 session_key
-func (app *WeApp) Login(code string) (string, string, error) {
+func Login(code string) (string, string, error) {
 	if code == "" {
 		return "", "", errors.New("code can not be null")
 	}
@@ -110,7 +108,9 @@ func (app *WeApp) Login(code string) (string, string, error) {
 // lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token access_token
 // 返回小程序码HTTP请求
-func (app WeApp) AppCode(path string, width int, autoColor bool, lineColor string, token string) (res *http.Response, err error) {
+// 请记得关闭资源
+// 获取后请注意保存到本地以减少请求次数
+func AppCode(path string, width int, autoColor bool, lineColor, token string) (res *http.Response, err error) {
 
 	api, err := url.Parse(baseURL + appCodeAPI)
 	if err != nil {
@@ -126,7 +126,6 @@ func (app WeApp) AppCode(path string, width int, autoColor bool, lineColor strin
 	if err != nil {
 		return res, err
 	}
-	defer res.Body.Close()
 
 	switch res.Header.Get("Content-Type") {
 	case "application/json": // 返回错误信息

@@ -19,8 +19,8 @@ type accessTokenResponse struct {
 	ExpireIn    time.Duration `json:"expires_in"`
 }
 
-// 通过微信服务器获取 access_token 以及其有效期
-func (app WeApp) AccessToken() (string, time.Duration, error) {
+// AccessToken 通过微信服务器获取 access_token 以及其有效期
+func AccessToken() (string, time.Duration, error) {
 	url, err := url.Parse(baseURL + tokenAPI)
 	if err != nil {
 		return "", 0, err
