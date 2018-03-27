@@ -1,4 +1,6 @@
-# GO 微信小程序 SDK
+# WeAPP
+
+> Go 微信小程序 SDK
 
 ## 使用
 
