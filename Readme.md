@@ -56,8 +56,8 @@ app := weapp.New()
 // width 图片宽度 目前最小只能 280
 // autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
-// 返回小程序码本地位置
-locale_path, err := app.AppCode(path string, width int, autoColor bool, lineColor string)
+// 返回小程序码HTTP请求
+res, err := app.AppCode(path string, width int, autoColor bool, lineColor string)
 ```
 
 ## 获取 access_token
