@@ -3,16 +3,13 @@ package weapp
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
-	"strings"
 )
 
-var (
-	baseURL    = "https://api.weixin.qq.com"
-	codeAPI    = "/sns/jscode2session"
-	appCodeAPI = "/wxa/getwxacode"
+const (
+	baseURL          = "https://api.weixin.qq.com"
+	codeToSessionAPI = "/sns/jscode2session"
 )
 
 // Response 请求微信返回基础数据
@@ -42,7 +39,7 @@ func Init(appID, secret, token, aesKey string) {
 // code2url 拼接 获取 session_key 的 URL
 func (app WeApp) code2url(code string) (string, error) {
 
-	url, err := url.Parse(baseURL + codeAPI)
+	url, err := url.Parse(baseURL + codeToSessionAPI)
 	if err != nil {
 		return "", err
 	}
@@ -99,44 +96,4 @@ func Login(code string) (string, string, error) {
 	}
 
 	return data.Openid, data.SessionKey, nil
-}
-
-// AppCode 获取小程序码
-// path 识别二维码后进入小程序的页面链接
-// width 图片宽度
-// autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-// lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
-// token access_token
-// 返回小程序码HTTP请求
-// 请记得关闭资源
-// 获取后请注意保存到本地以减少请求次数
-func AppCode(path string, width int, autoColor bool, lineColor, token string) (res *http.Response, err error) {
-
-	api, err := url.Parse(baseURL + appCodeAPI)
-	if err != nil {
-		return res, err
-	}
-
-	query := api.Query()
-	query.Set("access_token", token)
-	api.RawQuery = query.Encode()
-
-	body := fmt.Sprintf(`{"path":"%s","width": %v,"auto_color": %v,"line_color": %s}`, path, width, autoColor, lineColor)
-	res, err = http.Post(api.String(), "application/json", strings.NewReader(body))
-	if err != nil {
-		return res, err
-	}
-
-	switch res.Header.Get("Content-Type") {
-	case "application/json": // 返回错误信息
-		var data Response
-		if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
-			return res, err
-		}
-		return res, errors.New(data.Errmsg)
-	case "image/jpeg": // 返回文件
-		return res, nil
-	}
-
-	return res, errors.New("unknown error when fetch app code")
 }

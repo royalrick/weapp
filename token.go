@@ -5,22 +5,19 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-	"time"
 )
 
-var (
-	tokenAPI = "/cgi-bin/token"
-)
+const tokenAPI = "/cgi-bin/token"
 
 // 获取 access_token 成功返回数据
 type accessTokenResponse struct {
 	Response
-	AccessToken string        `json:"access_token"`
-	ExpireIn    time.Duration `json:"expires_in"`
+	AccessToken string `json:"access_token"`
+	ExpireIn    uint   `json:"expires_in"`
 }
 
 // AccessToken 通过微信服务器获取 access_token 以及其有效期
-func AccessToken() (string, time.Duration, error) {
+func AccessToken() (string, uint, error) {
 	url, err := url.Parse(baseURL + tokenAPI)
 	if err != nil {
 		return "", 0, err
