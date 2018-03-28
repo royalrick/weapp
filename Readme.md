@@ -1,6 +1,4 @@
-# WeAPP
-
-> Go 微信小程序 SDK
+# 微信小程序 SDK （for Golang）
 
 ## 使用
 
@@ -16,18 +14,18 @@ go get github.com/medivhzhan/weapp
 import "github.com/medivhzhan/weapp"
 ```
 
-- 初始化小程序
+## 获取 access_token 及其有效期
 
 ```go
-// 初始化小程序才能继续调用下面的接口
-weapp.Init(appID, secret, token, aesKey string)
+// 获取次数有限制 获取后请缓存
+accessToken, expire, err := weapp.AccessToken(appID, secret string)
 ```
 
-## 登录
+## 用户登录
 
 ```go
 // 需要从小程序客户端获取到的code
-openID, sessionKey, err := weapp.Login(code string)
+openID, sessionKey, err := weapp.Login(appID, secret, code string)
 ```
 
 ## 获取小程序码: 适用于需要的码数量较少的业务场景
@@ -78,11 +76,4 @@ if err != nil {
     panic(err)
 }
 defer res.Body.Close()
-```
-
-## 获取 access_token 及其有效期
-
-```go
-// 获取次数有限制 获取后请缓存
-accessToken, expire, err := weapp.AccessToken()
 ```

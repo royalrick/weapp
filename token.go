@@ -17,7 +17,7 @@ type accessTokenResponse struct {
 }
 
 // AccessToken 通过微信服务器获取 access_token 以及其有效期
-func AccessToken() (string, uint, error) {
+func AccessToken(appID, secret string) (string, uint, error) {
 	url, err := url.Parse(baseURL + tokenAPI)
 	if err != nil {
 		return "", 0, err
@@ -25,8 +25,8 @@ func AccessToken() (string, uint, error) {
 
 	query := url.Query()
 
-	query.Set("appid", app.AppID)
-	query.Set("secret", app.Secret)
+	query.Set("appid", appID)
+	query.Set("secret", secret)
 	query.Set("grant_type", "client_credential")
 
 	url.RawQuery = query.Encode()

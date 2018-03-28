@@ -18,26 +18,8 @@ type Response struct {
 	Errmsg  string `json:"errmsg"`
 }
 
-// WeApp 小程序实例
-type WeApp struct {
-	AppID  string
-	Secret string
-	Token  string
-	AesKey string
-}
-
-var app WeApp
-
-// Init 初始化小程序
-func Init(appID, secret, token, aesKey string) {
-	app.AppID = appID
-	app.Secret = secret
-	app.Token = token
-	app.AesKey = aesKey
-}
-
-// code2url 拼接 获取 session_key 的 URL
-func (app WeApp) code2url(code string) (string, error) {
+// 拼接 获取 session_key 的 URL
+func code2url(appID, secret, code string) (string, error) {
 
 	url, err := url.Parse(baseURL + codeToSessionAPI)
 	if err != nil {
@@ -46,8 +28,8 @@ func (app WeApp) code2url(code string) (string, error) {
 
 	query := url.Query()
 
-	query.Set("appid", app.AppID)
-	query.Set("secret", app.Secret)
+	query.Set("appid", appID)
+	query.Set("secret", secret)
 	query.Set("js_code", code)
 	query.Set("grant_type", "authorization_code")
 
@@ -62,19 +44,19 @@ type loginForm struct {
 	SessionKey string `json:"session_key"`
 }
 
-// Login 小程序登陆
+// Login 用户登录
 // 返回 微信端 openid 和 session_key
-func Login(code string) (string, string, error) {
+func Login(appID, secret, code string) (string, string, error) {
 	if code == "" {
 		return "", "", errors.New("code can not be null")
 	}
 
-	url, err := app.code2url(code)
+	api, err := code2url(appID, secret, code)
 	if err != nil {
 		return "", "", err
 	}
 
-	res, err := http.Get(url)
+	res, err := http.Get(api)
 	if err != nil {
 		return "", "", err
 	}
