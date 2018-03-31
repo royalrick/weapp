@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -112,6 +114,21 @@ func requestCode(path, body, token string) (res *http.Response, err error) {
 
 // 保存二维码文件
 func saveCode(res *http.Response, filename string) error {
+
+	dir := filepath.Dir(filename)
+
+	// 查看文件夹是否存在
+	if _, err := os.Stat(dir); err != nil {
+		if !os.IsNotExist(err) {
+			return err
+		}
+
+		// 文件夹不存在就创建文件夹
+		if err = os.MkdirAll(dir, 0777); err != nil {
+			return err
+		}
+	}
+
 	data, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		return err
