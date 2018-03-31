@@ -111,6 +111,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 
 // Get 获取模板库某个模板标题下关键词库
 // @ id 模板ID
+// @ token 微信 access_token
 func Get(id, token string) (keywords []Keyword, err error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
@@ -148,6 +149,7 @@ func Get(id, token string) (keywords []Keyword, err error) {
 // @ id 模板ID
 // @ token 微信 aceess_token
 // @ keywordIDList 关键词 ID 列表
+// 返回新建模板ID和错误信息
 func Add(id, token string, keywordIDList []uint) (string, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, token)
 	if err != nil {
