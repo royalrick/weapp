@@ -8,20 +8,27 @@ import (
 )
 
 const (
-	baseURL          = "https://api.weixin.qq.com"
-	codeToSessionAPI = "/sns/jscode2session"
+	// BaseURL 微信请求基础URL
+	BaseURL = "https://api.weixin.qq.com"
+
+	codeAPI = "/sns/jscode2session"
+)
+
+const (
+	// WechatServerError 微信服务器返回错误
+	WechatServerError = "error when request wechat server"
 )
 
 // Response 请求微信返回基础数据
 type Response struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
+	Errcode int    `json:"errcode,omitempty"`
+	Errmsg  string `json:"errmsg,omitempty"`
 }
 
 // 拼接 获取 session_key 的 URL
 func code2url(appID, secret, code string) (string, error) {
 
-	url, err := url.Parse(baseURL + codeToSessionAPI)
+	url, err := url.Parse(BaseURL + codeAPI)
 	if err != nil {
 		return "", err
 	}
@@ -63,7 +70,7 @@ func Login(appID, secret, code string) (string, string, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return "", "", errors.New("error when request wechat server")
+		return "", "", errors.New(WechatServerError)
 	}
 
 	var data loginForm

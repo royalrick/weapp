@@ -82,9 +82,9 @@ weapp.QRCode(path string, width int, token string) error
 
 ## 未实现功能
 
+1. 切换JSON接口
 1. 保存图片
 1. 客服消息
-1. 模版消息
 1. 微信支付
 1. 数据统计
 1. 临时素材

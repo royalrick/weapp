@@ -18,7 +18,7 @@ type accessTokenResponse struct {
 
 // AccessToken 通过微信服务器获取 access_token 以及其有效期
 func AccessToken(appID, secret string) (string, uint, error) {
-	url, err := url.Parse(baseURL + tokenAPI)
+	url, err := url.Parse(BaseURL + tokenAPI)
 	if err != nil {
 		return "", 0, err
 	}

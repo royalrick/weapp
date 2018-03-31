@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -84,18 +83,15 @@ func QRCode(path string, width int, token, filename string) error {
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
 func requestCode(path, body, token string) (res *http.Response, err error) {
-	api, err := url.Parse(baseURL + path)
+
+	api, err := TokenAPI(BaseURL+path, token)
 	if err != nil {
-		return res, err
+		return
 	}
 
-	query := api.Query()
-	query.Set("access_token", token)
-	api.RawQuery = query.Encode()
-
-	res, err = http.Post(api.String(), "application/json", strings.NewReader(body))
+	res, err = http.Post(api, "application/json", strings.NewReader(body))
 	if err != nil {
-		return res, err
+		return
 	}
 
 	switch header := res.Header.Get("Content-Type"); {
