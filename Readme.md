@@ -91,7 +91,7 @@ weapp.QRCode(path string, width int, token string) error
 - 引入子包
 
 ```go
-import "github.com/medivhzhan/weapp/message"
+import "github.com/medivhzhan/weapp/message/template"
 ```
 
 ### 获取小程序模板库标题列表
@@ -165,7 +165,27 @@ message.Delete(id, token string) error
 // @ color 模板内容字体的颜色，不填默认黑色
 // @ emphasisKeyword 模板需要放大的关键词，不填则默认无放大
 
-message.Send(openid, template, page, formID, data, color, emphasisKeyword, token string) error∂∂
+message.Send(openid, template, page, formID, data, color, emphasisKeyword, token string) error
+
+```
+
+***
+
+## 客服消息
+
+### 回复
+
+```go
+import "github.com/medivhzhan/weapp/message/service"
+
+// 新建消息实例
+msg := service.Msg{
+    // ... params
+}
+
+// Send 发送消息
+// @ token 微信 access_token
+msg.Send(token string) error
 
 ```
 
