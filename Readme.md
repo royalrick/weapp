@@ -32,6 +32,18 @@ weapp.Login(appID, secret, code string) (openID string, sessionKey uint, err err
 
 ```
 
+## 返回内容
+
+```go
+// Response 请求微信返回基础数据
+
+type Response struct {
+	Errcode int
+	Errmsg  string
+}
+
+```
+
 ***
 
 ## 二维码
@@ -178,14 +190,62 @@ message.Send(openid, template, page, formID, data, color, emphasisKeyword, token
 ```go
 import "github.com/medivhzhan/weapp/message/service"
 
-// 新建消息实例
+// 文本消息
 msg := service.Msg{
-    // ... params
+    Content: "消息内容",
 }
 
-// Send 发送消息
+// 图片消息
+msg := service.Msg{
+    MediaID: "微信media_id"
+}
+
+// 图文链接消息
+msg := service.Msg{
+    Title: "标题"
+    Description: "描述"
+    URL: "点击跳转链接"
+    ThumbURL: "图片链接"
+}
+
+// 卡片消息
+msg := service.Msg{
+    Title: "标题"
+    PagePath: "小程序页面路径"
+    ThumbMediaID: "卡封面图片 media_id"
+}
+
+// SendTo 发送消息
+// @ openid 用户openid
 // @ token 微信 access_token
-msg.Send(token string) error
+
+msg.SendTo(openid, token string) (weapp.Response, error)
+
+// 返回参照码 (weapp.Response.Errcode)
+
+// SystemBusy 系统繁忙 稍候再试
+SystemBusy weapp.Code = -1
+
+// SendSuccess 发送消息成功
+SendSuccess weapp.Code = 0
+
+// ErrInvalidToken 获取 access_token 时 AppSecret 错误，或者 access_token 无效。请开发者认真比对 AppSecret 的正确性，或查看是否正在为恰当的小程序调用接口
+ErrInvalidToken weapp.Code = 40001
+
+// ErrInvalidClaims 不合法的凭证类型
+ErrInvalidClaims weapp.Code = 40002
+
+// ErrInvalidOpenid 不合法的 OpenID，请开发者确认OpenID否是其他小程序的 OpenID
+ErrInvalidOpenid weapp.Code = 40003
+
+// ErrOutOfTime 回复时间超过限制
+ErrOutOfTime weapp.Code = 45015
+
+// ErrOutOfLimit 客服接口下行条数超过上限
+ErrOutOfLimit weapp.Code = 45047
+
+// ErrUnauthorized api功能未授权，请确认小程序已获得该接口
+ErrUnauthorized weapp.Code = 48001
 
 ```
 
@@ -194,7 +254,7 @@ msg.Send(token string) error
 ## 未实现功能
 
 1. 切换JSON接口
-1. 客服消息
+1. 接收客服消息
 1. 微信支付
 1. 数据统计
 1. 临时素材

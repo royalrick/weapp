@@ -19,9 +19,12 @@ const (
 	WechatServerError = "error when request wechat server"
 )
 
+// Code 微信服务器返回状态码
+type Code int
+
 // Response 请求微信返回基础数据
 type Response struct {
-	Errcode int    `json:"errcode,omitempty"`
+	Errcode Code   `json:"errcode,omitempty"`
 	Errmsg  string `json:"errmsg,omitempty"`
 }
 
