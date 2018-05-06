@@ -12,6 +12,7 @@ go get github.com/medivhzhan/weapp
 
 ```go
 import "github.com/medivhzhan/weapp"
+import "github.com/medivhzhan/weapp/token"
 ```
 
 ## 获取 access_token 及其有效期
@@ -19,7 +20,7 @@ import "github.com/medivhzhan/weapp"
 ```go
 // 获取次数有限制 获取后请缓存
 
-weapp.AccessToken(appID, secret string) (accessToken string, expire uint, err error)
+token.AccessToken(appID, secret string) (accessToken string, expire uint, err error)
 
 ```
 
