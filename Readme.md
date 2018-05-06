@@ -48,6 +48,12 @@ type Response struct {
 
 ## 二维码
 
+- 引入子包
+
+```go
+import "github.com/medivhzhan/weapp/code"
+```
+
 ### 获取小程序码: 适用于需要的码数量较少的业务场景
 
 ```go
@@ -60,7 +66,7 @@ type Response struct {
 // @ token 微信access_token
 // @ filename 文件储存路径
 
-weapp.AppCode(path string, width int, autoColor bool, lineColor, accessToken, filename string) error
+code.AppCode(path string, width int, autoColor bool, lineColor, accessToken, filename string) error
 
 ```
 
@@ -78,7 +84,7 @@ weapp.AppCode(path string, width int, autoColor bool, lineColor, accessToken, fi
 // @ token 微信access_token
 // @ filename 文件储存路径
 
-weapp.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string) error
+code.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string) error
 
 ```
 
@@ -92,7 +98,7 @@ weapp.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor,
 // @ token 微信access_token
 // @ filename 文件储存路径
 
-weapp.QRCode(path string, width int, token string) error
+code.QRCode(path string, width int, token string) error
 
 ```
 

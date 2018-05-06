@@ -1,4 +1,5 @@
-package weapp
+// Package code 小程序二维码
+package code
 
 import (
 	"encoding/json"
@@ -9,6 +10,8 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/medivhzhan/weapp"
 )
 
 const (
@@ -84,7 +87,7 @@ func QRCode(path string, width int, token, filename string) error {
 // 返回 HTTP 请求实例
 func requestCode(path, body, token string) (res *http.Response, err error) {
 
-	api, err := TokenAPI(BaseURL+path, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+path, token)
 	if err != nil {
 		return
 	}
@@ -96,7 +99,7 @@ func requestCode(path, body, token string) (res *http.Response, err error) {
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
-		var data Response
+		var data weapp.Response
 		if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
 			return res, err
 		}
