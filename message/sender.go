@@ -1,5 +1,4 @@
-// Package service 客服消息
-package service
+package message
 
 import (
 	"errors"
@@ -46,7 +45,7 @@ const (
 // 消息体
 type message struct {
 	ToUser          string  `json:"touser"`  // user openid
-	MsgType         string  `json:"msgtype"` // text | image | link | miniprogrampage
+	MsgType         MsgType `json:"msgtype"` // text | image | link | miniprogrampage
 	Text            MsgText `json:"text,omitempty"`
 	Image           MsgImg  `json:"image,omitempty"`
 	Link            MsgLink `json:"link,omitempty"`
@@ -57,6 +56,26 @@ type message struct {
 // 支持添加可跳转小程序的文字链
 type MsgText struct {
 	Content string `json:"content"`
+}
+
+// MsgImg 图片消息
+type MsgImg struct {
+	MediaID string `json:"media_id"`
+}
+
+// MsgCard 卡片消息
+type MsgCard struct {
+	Title        string `json:"title"`
+	PagePath     string `json:"pagepath"`
+	ThumbMediaID string `json:"thumb_media_id"`
+}
+
+// MsgLink 图文链接消息
+type MsgLink struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	URL         string `json:"url"`
+	ThumbURL    string `json:"thumb_url"`
 }
 
 // SendTo 发送文本消息
@@ -78,11 +97,6 @@ func (msg MsgText) SendTo(openid, token string) (wres weapp.Response, err error)
 	return send(token, string(body))
 }
 
-// MsgImg 图片消息
-type MsgImg struct {
-	MediaID string `json:"media_id"`
-}
-
 // SendTo 发送图片消息
 // @ openid 用户openid
 // @ token 微信 access_token
@@ -102,14 +116,6 @@ func (msg MsgImg) SendTo(openid, token string) (wres weapp.Response, err error) 
 	return send(token, string(body))
 }
 
-// MsgLink 图文链接消息
-type MsgLink struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	URL         string `json:"url"`
-	ThumbURL    string `json:"thumb_url"`
-}
-
 // SendTo 发送图文链接消息
 // @ openid 用户openid
 // @ token 微信 access_token
@@ -127,13 +133,6 @@ func (msg MsgLink) SendTo(openid, token string) (wres weapp.Response, err error)
 	}
 
 	return send(token, string(body))
-}
-
-// MsgCard 卡片消息
-type MsgCard struct {
-	Title        string `json:"title"`
-	PagePath     string `json:"pagepath"`
-	ThumbMediaID string `json:"thumb_media_id"`
 }
 
 // SendTo 发送卡片消息
