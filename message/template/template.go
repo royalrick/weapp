@@ -228,23 +228,25 @@ func Delete(id, token string) error {
 // @ data 模板内容，不填则下发空模板
 // @ color 模板内容字体的颜色，不填默认黑色
 // @ emphasisKeyword 模板需要放大的关键词，不填则默认无放大
-func Send(openid, template, page, formID, data, color, emphasisKeyword, token string) error {
+func Send(openid, template, page, formID string, data interface{}, color, emphasisKeyword, token string) error {
 	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
 	}
 
-	body := fmt.Sprintf(`
-		{"touser": "%s"},
-		{"template_id": "%s"},
-		{"page": "%s"},
-		{"form_id": "%s"},
-		{"data": "%s"},
-		{"color": "%s"},
-		{"emphasis_keyword": "%s"},
-		`, openid, template, page, formID, data, color, emphasisKeyword)
+	body := map[string]interface{}{
+		"touser":           openid,
+		"template_id":      template,
+		"page":             page,
+		"form_id":          formID,
+		"data":             data,
+		"color":            color,
+		"emphasis_keyword": emphasisKeyword,
+	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	payload, _ := json.Marshal(body)
+
+	res, err := http.Post(api, "application/json", strings.NewReader(string(payload)))
 	if err != nil {
 		return err
 	}
