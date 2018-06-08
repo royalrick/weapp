@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"github.com/medivhzhan/weapp"
+	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -87,7 +88,7 @@ func QRCode(path string, width int, token, filename string) error {
 // 返回 HTTP 请求实例
 func requestCode(path, body, token string) (res *http.Response, err error) {
 
-	api, err := weapp.TokenAPI(weapp.BaseURL+path, token)
+	api, err := util.TokenAPI(weapp.BaseURL+path, token)
 	if err != nil {
 		return
 	}

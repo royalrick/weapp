@@ -1,5 +1,5 @@
-// Package message 模版消息
-package message
+// Package template 模版消息
+package template
 
 import (
 	"encoding/json"
@@ -10,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/medivhzhan/weapp"
+	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -76,7 +77,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 		return
 	}
 
-	api, err = weapp.TokenAPI(api, token)
+	api, err = util.TokenAPI(api, token)
 	if err != nil {
 		return
 	}
@@ -90,7 +91,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		err = errors.New(weapp.WechatServerError)
+		err = errors.New(weapp.WeChatServerError)
 		return
 	}
 
@@ -113,7 +114,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 // @ id 模板ID
 // @ token 微信 access_token
 func Get(id, token string) (keywords []Keyword, err error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+detailAPI, token)
+	api, err := util.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
 		return
 	}
@@ -127,7 +128,7 @@ func Get(id, token string) (keywords []Keyword, err error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		err = errors.New(weapp.WechatServerError)
+		err = errors.New(weapp.WeChatServerError)
 		return
 	}
 
@@ -151,7 +152,7 @@ func Get(id, token string) (keywords []Keyword, err error) {
 // @ keywordIDList 关键词 ID 列表
 // 返回新建模板ID和错误信息
 func Add(id, token string, keywordIDList []uint) (string, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, token)
+	api, err := util.TokenAPI(weapp.BaseURL+addAPI, token)
 	if err != nil {
 		return "", err
 	}
@@ -170,8 +171,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		err = errors.New(weapp.WechatServerError)
-		return "", err
+		return "", errors.New(weapp.WeChatServerError)
 	}
 
 	var tmp Template
@@ -190,7 +190,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 // @ id 模板ID
 // @ token 微信 aceess_token
 func Delete(id, token string) error {
-	api, err := weapp.TokenAPI(weapp.BaseURL+deleteAPI, token)
+	api, err := util.TokenAPI(weapp.BaseURL+deleteAPI, token)
 	if err != nil {
 		return err
 	}
@@ -204,7 +204,7 @@ func Delete(id, token string) error {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		err = errors.New(weapp.WechatServerError)
+		err = errors.New(weapp.WeChatServerError)
 		return err
 	}
 
@@ -229,7 +229,7 @@ func Delete(id, token string) error {
 // @ color 模板内容字体的颜色，不填默认黑色
 // @ emphasisKeyword 模板需要放大的关键词，不填则默认无放大
 func Send(openid, template, page, formID, data, color, emphasisKeyword, token string) error {
-	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
+	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
 	}
@@ -251,7 +251,7 @@ func Send(openid, template, page, formID, data, color, emphasisKeyword, token st
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		err = errors.New(weapp.WechatServerError)
+		err = errors.New(weapp.WeChatServerError)
 		return err
 	}
 

@@ -41,8 +41,7 @@ func AccessToken(appID, secret string) (string, uint, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		// dev: log
-		return "", 0, errors.New("fetch access_token failed")
+		return "", 0, errors.New(weapp.WeChatServerError)
 	}
 
 	var data response
@@ -51,7 +50,6 @@ func AccessToken(appID, secret string) (string, uint, error) {
 	}
 
 	if data.Errcode != 0 {
-		// dev: log
 		return "", 0, errors.New(data.Errmsg)
 	}
 

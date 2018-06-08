@@ -15,8 +15,8 @@ const (
 )
 
 const (
-	// WechatServerError 微信服务器返回错误
-	WechatServerError = "error when request wechat server"
+	// WeChatServerError 微信服务器错误时返回返回消息
+	WeChatServerError = "微信服务器发生错误"
 )
 
 // Code 微信服务器返回状态码
@@ -73,7 +73,7 @@ func Login(appID, secret, code string) (string, string, error) {
 	defer res.Body.Close()
 
 	if res.StatusCode != 200 {
-		return "", "", errors.New(WechatServerError)
+		return "", "", errors.New(WeChatServerError)
 	}
 
 	var data loginForm
