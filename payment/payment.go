@@ -102,11 +102,12 @@ type Order struct {
 }
 
 // GetParams 获取支付参数
-// @ appID
-// @ key
-// @ nonceStr
-// @ prepayID
-// @ timestamp
+//
+// @appID
+// @key
+// @nonceStr
+// @prepayID
+// @timestamp
 func GetParams(appID, key, nonceStr, prepayID string, timestamp int64) (p Params, err error) {
 
 	sign, err := util.SignByMD5(map[string]string{
