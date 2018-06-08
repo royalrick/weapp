@@ -1,11 +1,11 @@
 # 微信小程序 SDK （for Golang）
 
-## 使用
-
-- 拉取代码
+## 拉取代码
 
 ```sh
+
 go get -u github.com/medivhzhan/weapp
+
 ```
 
 ## 获取 access_token 及其有效期
