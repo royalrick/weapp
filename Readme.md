@@ -300,6 +300,32 @@ err := srv.Serve()
 
 ---
 
+## 其他
+
+### 解密手机号码
+
+```go
+
+import "github.com/medivhzhan/weapp/code"
+
+// DecodePhoneNumber 解密手机号码
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+phone , err := weapp.DecodePhoneNumber(ssk, data, iv string)
+
+// 访问内容
+// phone.PhoneNumber
+// phone.PurePhoneNumber
+// phone.CountryCode
+// phone.Watermark.AppID
+// phone.Watermark.Timestamp
+
+```
+
+---
+
 ## 未实现功能
 
 1. 接收加密消息

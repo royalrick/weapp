@@ -1,10 +1,15 @@
 package weapp
 
 import (
+	"crypto/aes"
+	"crypto/cipher"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"net/http"
 	"net/url"
+
+	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -88,4 +93,67 @@ func Login(appID, secret, code string) (string, string, error) {
 	}
 
 	return data.Openid, data.SessionKey, nil
+}
+
+// PhoneNumber 解密后的用户手机号码信息
+type PhoneNumber struct {
+	PhoneNumber     string    `json:"phoneNumber"`
+	PurePhoneNumber string    `json:"purePhoneNumber"`
+	CountryCode     string    `json:"countryCode"`
+	Watermark       watermark `json:"watermark"`
+}
+
+type watermark struct {
+	AppID     string `json:"appid"`
+	Timestamp int64  `json:"timestamp"`
+}
+
+// DecodePhoneNumber 解密手机号码
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+func DecodePhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
+
+	dSsk, err := base64.StdEncoding.DecodeString(ssk)
+	if err != nil {
+		return
+	}
+
+	ciphertext, err := base64.StdEncoding.DecodeString(data)
+	if err != nil {
+		return
+	}
+
+	dIv, err := base64.StdEncoding.DecodeString(iv)
+	if err != nil {
+		return
+	}
+
+	block, err := aes.NewCipher(dSsk)
+	if err != nil {
+		return
+	}
+
+	// The IV needs to be unique, but not secure. Therefore it's common to
+	// include it at the beginning of the ciphertext.
+	if len(ciphertext) < aes.BlockSize {
+		err = errors.New("cipher too short")
+		return
+	}
+
+	// CBC mode always works in whole blocks.
+	if len(ciphertext)%aes.BlockSize != 0 {
+		err = errors.New("cipher is not a multiple of the block size")
+		return
+	}
+
+	mode := cipher.NewCBCDecrypter(block, []byte(dIv))
+	mode.CryptBlocks(ciphertext, ciphertext)
+
+	bts := util.PKCS5UnPadding([]byte(ciphertext))
+
+	err = json.Unmarshal(bts, &phone)
+
+	return
 }
