@@ -1,12 +1,16 @@
 package notify
 
 import (
+	"crypto/aes"
+	"encoding/base64"
 	"encoding/xml"
+	"errors"
 	"io/ioutil"
 	"net/http"
 
 	"github.com/medivhzhan/weapp/payment"
 	"github.com/medivhzhan/weapp/util"
+	"github.com/medivhzhan/weapp/util/ecb"
 )
 
 // PaidNotify 支付结果返回数据
@@ -41,7 +45,7 @@ type RefundedResponse struct {
 	AppID    string `xml:"appid,omitempty"` // 小程序ID
 	MchID    string `xml:"mch_id"`          // 商户号
 	NonceStr string `xml:"nonce_str"`       // 随机字符串
-	ReqInfo  []byte `xml:"req_info"`        // 加密信息
+	ReqInfo  string `xml:"req_info"`        // 加密信息
 }
 
 // RefundedNotify 解密后的退款通知消息体
@@ -143,6 +147,39 @@ func HandlePaidNotify(res http.ResponseWriter, req *http.Request, fuck func(Paid
 	return err
 }
 
+// 解密
+// @str 解密退款通知数据
+// @key 商户号密钥
+func aesECBDecrypt(str, key string) (plaintext []byte, err error) {
+
+	ciphertext, err := base64.StdEncoding.DecodeString(str)
+	if err != nil {
+		return
+	}
+
+	if len(ciphertext) < aes.BlockSize {
+		return nil, errors.New("cipher too short")
+	}
+	// ECB mode always works in whole blocks.
+	if len(ciphertext)%aes.BlockSize != 0 {
+		return nil, errors.New("cipher is not a multiple of the block size")
+	}
+
+	key, err = util.MD5(key)
+	if err != nil {
+		return
+	}
+
+	block, err := aes.NewCipher([]byte(key))
+	if err != nil {
+		return
+	}
+
+	ecb.NewECBDecrypter(block).CryptBlocks(ciphertext, ciphertext)
+
+	return util.PKCS5UnPadding(ciphertext), nil
+}
+
 // HandleRefundedNotify 处理退款结果通知
 // key: 微信支付 KEY
 func HandleRefundedNotify(res http.ResponseWriter, req *http.Request, key string, fuck func(RefundedNotify) (bool, string)) error {
@@ -162,7 +199,7 @@ func HandleRefundedNotify(res http.ResponseWriter, req *http.Request, key string
 		return err
 	}
 
-	bts, err := util.AesECBDecrypt(ref.ReqInfo, key)
+	bts, err := aesECBDecrypt(ref.ReqInfo, key)
 	if err != nil {
 		return err
 	}

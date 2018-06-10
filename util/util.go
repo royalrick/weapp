@@ -58,3 +58,13 @@ func MD5(str string) (string, error) {
 	}
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
+
+// PKCS5UnPadding 反补
+// Golang AES没有64位的块, 如果采用PKCS5, 那么实质上就是采用PKCS7
+func PKCS5UnPadding(plaintext []byte) []byte {
+	ln := len(plaintext)
+
+	// 去掉最后一个字节 unPadding 次
+	unPadding := int(plaintext[ln-1])
+	return plaintext[:(ln - unPadding)]
+}

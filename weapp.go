@@ -148,8 +148,7 @@ func DecodePhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
 		return
 	}
 
-	mode := cipher.NewCBCDecrypter(block, []byte(dIv))
-	mode.CryptBlocks(ciphertext, ciphertext)
+	cipher.NewCBCDecrypter(block, []byte(dIv)).CryptBlocks(ciphertext, ciphertext)
 
 	bts := util.PKCS5UnPadding([]byte(ciphertext))
 
