@@ -99,14 +99,14 @@ type watermark struct {
 	Timestamp int64  `json:"timestamp"`
 }
 
-// DecodePhoneNumber 解密手机号码
+// DecryptPhoneNumber 解密手机号码
 //
 // @ssk 通过 Login 向微信服务端请求得到的 session_key
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
-func DecodePhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
+func DecryptPhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
 
-	bts, err := util.Decode(ssk, data, iv)
+	bts, err := util.CBCDecrypt(ssk, data, iv)
 	if err != nil {
 		return
 	}
@@ -115,21 +115,21 @@ func DecodePhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
 	return
 }
 
-// DecodeUserInfo 解密用户信息
+// DecryptUserInfo 解密用户信息
 //
 // @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
 // @encryptedData 包括敏感数据在内的完整用户信息的加密数据
 // @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
-func DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string) (ui Userinfo, err error) {
+func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (ui Userinfo, err error) {
 
 	if ok := util.Validate(rawData, ssk, signature); !ok {
 		err = errors.New("数据校验失败")
 		return
 	}
 
-	bts, err := util.Decode(ssk, encryptedData, iv)
+	bts, err := util.CBCDecrypt(ssk, encryptedData, iv)
 	if err != nil {
 		return
 	}

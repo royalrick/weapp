@@ -300,7 +300,7 @@ import "github.com/medivhzhan/weapp"
 // @ssk 通过 Login 向微信服务端请求得到的 session_key
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
-phone , err := weapp.DecodePhoneNumber(ssk, data, iv string)
+phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
 
 // 访问内容
 // phone.PhoneNumber
@@ -323,7 +323,7 @@ import "github.com/medivhzhan/weapp"
 // @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
-ui, err := weapp.DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string)
+ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
 
 // 访问内容
 // ui.OpenID
