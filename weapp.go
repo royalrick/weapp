@@ -119,7 +119,7 @@ func DecodePhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
 //
 // @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
 // @encryptedData 包括敏感数据在内的完整用户信息的加密数据
-// @signature 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
+// @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
 func DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string) (ui Userinfo, err error) {

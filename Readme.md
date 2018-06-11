@@ -15,7 +15,7 @@ go get -u github.com/medivhzhan/weapp
 import "github.com/medivhzhan/weapp/token"
 
 // 获取次数有限制 获取后请缓存
-token.AccessToken(appID, secret string) (accessToken string, expire uint, err error)
+tok, exp, err := token.AccessToken(appID, secret string)
 
 ```
 
@@ -26,19 +26,7 @@ token.AccessToken(appID, secret string) (accessToken string, expire uint, err er
 import "github.com/medivhzhan/weapp"
 
 // 需要从小程序客户端获取到的code
-weapp.Login(appID, secret, code string) (openID string, sessionKey uint, err error)
-
-```
-
-## 返回内容
-
-```go
-
-// Response 请求微信返回基础数据
-type Response struct {
-	Errcode int
-	Errmsg  string
-}
+oid, ssk, err := weapp.Login(appID, secret, code string)
 
 ```
 
@@ -61,7 +49,7 @@ import "github.com/medivhzhan/weapp/code"
 // token: 微信access_token
 // filename: 文件储存路径
 
-code.AppCode(path string, width int, autoColor bool, lineColor, accessToken, filename string) error
+err := code.AppCode(path string, width int, autoColor bool, lineColor, accessToken, filename string)
 
 ```
 
@@ -81,7 +69,7 @@ import "github.com/medivhzhan/weapp/code"
 // lineColor: autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token: 微信access_token
 // filename: 文件储存路径
-code.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string) error
+err := code.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string)
 
 ```
 
@@ -97,7 +85,7 @@ import "github.com/medivhzhan/weapp/code"
 // width: 图片宽度
 // token: 微信access_token
 // filename: 文件储存路径
-code.QRCode(path string, width int, token string) error
+err := code.QRCode(path string, width int, token string)
 
 ```
 
@@ -115,7 +103,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // offset: 开始获取位置 从0开始
 // count: 获取记录条数 最大为20
 // token: 微信 access_token
-message.List(offset uint, count uint, token string) (list []Template, total uint, err error)
+list, total, err := template.List(offset uint, count uint, token string)
 
 ```
 
@@ -129,8 +117,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // offset: 开始获取位置 从0开始
 // count: 获取记录条数 最大为20
 // token: 微信 access_token
-template.Selves(offset uint, count uint, token string) (list []Template, total uint, err error)
-
+list, total, err := template.Selves(offset uint, count uint, token string)
 ```
 
 ### 获取模板库某个模板标题下关键词库
@@ -142,7 +129,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // 获取模板库某个模板标题下关键词库
 // id: 模板ID
 // token: 微信 access_token
-template.Get(id, token string) (keywords []Keyword, err error)
+keywords, err := template.Get(id, token string)
 
 ```
 
@@ -157,7 +144,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // token: 微信 aceess_token
 // keywordIDList: 关键词 ID 列表
 // 返回新建模板ID和错误信息
-template.Add(id, token string, keywordIDList []uint) (string, error)
+tid, err := template.Add(id, token string, keywordIDList []uint)
 
 ```
 
@@ -170,7 +157,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // 删除帐号下的某个模板
 // id: 模板ID
 // token: 微信 aceess_token
-template.Delete(id, token string) error
+err := template.Delete(id, token string)
 
 ```
 
@@ -188,7 +175,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // data: 模板内容，不填则下发空模板
 // color: 模板内容字体的颜色，不填默认黑色
 // emphasisKeyword: 模板需要放大的关键词，不填则默认无放大
-template.Send(openid, template, page, formID, data, color, emphasisKeyword, token string) error
+err := template.Send(openid, template, page, formID, data, color, emphasisKeyword, token string)
 
 ```
 
@@ -230,7 +217,7 @@ msg := message.Card{
 // 发送消息
 // openid: 用户 openid
 // token: 微信 access_token
-msg.SendTo(openid, token string) (weapp.Response, error)
+res, err := msg.SendTo(openid, token string)
 
 ```
 
@@ -306,7 +293,7 @@ err := srv.Serve()
 
 ```go
 
-import "github.com/medivhzhan/weapp/code"
+import "github.com/medivhzhan/weapp"
 
 // DecodePhoneNumber 解密手机号码
 //
@@ -319,8 +306,30 @@ phone , err := weapp.DecodePhoneNumber(ssk, data, iv string)
 // phone.PhoneNumber
 // phone.PurePhoneNumber
 // phone.CountryCode
-// phone.Watermark.AppID
-// phone.Watermark.Timestamp
+// ...
+
+```
+
+### 解密用户信息
+
+```go
+
+import "github.com/medivhzhan/weapp/code"
+
+// DecodeUserInfo 解密用户信息
+//
+// @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
+// @encryptedData 包括敏感数据在内的完整用户信息的加密数据
+// @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
+// @iv 加密算法的初始向量
+// @ssk 微信 session_key
+ui, err := DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string)
+
+// 访问内容
+// ui.OpenID
+// ui.Nickname
+// ui.Gender
+// ...
 
 ```
 
