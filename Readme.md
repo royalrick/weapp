@@ -295,7 +295,7 @@ err := srv.Serve()
 
 import "github.com/medivhzhan/weapp"
 
-// DecodePhoneNumber 解密手机号码
+// 解密手机号码
 //
 // @ssk 通过 Login 向微信服务端请求得到的 session_key
 // @data 小程序通过 api 得到的加密数据(encryptedData)
@@ -314,16 +314,16 @@ phone , err := weapp.DecodePhoneNumber(ssk, data, iv string)
 
 ```go
 
-import "github.com/medivhzhan/weapp/code"
+import "github.com/medivhzhan/weapp"
 
-// DecodeUserInfo 解密用户信息
+// 解密用户信息
 //
 // @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
 // @encryptedData 包括敏感数据在内的完整用户信息的加密数据
 // @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
-ui, err := DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string)
+ui, err := weapp.DecodeUserInfo(rawData, encryptedData, signature, iv, ssk string)
 
 // 访问内容
 // ui.OpenID
