@@ -4,11 +4,7 @@ package code
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"net/http"
-	"os"
-	"path/filepath"
 	"strings"
 
 	"github.com/medivhzhan/weapp"
@@ -18,8 +14,17 @@ import (
 const (
 	appCodeAPI          = "/wxa/getwxacode"
 	unlimitedAppCodeAPI = "/wxa/getwxacodeunlimit"
-	qrCodeAPI           = "/cgi-bin/wxaapp/createwxaqrcode"
+	QRCodeAPI           = "/cgi-bin/wxaapp/createwxaqrcode"
 )
+
+type coder struct {
+	Page      string `json:"page,omitempty"`
+	Path      string `json:"path,omitempty"`
+	Width     int    `json:"width,omitempty"`
+	Scene     string `json:"scene,omitempty"`
+	AutoColor bool   `json:"auth_color,omitempty"`
+	LineColor string `json:"line_color,omitempty"`
+}
 
 // AppCode 获取小程序码
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
@@ -29,18 +34,21 @@ const (
 // @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-// @filename 文件储存路径
-func AppCode(path string, width int, autoColor bool, lineColor, token, filename string) error {
+func AppCode(path string, width int, autoColor bool, lineColor, token string) (*http.Response, error) {
 
-	body := fmt.Sprintf(`{"path":"%s","width": %v,"auto_color": %v,"line_color": %s}`, path, width, autoColor, lineColor)
-
-	res, err := requestCode(appCodeAPI, body, token)
-	if err != nil {
-		return err
+	code := coder{
+		Path:      path,
+		Width:     width,
+		AutoColor: autoColor,
+		LineColor: lineColor,
 	}
-	defer res.Body.Close()
 
-	return saveCode(res, filename)
+	body, err := json.Marshal(code)
+	if err != nil {
+		return nil, err
+	}
+
+	return fetchCode(appCodeAPI, string(body), token)
 }
 
 // UnlimitedAppCode 获取小程序码
@@ -53,18 +61,22 @@ func AppCode(path string, width int, autoColor bool, lineColor, token, filename 
 // @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-// @filename 文件储存路径
-func UnlimitedAppCode(scene, page string, width int, autoColor bool, lineColor, token, filename string) error {
+func UnlimitedAppCode(scene, page string, width int, autoColor bool, lineColor, token string) (*http.Response, error) {
 
-	body := fmt.Sprintf(`{"scene": "%s","page":"%s","width": %v,"auto_color": %v,"line_color": %s}`, scene, page, width, autoColor, lineColor)
-
-	res, err := requestCode(unlimitedAppCodeAPI, body, token)
-	if err != nil {
-		return nil
+	code := coder{
+		Scene:     scene,
+		Page:      page,
+		Width:     width,
+		AutoColor: autoColor,
+		LineColor: lineColor,
 	}
-	defer res.Body.Close()
 
-	return saveCode(res, filename)
+	body, err := json.Marshal(code)
+	if err != nil {
+		return nil, err
+	}
+
+	return fetchCode(unlimitedAppCodeAPI, string(body), token)
 }
 
 // QRCode 获取小程序二维码
@@ -73,23 +85,24 @@ func UnlimitedAppCode(scene, page string, width int, autoColor bool, lineColor, 
 // @path 识别二维码后进入小程序的页面链接
 // @width 图片宽度
 // @token 微信access_token
-// @filename 文件储存路径
-func QRCode(path string, width int, token, filename string) error {
+func QRCode(path string, width int, token string) (*http.Response, error) {
 
-	body := fmt.Sprintf(`{"path":"%s","width": %v}`, path, width)
-
-	res, err := requestCode(qrCodeAPI, body, token)
-	if err != nil {
-		return nil
+	code := coder{
+		Path:  path,
+		Width: width,
 	}
-	defer res.Body.Close()
 
-	return saveCode(res, filename)
+	body, err := json.Marshal(code)
+	if err != nil {
+		return nil, err
+	}
+
+	return fetchCode(QRCodeAPI, string(body), token)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func requestCode(path, body, token string) (res *http.Response, err error) {
+func fetchCode(path, body, token string) (res *http.Response, err error) {
 
 	api, err := util.TokenAPI(weapp.BaseURL+path, token)
 	if err != nil {
@@ -110,32 +123,7 @@ func requestCode(path, body, token string) (res *http.Response, err error) {
 		return res, errors.New(data.Errmsg)
 	case header == "image/jpeg": // 返回文件
 		return res, nil
+	default:
+		return res, errors.New("unknown response header: " + header)
 	}
-
-	return res, errors.New("unknown error when fetch app code")
-}
-
-// 保存二维码文件
-func saveCode(res *http.Response, filename string) error {
-
-	dir := filepath.Dir(filename)
-
-	// 查看文件夹是否存在
-	if _, err := os.Stat(dir); err != nil {
-		if !os.IsNotExist(err) {
-			return err
-		}
-
-		// 文件夹不存在就创建文件夹
-		if err = os.MkdirAll(dir, 0777); err != nil {
-			return err
-		}
-	}
-
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return err
-	}
-
-	return ioutil.WriteFile(filename, data, 0666)
 }

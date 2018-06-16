@@ -47,9 +47,11 @@ import "github.com/medivhzhan/weapp/code"
 // autoColor: 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // lineColor: autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token: 微信access_token
-// filename: 文件储存路径
-
-err := code.AppCode(path string, width int, autoColor bool, lineColor, accessToken, filename string)
+res, err := code.AppCode(path string, width int, autoColor bool, lineColor, accessToken)
+if err != nil {
+    // handle error
+}
+defer res.Body.Close()
 
 ```
 
@@ -68,8 +70,11 @@ import "github.com/medivhzhan/weapp/code"
 // autoColor: 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
 // lineColor: autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token: 微信access_token
-// filename: 文件储存路径
-err := code.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string)
+res, err := code.UnlimitedAppCode(scene, path string, width int, autoColor bool, lineColor, accessToken string)
+if err != nil {
+    // handle error
+}
+defer res.Body.Close()
 
 ```
 
@@ -84,8 +89,11 @@ import "github.com/medivhzhan/weapp/code"
 // path: 识别二维码后进入小程序的页面链接
 // width: 图片宽度
 // token: 微信access_token
-// filename: 文件储存路径
-err := code.QRCode(path string, width int, token string)
+res, err := code.QRCode(path string, width int, token string)
+if err != nil {
+    // handle error
+}
+defer res.Body.Close()
 
 ```
 
