@@ -17,35 +17,35 @@ const (
 	QRCodeAPI           = "/cgi-bin/wxaapp/createwxaqrcode"
 )
 
-type coder struct {
-	Page      string `json:"page,omitempty"`
-	Path      string `json:"path,omitempty"`
-	Width     int    `json:"width,omitempty"`
-	Scene     string `json:"scene,omitempty"`
-	AutoColor bool   `json:"auth_color,omitempty"`
-	LineColor string `json:"line_color,omitempty"`
-	IsHyaline bool   `json:"is_hyaline,omitempty"`
+// QRCoder 小程序码参数
+type QRCoder struct {
+	Page string `json:"page,omitempty"`
+	// path 识别二维码后进入小程序的页面链接
+	Path string `json:"path,omitempty"`
+	// width 图片宽度
+	Width int `json:"width,omitempty"`
+	// scene 参数数据
+	Scene string `json:"scene,omitempty"`
+	// autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+	AutoColor bool `json:"auto_color,omitempty"`
+	// lineColor AutoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
+	LineColor Color `json:"line_color,omitempty"`
+	// isHyaline 是否需要透明底色
+	IsHyaline bool `json:"is_hyaline,omitempty"`
+}
+
+// Color QRCode color
+type Color struct {
+	R string `json:"r"`
+	G string `json:"g"`
+	B string `json:"b"`
 }
 
 // AppCode 获取小程序码
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
-// @path 识别二维码后进入小程序的页面链接
-// @width 图片宽度
-// @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-// @isHyaline 是否需要透明底色
-// @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-func AppCode(path string, width int, autoColor, isHyaline bool, lineColor, token string) (*http.Response, error) {
-
-	code := coder{
-		Path:      path,
-		Width:     width,
-		AutoColor: autoColor,
-		LineColor: lineColor,
-		IsHyaline: isHyaline,
-	}
-
+func (code QRCoder) AppCode(token string) (*http.Response, error) {
 	body, err := json.Marshal(code)
 	if err != nil {
 		return nil, err
@@ -58,23 +58,8 @@ func AppCode(path string, width int, autoColor, isHyaline bool, lineColor, token
 // 可接受页面参数较短 生成个数不受限 适用于需要的码数量极多的业务场景
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
 //
-// @scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
-// @page 识别二维码后进入小程序的页面链接
-// @width 图片宽度
-// @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-// @isHyaline 是否需要透明底色
-// @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-func UnlimitedAppCode(scene, page string, width int, autoColor, isHyaline bool, lineColor, token string) (*http.Response, error) {
-
-	code := coder{
-		Scene:     scene,
-		Page:      page,
-		Width:     width,
-		AutoColor: autoColor,
-		LineColor: lineColor,
-		IsHyaline: isHyaline,
-	}
+func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
 
 	body, err := json.Marshal(code)
 	if err != nil {
@@ -87,15 +72,8 @@ func UnlimitedAppCode(scene, page string, width int, autoColor, isHyaline bool, 
 // QRCode 获取小程序二维码
 // 可接受path参数较长，生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
-// @path 识别二维码后进入小程序的页面链接
-// @width 图片宽度
 // @token 微信access_token
-func QRCode(path string, width int, token string) (*http.Response, error) {
-
-	code := coder{
-		Path:  path,
-		Width: width,
-	}
+func (code QRCoder) QRCode(token string) (*http.Response, error) {
 
 	body, err := json.Marshal(code)
 	if err != nil {
@@ -118,17 +96,18 @@ func fetchCode(path, body, token string) (res *http.Response, err error) {
 	if err != nil {
 		return
 	}
-
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
 		var data weapp.Response
-		if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
-			return res, err
+		if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
+			return
 		}
+
 		return res, errors.New(data.Errmsg)
 	case header == "image/jpeg": // 返回文件
 		return res, nil
 	default:
-		return res, errors.New("unknown response header: " + header)
+		err = errors.New("unknown response header: " + header)
+		return
 	}
 }

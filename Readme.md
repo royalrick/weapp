@@ -40,15 +40,21 @@ oid, ssk, err := weapp.Login(appID, secret, code string)
 
 import "github.com/medivhzhan/weapp/code"
 
+coder := code.QRCoder {
+    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
+    With: 430, // 图片宽度
+    IsHyaline: true, // 是否需要透明底色
+    AutoColor: true, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
+        R: "50",
+        G: "50",
+        A: "50",
+    },
+}
+
 // 获取小程序码
-// 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
-// path: 识别二维码后进入小程序的页面链接
-// width: 图片宽度
-// autoColor: 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-// isHyaline 是否需要透明底色
-// lineColor: autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token: 微信access_token
-res, err := code.AppCode(path string, width int, autoColor, isHyaline bool, lineColor, accessToken)
+res, err := coder.AppCode(token string)
 if err != nil {
     // handle error
 }
@@ -62,17 +68,22 @@ defer res.Body.Close()
 
 import "github.com/medivhzhan/weapp/code"
 
+coder := code.QRCoder {
+    Scene: "...", // 参数数据
+    Page: "pages/index", // 识别二维码后进入小程序的页面链接
+    With: 430, // 图片宽度
+    IsHyaline: true, // 是否需要透明底色
+    AutoColor: true, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
+        R: "50",
+        G: "50",
+        A: "50",
+    },
+}
+
 // 获取小程序码
-// 可接受页面参数较短 生成个数不受限 适用于需要的码数量极多的业务场景
-// 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
-// scene: 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
-// page: 识别二维码后进入小程序的页面链接
-// width: 图片宽度
-// autoColor: 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-// isHyaline 是否需要透明底色
-// lineColor: autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // token: 微信access_token
-res, err := code.UnlimitedAppCode(scene, path string, width int, autoColor, isHyaline bool, lineColor, accessToken string)
+res, err := coder.UnlimitedAppCode(token string)
 if err != nil {
     // handle error
 }
@@ -86,12 +97,14 @@ defer res.Body.Close()
 
 import "github.com/medivhzhan/weapp/code"
 
+coder := code.QRCoder {
+    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
+    With: 430, // 图片宽度
+}
+
 // 获取小程序二维码
-// 可接受path参数较长，生成个数受限 永久有效 适用于需要的码数量较少的业务场景
-// path: 识别二维码后进入小程序的页面链接
-// width: 图片宽度
 // token: 微信access_token
-res, err := code.QRCode(path string, width int, token string)
+res, err := coder.QRCode(token string)
 if err != nil {
     // handle error
 }
