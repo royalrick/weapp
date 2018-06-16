@@ -24,6 +24,7 @@ type coder struct {
 	Scene     string `json:"scene,omitempty"`
 	AutoColor bool   `json:"auth_color,omitempty"`
 	LineColor string `json:"line_color,omitempty"`
+	IsHyaline bool   `json:"is_hyaline,omitempty"`
 }
 
 // AppCode 获取小程序码
@@ -32,15 +33,17 @@ type coder struct {
 // @path 识别二维码后进入小程序的页面链接
 // @width 图片宽度
 // @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+// @isHyaline 是否需要透明底色
 // @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-func AppCode(path string, width int, autoColor bool, lineColor, token string) (*http.Response, error) {
+func AppCode(path string, width int, autoColor, isHyaline bool, lineColor, token string) (*http.Response, error) {
 
 	code := coder{
 		Path:      path,
 		Width:     width,
 		AutoColor: autoColor,
 		LineColor: lineColor,
+		IsHyaline: isHyaline,
 	}
 
 	body, err := json.Marshal(code)
@@ -59,9 +62,10 @@ func AppCode(path string, width int, autoColor bool, lineColor, token string) (*
 // @page 识别二维码后进入小程序的页面链接
 // @width 图片宽度
 // @autoColor 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
+// @isHyaline 是否需要透明底色
 // @lineColor autoColor 为 false 时生效，使用 rgb 设置颜色 例如 {"r":"xxx","g":"xxx","b":"xxx"},十进制表示
 // @token 微信access_token
-func UnlimitedAppCode(scene, page string, width int, autoColor bool, lineColor, token string) (*http.Response, error) {
+func UnlimitedAppCode(scene, page string, width int, autoColor, isHyaline bool, lineColor, token string) (*http.Response, error) {
 
 	code := coder{
 		Scene:     scene,
@@ -69,6 +73,7 @@ func UnlimitedAppCode(scene, page string, width int, autoColor bool, lineColor, 
 		Width:     width,
 		AutoColor: autoColor,
 		LineColor: lineColor,
+		IsHyaline: isHyaline,
 	}
 
 	body, err := json.Marshal(code)
