@@ -22,8 +22,8 @@ const (
 	sendAPI   = "/cgi-bin/message/wxopen/template/send"
 )
 
-// Keyword 关键字
-type Keyword struct {
+// Keyworder 关键字
+type Keyworder struct {
 	KeywordID uint   `json:"keyword_id"`
 	Name      string `json:"name"`
 	Example   string `json:"example"`
@@ -38,7 +38,7 @@ type Template struct {
 	Content    string `json:"content,omitempty"`
 	Example    string `json:"example,omitempty"`
 
-	KeywordList []Keyword `json:"keyword_list,omitempty"`
+	KeywordList []Keyworder `json:"keyword_list,omitempty"`
 }
 
 // TemplateList 获取模板列表返回的数据
@@ -116,7 +116,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 //
 // @id 模板ID
 // @token 微信 access_token
-func Get(id, token string) (keywords []Keyword, err error) {
+func Get(id, token string) (keywords []Keyworder, err error) {
 	api, err := util.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
 		return
@@ -225,6 +225,15 @@ func Delete(id, token string) error {
 	return nil
 }
 
+// Mesage 模版消息体
+type Mesage map[string]Keyword
+
+// Keyword message Keyword
+type Keyword struct {
+	Color string      `json:"color"`
+	Value interface{} `json:"value"`
+}
+
 // Send 发送模板消息
 //
 // @openid 接收者（用户）的 openid
@@ -234,7 +243,7 @@ func Delete(id, token string) error {
 // @data 模板内容，不填则下发空模板
 // @color 模板内容字体的颜色，不填默认黑色
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
-func Send(openid, template, page, formID string, data interface{}, color, emphasisKeyword, token string) error {
+func Send(openid, template, page, formID string, data Mesage, color, emphasisKeyword, token string) error {
 	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err

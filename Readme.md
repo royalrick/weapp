@@ -190,6 +190,16 @@ err := template.Delete(id, token string)
 
 import "github.com/medivhzhan/weapp/message/template"
 
+msg := template.Mesage{
+    "keyword1": template.Keyword{
+        Value: act.Start,
+        Color: "#ccc",
+    },
+    "keyword2": template.Keyword{
+        Value: act.Title,
+        Color: "#ccc",
+    }
+
 // 发送模板消息
 // openid: 接收者（用户）的 openid
 // template: 所需下发的模板消息的id
@@ -198,7 +208,7 @@ import "github.com/medivhzhan/weapp/message/template"
 // data: 模板内容，不填则下发空模板
 // color: 模板内容字体的颜色，不填默认黑色
 // emphasisKeyword: 模板需要放大的关键词，不填则默认无放大
-err := template.Send(openid, template, page, formID, data, color, emphasisKeyword, token string)
+err := template.Send(openid, template, page, formID string, msg template.Message, color, emphasisKeyword, token string)
 
 ```
 
