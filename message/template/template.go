@@ -22,8 +22,8 @@ const (
 	sendAPI   = "/cgi-bin/message/wxopen/template/send"
 )
 
-// Keyworder 关键字
-type Keyworder struct {
+// Keyword 关键字
+type Keyword struct {
 	KeywordID uint   `json:"keyword_id"`
 	Name      string `json:"name"`
 	Example   string `json:"example"`
@@ -38,11 +38,11 @@ type Template struct {
 	Content    string `json:"content,omitempty"`
 	Example    string `json:"example,omitempty"`
 
-	KeywordList []Keyworder `json:"keyword_list,omitempty"`
+	KeywordList []Keyword `json:"keyword_list,omitempty"`
 }
 
-// TemplateList 获取模板列表返回的数据
-type TemplateList struct {
+// Templates 获取模板列表返回的数据
+type Templates struct {
 	weapp.Response
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
@@ -97,7 +97,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 		return
 	}
 
-	var data TemplateList
+	var data Templates
 	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
 		return
 	}
@@ -116,7 +116,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 //
 // @id 模板ID
 // @token 微信 access_token
-func Get(id, token string) (keywords []Keyworder, err error) {
+func Get(id, token string) (keywords []Keyword, err error) {
 	api, err := util.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
 		return
@@ -226,13 +226,7 @@ func Delete(id, token string) error {
 }
 
 // Mesage 模版消息体
-type Mesage map[string]Keyword
-
-// Keyword message Keyword
-type Keyword struct {
-	Color string      `json:"color"`
-	Value interface{} `json:"value"`
-}
+type Mesage map[string]interface{}
 
 // Send 发送模板消息
 //
@@ -247,6 +241,10 @@ func Send(openid, template, page, formID string, data Mesage, color, emphasisKey
 	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
+	}
+
+	for key := range data {
+		data[key] = Mesage{"value": data[key]}
 	}
 
 	body := map[string]interface{}{

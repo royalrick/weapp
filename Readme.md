@@ -191,14 +191,9 @@ err := template.Delete(id, token string)
 import "github.com/medivhzhan/weapp/message/template"
 
 msg := template.Mesage{
-    "keyword1": template.Keyword{
-        Value: act.Start,
-        Color: "#ccc",
-    },
-    "keyword2": template.Keyword{
-        Value: act.Title,
-        Color: "#ccc",
-    }
+    "keyword1": "content ...",
+    "keyword2": "content ...",
+}
 
 // 发送模板消息
 // openid: 接收者（用户）的 openid
