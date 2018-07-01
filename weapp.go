@@ -115,6 +115,29 @@ func DecryptPhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
 	return
 }
 
+type group struct {
+	GID string `json:"openGId"`
+}
+
+// DecryptShareInfo 解密转发信息的加密数据
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+//
+// @gid 小程序唯一群号
+func DecryptShareInfo(ssk, data, iv string) (string, error) {
+
+	bts, err := util.CBCDecrypt(ssk, data, iv)
+	if err != nil {
+		return "", err
+	}
+
+	var g group
+	err = json.Unmarshal(bts, &g)
+	return g.GID, err
+}
+
 // DecryptUserInfo 解密用户信息
 //
 // @rawData 不包括敏感信息的原始数据字符串，用于计算签名。

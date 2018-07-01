@@ -338,6 +338,25 @@ phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
 
 ```
 
+### 解密分享信息
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 解密转发信息的加密数据
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+//
+// @gid 小程序唯一群号
+openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
+
+```
+
+
+
 ### 解密用户信息
 
 ```go
