@@ -145,3 +145,55 @@ func (srv *Server) Serve() error {
 func encrypted(req *http.Request) bool {
 	return util.GetQuery(req, "encrypt_type") == "aes"
 }
+
+// 检验消息的真实性，并且获取解密后的明文
+func decrypt(ciphertext string) error {
+	const (
+		BlockSize = 32            // PKCS#7
+		BlockMask = BlockSize - 1 // BLOCK_SIZE 为 2^n 时, 可以用 mask 获取针对 BLOCK_SIZE 的余数
+	)
+
+	if len(ciphertext) < BlockSize {
+		return errors.New("cipher too short")
+	}
+	// ECB mode always works in whole blocks.
+	if len(ciphertext)%BlockSize != 0 {
+		return errors.New("cipher is not a multiple of the block size")
+	}
+
+	return nil
+}
+
+// 将公众号回复用户的消息加密打包
+func encrypt(token, aesKey, appID, msg, nonce string, timestamp int64) error {
+	// key, err := base64.StdEncoding.DecodeString(aesKey + "=")
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if len(key) != 32 {
+	// 	return errors.New("invalid encoding AES key")
+	// }
+
+	// str := util.RandomString(16) + msg + appID
+
+	// bts := util.PKCS5Padding([]byte(str), aes.BlockSize)
+
+	// ....
+
+	// pc = Prpcrypt(self.key)
+	//     ret,encrypt = pc.encrypt(sReplyMsg, self.appid)
+	//     if ret != 0:
+	//         return ret,None
+	//     if timestamp is None:
+	//         timestamp = str(int(time.time()))
+	//     # 生成安全签名
+	//     sha1 = SHA1()
+	//     ret,signature = sha1.getSHA1(self.token, timestamp, sNonce, encrypt)
+	//     if ret != 0:
+	//         return ret,None
+	//     xmlParse = XMLParse()
+	//     return ret,xmlParse.generate(encrypt, signature, timestamp, sNonce)
+
+	return nil
+}

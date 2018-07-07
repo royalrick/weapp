@@ -21,13 +21,13 @@ const (
 	WeChatServerError = "微信服务器发生错误"
 )
 
-// Code 微信服务器返回状态码
-type Code int
+// TimeFormat 微信时间格式
+const TimeFormat = "20060102150405"
 
 // Response 请求微信返回基础数据
 type Response struct {
-	Errcode Code   `json:"errcode,omitempty"`
-	Errmsg  string `json:"errmsg,omitempty"`
+	Errcode int    `json:"errcode"`
+	Errmsg  string `json:"errmsg"`
 }
 
 type loginForm struct {
@@ -105,7 +105,6 @@ type watermark struct {
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
 func DecryptPhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
-
 	bts, err := util.CBCDecrypt(ssk, data, iv)
 	if err != nil {
 		return

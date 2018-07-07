@@ -251,37 +251,109 @@ res, err := msg.SendTo(openid, token string)
 
 ---
 
-## 处理微信通知
+## 支付
 
-### 支付
-
-> 测试中 ...
+### 下单
 
 ```go
 
-import "github.com/medivhzhan/weapp/notify"
+import "github.com/medivhzhan/weapp/payment"
 
-// 处理支付结果通知
-err := notify.HandlePaidNotify(w http.ResponseWriter, req *http.Request, func(ntf notify.PaidNotify) {
-    // 处理通知
+    // 新建支付订单
+    o := payment.Order{
+        // 必填
+        AppID:      "APPID",
+        MchID:      "商户号",
+        Body:       "商品描述",
+        NotifyURL:  "通知地址",
+        OpenID:     "通知用户的 openid",
+        OutTradeNo: "商户订单号",
+        TotalFee:   "总金额(分)",
 
-    // 处理成功 return true, ""
-    // or
-    // 处理失败 return false, "失败原因..."
-})
+        // 选填 ...
+        IP:        "发起支付终端IP",
+        NoCredit:  "是否允许使用信用卡",
+        StartedAt: "交易起始时间",
+        ExpiredAt: "交易结束时间",
+        Tag:       "订单优惠标记",
+        Detail:    "商品详情",
+        Attach:    "附加数据",
+    }
 
-// 处理退款结果通知
-// key: 微信支付 KEY
-err := notify.HandleRefundedNotify(w http.ResponseWriter, req *http.Request, key string, func(ntf notify.RefundedNotify) {
+    res, err := o.Unify("支付密钥")
+    if err != nil {
+        // handle error
+        return
+    }
 
-    // 处理通知
+    // handle result
+    fmt.Printf("返回结果: %#v", res)
 
-    // 处理成功 return true, ""
-    // or
-    // 处理失败 return false, "失败原因..."
-})
+    // 获取小程序前点调用支付接口所需参数
+    params, err := payment.GetParams(res.AppID, res.MchID, res.NonceStr, res.PrePayID, time.Now())
+    if err != nil {
+        // handle error
+        return
+    }
+
+    // 处理支付结果通知
+    err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(ntf payment.PaidNotify) (bool, string) {
+        // 处理通知
+        fmt.Printf("%#v", ntf)
+
+        // 处理成功 return true, ""
+        // or
+        // 处理失败 return false, "失败原因..."
+    })
 
 ```
+
+### 退款
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+    // 新建退款订单
+    o := payment.Refunder{
+        // 必填
+        AppID:       "APPID",
+        MchID:       "商户号",
+        TotalFee:    "总金额(分)",
+        RefundFee:   "退款金额(分)",
+        OutRefundNo: "商户退款单号",
+        // 二选一
+        OutTradeNo: "商户订单号", // or TransactionID: "微信订单号",
+
+        // 选填 ...
+        RefundDesc: "退款原因",   // 若商户传入，会在下发给用户的退款消息中体现退款原因
+        NotifyURL:  "结果通知地址", // 覆盖商户平台上配置的回调地址
+    }
+
+    // 需要证书
+    res, err := o.Refund("支付密钥"， "cert 证书路径", "key 证书路径")
+    if err != nil {
+        // handle error
+        return
+    }
+
+    // handle result
+    fmt.Printf("返回结果: %#v", res)
+
+    // 处理退款结果通知
+    err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "支付密钥", func(ntf payment.RefundedNotify) (bool,         // 处理通知
+        fmt.Printf("%#v", ntf)
+
+        // 处理成功 return true, ""
+        // or
+        // 处理失败 return false, "失败原因..."
+    })
+
+```
+
+---
+
+## 处理微信通知
 
 ### 消息
 
@@ -385,6 +457,5 @@ ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk stri
 ## 未实现功能
 
 1. 接收加密消息
-1. 微信支付
 1. 数据统计
 1. 临时素材
