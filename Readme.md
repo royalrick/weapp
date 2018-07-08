@@ -1,5 +1,21 @@
 # 微信小程序 SDK （for Golang）
 
+## 目录
+
+- [拉取代码](#拉取代码)
+- [AccessToken](#AccessToken)
+- [用户登录](#用户登录)
+- [二维码](#二维码)
+- [模板消息](#模板消息)
+- [客服消息](#客服消息)
+- [支付](#支付)
+- [微信通知](#微信通知)
+- [解密](#解密)
+    - [解密手机号码](#解密手机号码)
+    - [解密分享内容](#解密分享内容)
+    - [解密用户信息](#解密用户信息)
+- [未实现功能](#未实现功能)
+
 ## 拉取代码
 
 ```sh
@@ -8,7 +24,7 @@ go get -u github.com/medivhzhan/weapp
 
 ```
 
-## 获取 access_token 及其有效期
+## AccessToken
 
 ```go
 
@@ -286,7 +302,6 @@ import "github.com/medivhzhan/weapp/payment"
         return
     }
 
-    // handle result
     fmt.Printf("返回结果: %#v", res)
 
     // 获取小程序前点调用支付接口所需参数
@@ -337,7 +352,6 @@ import "github.com/medivhzhan/weapp/payment"
         return
     }
 
-    // handle result
     fmt.Printf("返回结果: %#v", res)
 
     // 处理退款结果通知
@@ -353,7 +367,7 @@ import "github.com/medivhzhan/weapp/payment"
 
 ---
 
-## 处理微信通知
+## 微信通知
 
 ### 消息
 
@@ -387,7 +401,7 @@ err := srv.Serve()
 
 ---
 
-## 其他
+## 解密
 
 ### 解密手机号码
 
@@ -402,15 +416,11 @@ import "github.com/medivhzhan/weapp"
 // @iv 小程序通过 api 得到的初始向量(iv)
 phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
 
-// 访问内容
-// phone.PhoneNumber
-// phone.PurePhoneNumber
-// phone.CountryCode
-// ...
+fmt.Printf("手机数据: %#v", phone)
 
 ```
 
-### 解密分享信息
+### 解密分享内容
 
 ```go
 
@@ -427,8 +437,6 @@ openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
 
 ```
 
-
-
 ### 解密用户信息
 
 ```go
@@ -444,11 +452,7 @@ import "github.com/medivhzhan/weapp"
 // @ssk 微信 session_key
 ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
 
-// 访问内容
-// ui.OpenID
-// ui.Nickname
-// ui.Gender
-// ...
+fmt.Printf("用户数据: %#v", ui)
 
 ```
 
