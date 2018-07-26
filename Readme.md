@@ -14,7 +14,6 @@
     - [解密手机号码](#解密手机号码)
     - [解密分享内容](#解密分享内容)
     - [解密用户信息](#解密用户信息)
-- [未实现功能](#未实现功能)
 
 ## 拉取代码
 
@@ -64,7 +63,7 @@ coder := code.QRCoder {
     LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
         R: "50",
         G: "50",
-        A: "50",
+        B: "50",
     },
 }
 
@@ -93,7 +92,7 @@ coder := code.QRCoder {
     LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
         R: "50",
         G: "50",
-        A: "50",
+        B: "50",
     },
 }
 
@@ -217,9 +216,8 @@ msg := template.Mesage{
 // page: 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
 // formID: 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
 // data: 模板内容，不填则下发空模板
-// color: 模板内容字体的颜色，不填默认黑色
 // emphasisKeyword: 模板需要放大的关键词，不填则默认无放大
-err := template.Send(openid, template, page, formID string, msg template.Message, color, emphasisKeyword, token string)
+err := template.Send(openid, template, page, formID string, msg template.Message, emphasisKeyword, token string)
 
 ```
 
@@ -269,7 +267,7 @@ res, err := msg.SendTo(openid, token string)
 
 ## 支付
 
-### 下单
+### 付款
 
 ```go
 
@@ -455,11 +453,3 @@ ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk stri
 fmt.Printf("用户数据: %#v", ui)
 
 ```
-
----
-
-## 未实现功能
-
-1. 接收加密消息
-1. 数据统计
-1. 临时素材

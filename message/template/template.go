@@ -235,9 +235,8 @@ type Mesage map[string]interface{}
 // @page 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
 // @formID 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
 // @data 模板内容，不填则下发空模板
-// @color 模板内容字体的颜色，不填默认黑色
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
-func Send(openid, template, page, formID string, data Mesage, color, emphasisKeyword, token string) error {
+func Send(openid, template, page, formID string, data Mesage, emphasisKeyword, token string) error {
 	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
@@ -253,7 +252,6 @@ func Send(openid, template, page, formID string, data Mesage, color, emphasisKey
 		"page":             page,
 		"form_id":          formID,
 		"data":             data,
-		"color":            color,
 		"emphasis_keyword": emphasisKeyword,
 	}
 
