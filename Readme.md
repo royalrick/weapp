@@ -309,15 +309,23 @@ import "github.com/medivhzhan/weapp/payment"
         return
     }
 
-    // 处理支付结果通知
-    err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(ntf payment.PaidNotify) (bool, string) {
-        // 处理通知
-        fmt.Printf("%#v", ntf)
+```
 
-        // 处理成功 return true, ""
-        // or
-        // 处理失败 return false, "失败原因..."
-    })
+### 处理支付结果通知
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+// 必须在下单时指定的 notify_url 的路由处理器下
+err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(ntf payment.PaidNotify) (bool, string) {
+    // 处理通知
+    fmt.Printf("%#v", ntf)
+
+    // 处理成功 return true, ""
+    // or
+    // 处理失败 return false, "失败原因..."
+})
 
 ```
 
@@ -352,14 +360,22 @@ import "github.com/medivhzhan/weapp/payment"
 
     fmt.Printf("返回结果: %#v", res)
 
-    // 处理退款结果通知
-    err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "支付密钥", func(ntf payment.RefundedNotify) (bool,         // 处理通知
-        fmt.Printf("%#v", ntf)
+```
 
-        // 处理成功 return true, ""
-        // or
-        // 处理失败 return false, "失败原因..."
-    })
+### 处理退款结果通知
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+// 必须在商户平台上配置的回调地址或者发起退款时指定的 notify_url 的路由处理器下
+err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "支付密钥", func(ntf payment.RefundedNotify) (bool,         // 处理通知
+    fmt.Printf("%#v", ntf)
+
+    // 处理成功 return true, ""
+    // or
+    // 处理失败 return false, "失败原因..."
+})
 
 ```
 
