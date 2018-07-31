@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"strconv"
 	"time"
@@ -35,14 +34,14 @@ type Order struct {
 	// 必填 ...
 	AppID      string `xml:"appid"`        // 小程序ID
 	MchID      string `xml:"mch_id"`       // 商户号
-	TotalFee   int    `xml:"-"`            // 标价金额
+	TotalFee   int    `xml:"total_fee"`    // 标价金额
 	NotifyURL  string `xml:"notify_url"`   // 异步接收微信支付结果通知的回调地址，通知url必须为外网可访问的url，不能携带参数。
 	OpenID     string `xml:"openid"`       // 下单用户ID
 	Body       string `xml:"body"`         // 商品描述
 	OutTradeNo string `xml:"out_trade_no"` // 商户订单号
 
 	// 选填 ...
-	IP        net.IP    `xml:"-"`                   // 终端IP
+	IP        string    `xml:"spbill_create_ip"`    // 终端IP
 	NoCredit  bool      `xml:"-"`                   // 上传此参数 no_credit 可限制用户不能使用信用卡支付
 	StartedAt time.Time `xml:"-"`                   // 交易起始时间 格式为yyyyMMddHHmmss
 	ExpiredAt time.Time `xml:"-"`                   // 交易结束时间 订单失效时间 格式为yyyyMMddHHmmss
@@ -55,8 +54,6 @@ type Order struct {
 type order struct {
 	XMLName xml.Name `xml:"xml" json:"-"`
 	Order
-	IP        string `xml:"spbill_create_ip"`    // 终端IP
-	TotalFee  string `xml:"total_fee"`           // 标价金额
 	Sign      string `xml:"sign"`                // 签名
 	NonceStr  string `xml:"nonce_str"`           // 随机字符串
 	TradeType string `xml:"trade_type"`          // 小程序取值如下：JSAPI
@@ -75,7 +72,6 @@ func (o *Order) prepare(key string) (order, error) {
 		TradeType: "JSAPI",
 		SignType:  "MD5",
 		NonceStr:  util.RandomString(32),
-		TotalFee:  strconv.Itoa(o.TotalFee),
 	}
 
 	signData := map[string]string{
@@ -86,19 +82,19 @@ func (o *Order) prepare(key string) (order, error) {
 		"notify_url":   od.NotifyURL,
 		"openid":       od.OpenID,
 		"out_trade_no": od.OutTradeNo,
-		"total_fee":    od.TotalFee,
+		"total_fee":    strconv.Itoa(od.TotalFee),
 		"trade_type":   od.TradeType,
 		"sign_type":    od.SignType,
 	}
 
-	if o.IP == nil {
-		ip, err := fetchIP()
+	if o.IP == "" {
+		ip, err := util.FetchIP()
 		if err != nil {
 			return od, err
 		}
-		o.IP = ip
+
+		od.IP = ip.String()
 	}
-	od.IP = o.IP.String()
 	signData["spbill_create_ip"] = od.IP
 
 	if !o.StartedAt.IsZero() {
@@ -210,6 +206,9 @@ func GetParams(appID, key, nonceStr, prepayID string, t time.Time) (p Params, er
 func (o Order) Unify(key string) (pres PaidResponse, err error) {
 
 	reqData, err := o.prepare(key)
+	if err != nil {
+		return
+	}
 
 	data, err := util.PostXML(baseURL+unifyAPI, reqData)
 	if err != nil {
@@ -227,27 +226,6 @@ func (o Order) Unify(key string) (pres PaidResponse, err error) {
 
 	pres = res.PaidResponse
 	return
-}
-
-// Fetch IP address
-func fetchIP() (net.IP, error) {
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		return nil, err
-	}
-
-	for index := range addrs {
-
-		// 检查ip地址判断是否回环地址
-		if IPNet, ok := addrs[index].(*net.IPNet); ok && !IPNet.IP.IsLoopback() {
-			if IPNet.IP.To4() != nil {
-				return IPNet.IP, nil
-			}
-
-		}
-	}
-
-	return nil, errors.New("failed to found IP address")
 }
 
 // PaidNotify 支付结果返回数据

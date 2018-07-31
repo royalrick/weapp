@@ -136,6 +136,9 @@ type refundedResponse struct {
 // Refund 发起退款请求
 func (r Refunder) Refund(key, certPath, keyPath string) (rres RefundedResponse, err error) {
 	data, err := r.prepare(key)
+	if err != nil {
+		return
+	}
 
 	resData, err := util.TSLPostXML(baseURL+refundAPI, data, certPath, keyPath)
 	if err != nil {

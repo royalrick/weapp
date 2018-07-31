@@ -274,7 +274,7 @@ res, err := msg.SendTo(openid, token string)
 import "github.com/medivhzhan/weapp/payment"
 
     // 新建支付订单
-    o := payment.Order{
+    form := payment.Order{
         // 必填
         AppID:      "APPID",
         MchID:      "商户号",
@@ -294,7 +294,7 @@ import "github.com/medivhzhan/weapp/payment"
         Attach:    "附加数据",
     }
 
-    res, err := o.Unify("支付密钥")
+    res, err := form.Unify("支付密钥")
     if err != nil {
         // handle error
         return
@@ -336,7 +336,7 @@ err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(
 import "github.com/medivhzhan/weapp/payment"
 
     // 新建退款订单
-    o := payment.Refunder{
+    form := payment.Refunder{
         // 必填
         AppID:       "APPID",
         MchID:       "商户号",
@@ -352,7 +352,7 @@ import "github.com/medivhzhan/weapp/payment"
     }
 
     // 需要证书
-    res, err := o.Refund("支付密钥"， "cert 证书路径", "key 证书路径")
+    res, err := form.Refund("支付密钥"， "cert 证书路径", "key 证书路径")
     if err != nil {
         // handle error
         return
@@ -376,6 +376,41 @@ err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "
     // or
     // 处理失败 return false, "失败原因..."
 })
+
+```
+
+### 转账(企业付款)
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+    // 新建退款订单
+	form := payment.Transferer{
+		// 必填 ...
+		AppID:       "APPID",
+		MchID:       "商户号",
+		Amount:      "总金额(分)",
+		OutRefundNo: "商户退款单号",
+		OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
+		ToUser:      "转账目标用户的 openid",
+		Desc:        "转账描述", // 若商户传入，会在下发给用户的退款消息中体现退款原因
+
+		// 选填 ...
+		IP: "发起转账端 IP 地址", // 若商户传入，会在下发给用户的退款消息中体现退款原因
+		CheckName: "校验用户姓名选项 true/false",
+		RealName: "收款用户真实姓名", // 如果 CheckName 设置为 true 则必填用户真实姓名
+		Device:   "发起转账设备信息",
+	}
+
+    // 需要证书
+    res, err := form.Transfer("支付密钥"， "cert 证书路径", "key 证书路径")
+    if err != nil {
+        // handle error
+        return
+    }
+
+    fmt.Printf("返回结果: %#v", res)
 
 ```
 

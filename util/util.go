@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/tls"
 	"encoding/xml"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"math/rand"
@@ -133,4 +134,25 @@ func newTLSClient(tlsConfig *tls.Config) (*http.Client, error) {
 			ExpectContinueTimeout: 1 * time.Second,
 		},
 	}, nil
+}
+
+// FetchIP current IP address
+func FetchIP() (net.IP, error) {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return nil, err
+	}
+
+	for index := range addrs {
+
+		// 检查ip地址判断是否回环地址
+		if IPNet, ok := addrs[index].(*net.IPNet); ok && !IPNet.IP.IsLoopback() {
+			if IPNet.IP.To4() != nil {
+				return IPNet.IP, nil
+			}
+
+		}
+	}
+
+	return nil, errors.New("failed to found IP address")
 }
