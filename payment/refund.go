@@ -41,7 +41,7 @@ type Refunder struct {
 }
 
 type refunder struct {
-	XMLName xml.Name `xml:"xml" json:"-"`
+	XMLName xml.Name `xml:"xml"`
 	Refunder
 	Sign     string `xml:"sign"`                // 签名
 	NonceStr string `xml:"nonce_str"`           // 随机字符串

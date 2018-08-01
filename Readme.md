@@ -9,6 +9,12 @@
 - [模板消息](#模板消息)
 - [客服消息](#客服消息)
 - [支付](#支付)
+    - [付款](#付款)
+    - [处理支付结果通知](#处理支付结果通知)
+    - [退款](#退款)
+    - [处理退款结果通知](#处理退款结果通知)
+    - [转账(企业付款)](#转账(企业付款))
+    - [查询转账](#查询转账)
 - [微信通知](#微信通知)
 - [解密](#解密)
     - [解密手机号码](#解密手机号码)
@@ -59,8 +65,8 @@ coder := code.QRCoder {
     Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
     With: 430, // 图片宽度
     IsHyaline: true, // 是否需要透明底色
-    AutoColor: true, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-    LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
+    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
         R: "50",
         G: "50",
         B: "50",
@@ -88,8 +94,8 @@ coder := code.QRCoder {
     Page: "pages/index", // 识别二维码后进入小程序的页面链接
     With: 430, // 图片宽度
     IsHyaline: true, // 是否需要透明底色
-    AutoColor: true, // 自动配置线条颜色，如果颜色依然是黑色，则说明不建议配置主色调
-    LineColor: code.Color{ //  AutoColor 为 false 时生效，使用 rgb 设置颜色 十进制表示
+    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
         R: "50",
         G: "50",
         B: "50",
@@ -213,10 +219,10 @@ msg := template.Mesage{
 // 发送模板消息
 // openid: 接收者（用户）的 openid
 // template: 所需下发的模板消息的id
-// page: 点击模板卡片后的跳转页面，仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
-// formID: 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
-// data: 模板内容，不填则下发空模板
-// emphasisKeyword: 模板需要放大的关键词，不填则默认无放大
+// page: 点击模板卡片后的跳转页面, 仅限本小程序内的页面。支持带参数,（示例index?foo=bar）。该字段不填则模板无跳转。
+// formID: 表单提交场景下, 为 submit 事件带上的 formId；支付场景下, 为本次支付的 prepay_id
+// data: 模板内容, 不填则下发空模板
+// emphasisKeyword: 模板需要放大的关键词, 不填则默认无放大
 err := template.Send(openid, template, page, formID string, msg template.Message, emphasisKeyword, token string)
 
 ```
@@ -347,12 +353,12 @@ import "github.com/medivhzhan/weapp/payment"
         OutTradeNo: "商户订单号", // or TransactionID: "微信订单号",
 
         // 选填 ...
-        RefundDesc: "退款原因",   // 若商户传入，会在下发给用户的退款消息中体现退款原因
+        RefundDesc: "退款原因",   // 若商户传入, 会在下发给用户的退款消息中体现退款原因
         NotifyURL:  "结果通知地址", // 覆盖商户平台上配置的回调地址
     }
 
     // 需要证书
-    res, err := form.Refund("支付密钥"， "cert 证书路径", "key 证书路径")
+    res, err := form.Refund("支付密钥",  "cert 证书路径", "key 证书路径")
     if err != nil {
         // handle error
         return
@@ -379,7 +385,7 @@ err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "
 
 ```
 
-### 转账(企业付款)
+### 转账(企业付款到零钱)
 
 ```go
 
@@ -394,17 +400,41 @@ import "github.com/medivhzhan/weapp/payment"
 		OutRefundNo: "商户退款单号",
 		OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
 		ToUser:      "转账目标用户的 openid",
-		Desc:        "转账描述", // 若商户传入，会在下发给用户的退款消息中体现退款原因
+		Desc:        "转账描述", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
 
 		// 选填 ...
-		IP: "发起转账端 IP 地址", // 若商户传入，会在下发给用户的退款消息中体现退款原因
+		IP: "发起转账端 IP 地址", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
 		CheckName: "校验用户姓名选项 true/false",
 		RealName: "收款用户真实姓名", // 如果 CheckName 设置为 true 则必填用户真实姓名
 		Device:   "发起转账设备信息",
 	}
 
     // 需要证书
-    res, err := form.Transfer("支付密钥"， "cert 证书路径", "key 证书路径")
+    res, err := form.Transfer("支付密钥",  "cert 证书路径", "key 证书路径")
+    if err != nil {
+        // handle error
+        return
+    }
+
+    fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 查询转账
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+    // 新建退款订单
+	form := payment.TransferInfo{
+		AppID:       "APPID",
+		MchID:       "商户号",
+		OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
+	}
+
+    // 需要证书
+    res, err := form.GetInfo("支付密钥",  "cert 证书路径", "key 证书路径")
     if err != nil {
         // handle error
         return
@@ -494,9 +524,9 @@ import "github.com/medivhzhan/weapp"
 
 // 解密用户信息
 //
-// @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
+// @rawData 不包括敏感信息的原始数据字符串, 用于计算签名。
 // @encryptedData 包括敏感数据在内的完整用户信息的加密数据
-// @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
+// @signature 使用 sha1( rawData + session_key ) 得到字符串, 用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
 ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)

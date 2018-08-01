@@ -41,10 +41,10 @@ type Order struct {
 	OutTradeNo string `xml:"out_trade_no"` // 商户订单号
 
 	// 选填 ...
-	IP        string    `xml:"spbill_create_ip"`    // 终端IP
-	NoCredit  bool      `xml:"-"`                   // 上传此参数 no_credit 可限制用户不能使用信用卡支付
-	StartedAt time.Time `xml:"-"`                   // 交易起始时间 格式为yyyyMMddHHmmss
-	ExpiredAt time.Time `xml:"-"`                   // 交易结束时间 订单失效时间 格式为yyyyMMddHHmmss
+	IP        string    `xml:"spbill_create_ip,omitempty"` // 终端IP
+	NoCredit  bool      // 上传此参数 no_credit 可限制用户不能使用信用卡支付
+	StartedAt time.Time // 交易起始时间 格式为yyyyMMddHHmmss
+	ExpiredAt time.Time // 交易结束时间 订单失效时间 格式为yyyyMMddHHmmss
 	Tag       string    `xml:"goods_tag,omitempty"` // 订单优惠标记，使用代金券或立减优惠功能时需要的参数，
 	Detail    string    `xml:"detail,omitempty"`    // 商品详情
 	Attach    string    `xml:"attach,omitempty"`    // 附加数据
@@ -52,7 +52,7 @@ type Order struct {
 
 // 下单所需所有数据
 type order struct {
-	XMLName xml.Name `xml:"xml" json:"-"`
+	XMLName xml.Name `xml:"xml"`
 	Order
 	Sign      string `xml:"sign"`                // 签名
 	NonceStr  string `xml:"nonce_str"`           // 随机字符串
@@ -260,8 +260,8 @@ type paidNotify struct {
 
 // 收到退款和支付通知后返回给微信服务器的消息
 type replay struct {
-	Code string `xml:"return_code"`          // 返回状态码: SUCCESS/FAIL
-	Msg  string `xml:"return_msg,omitempty"` // 返回信息: 返回信息，如非空，为错误原因
+	Code string `xml:"return_code"` // 返回状态码: SUCCESS/FAIL
+	Msg  string `xml:"return_msg"`  // 返回信息: 返回信息，如非空，为错误原因
 }
 
 // 根据结果创建返回数据
