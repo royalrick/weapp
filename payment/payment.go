@@ -172,19 +172,18 @@ type paidResponse struct {
 
 // GetParams 获取支付参数
 //
-// @appID
-// @key payment secret key
-// @nonceStr
-// @prepayID
-// @t
-func GetParams(appID, key, nonceStr, prepayID string, t time.Time) (p Params, err error) {
+// @appID 小程序 APPID
+// @key 微信支付密钥
+// @nonceStr 统一下单得到的 nonceStr
+// @prepayID 统一下单得到的 prepayID
+func GetParams(appID, key, nonceStr, prepayID string) (p Params, err error) {
 
 	if len(nonceStr) > 32 {
 		err = errors.New("随机字符串长度为32个字符以下")
 		return
 	}
 
-	p.Timestamp = strconv.FormatInt(t.Unix(), 10)
+	p.Timestamp = strconv.FormatInt(time.Now().Unix(), 10)
 	p.SignType = "MD5"
 	p.NonceStr = nonceStr
 	p.Package = "prepay_id=" + prepayID

@@ -309,7 +309,7 @@ import "github.com/medivhzhan/weapp/payment"
     fmt.Printf("返回结果: %#v", res)
 
     // 获取小程序前点调用支付接口所需参数
-    params, err := payment.GetParams(res.AppID, res.MchID, res.NonceStr, res.PrePayID, time.Now())
+    params, err := payment.GetParams(res.AppID, "微信支付密钥", res.NonceStr, res.PrePayID)
     if err != nil {
         // handle error
         return
