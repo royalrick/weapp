@@ -93,7 +93,7 @@ func (t TransferInfo) GetInfo(key string, certPath, keyPath string) (res Transfe
 	}
 
 	res.transferInfoResponse = tres
-	res.TransferTime, err = time.Parse(timeFormat, tres.TransferTime)
+	res.TransferTime, err = time.Parse(transferTimeFormat, tres.TransferTime)
 
 	return
 }

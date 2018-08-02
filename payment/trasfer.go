@@ -10,8 +10,8 @@ import (
 )
 
 const (
-	timeFormat  = "2006-01-02 15:04:05"
-	transferAPI = "/mmpaymkttransfers/promotion/transfers"
+	transferTimeFormat = "2006-01-02 15:04:05"
+	transferAPI        = "/mmpaymkttransfers/promotion/transfers"
 )
 
 // Transferer transfer params
@@ -28,7 +28,7 @@ type Transferer struct {
 	// optional
 	IP string `xml:"spbill_create_ip,omitempty"`
 	// 校验用户姓名选项
-	CheckName bool
+	CheckName bool   `xml:"-"`
 	Device    string `xml:"device_info,omitempty"`
 	// 收款用户真实姓名
 	// 如果check_name设置为FORCE_CHECK，则必填用户真实姓名
@@ -139,7 +139,7 @@ func (t Transferer) Transfer(key string, certPath, keyPath string) (res Transfer
 	}
 
 	res.transferResponse = tres
-	res.Datetime, err = time.Parse(timeFormat, tres.Datetime)
+	res.Datetime, err = time.Parse(transferTimeFormat, tres.Datetime)
 
 	return
 }

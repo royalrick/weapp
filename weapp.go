@@ -21,9 +21,6 @@ const (
 	WeChatServerError = "微信服务器发生错误"
 )
 
-// TimeFormat 微信时间格式
-const TimeFormat = "20060102150405"
-
 // Response 请求微信返回基础数据
 type Response struct {
 	Errcode int    `json:"errcode"`

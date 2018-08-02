@@ -9,14 +9,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/util"
 )
 
 const (
 	baseURL = "https://api.mch.weixin.qq.com"
 
-	unifyAPI = "/pay/unifiedorder"
+	unifyAPI          = "/pay/unifiedorder"
+	paymentTimeFormat = "20060102150405"
 )
 
 // Params 前端调用支付必须的参数
@@ -42,12 +42,12 @@ type Order struct {
 
 	// 选填 ...
 	IP        string    `xml:"spbill_create_ip,omitempty"` // 终端IP
-	NoCredit  bool      // 上传此参数 no_credit 可限制用户不能使用信用卡支付
-	StartedAt time.Time // 交易起始时间 格式为yyyyMMddHHmmss
-	ExpiredAt time.Time // 交易结束时间 订单失效时间 格式为yyyyMMddHHmmss
-	Tag       string    `xml:"goods_tag,omitempty"` // 订单优惠标记，使用代金券或立减优惠功能时需要的参数，
-	Detail    string    `xml:"detail,omitempty"`    // 商品详情
-	Attach    string    `xml:"attach,omitempty"`    // 附加数据
+	NoCredit  bool      `xml:"-"`                          // 上传此参数 no_credit 可限制用户不能使用信用卡支付
+	StartedAt time.Time `xml:"-"`                          // 交易起始时间 格式为yyyyMMddHHmmss
+	ExpiredAt time.Time `xml:"-"`                          // 交易结束时间 订单失效时间 格式为yyyyMMddHHmmss
+	Tag       string    `xml:"goods_tag,omitempty"`        // 订单优惠标记，使用代金券或立减优惠功能时需要的参数，
+	Detail    string    `xml:"detail,omitempty"`           // 商品详情
+	Attach    string    `xml:"attach,omitempty"`           // 附加数据
 }
 
 // 下单所需所有数据
@@ -98,12 +98,12 @@ func (o *Order) prepare(key string) (order, error) {
 	signData["spbill_create_ip"] = od.IP
 
 	if !o.StartedAt.IsZero() {
-		od.StartedAt = o.StartedAt.Format(weapp.TimeFormat)
+		od.StartedAt = o.StartedAt.Format(paymentTimeFormat)
 		signData["time_start"] = od.StartedAt
 	}
 
 	if !o.ExpiredAt.IsZero() {
-		od.ExpiredAt = o.StartedAt.Format(weapp.TimeFormat)
+		od.ExpiredAt = o.ExpiredAt.Format(paymentTimeFormat)
 		signData["time_expire"] = od.ExpiredAt
 	}
 
