@@ -46,8 +46,19 @@ tok, exp, err := token.AccessToken(appID, secret string)
 
 import "github.com/medivhzhan/weapp"
 
-// 需要从小程序客户端获取到的code
-oid, ssk, err := weapp.Login(appID, secret, code string)
+// @appID 小程序 appID
+// @secret 小程序的 app secret
+// @code 小程序登录时获取的 code
+res, err := weapp.Login(appID, secret, code)
+if err != nil {
+    // handle error
+}
+
+// res.OpenID
+// res.SessionKey
+// res.UnionID
+fmt.Printf("返回结果: %#v", res)
+
 
 ```
 
