@@ -42,6 +42,8 @@ tok, exp, err := token.AccessToken(appID, secret string)
 
 ## 用户登录
 
+UnionID 只在满足一定条件的情况下返回。具体参看 [UnionID机制说明](https://developers.weixin.qq.com/miniprogram/dev/api/unionID.html)
+
 ```go
 
 import "github.com/medivhzhan/weapp"
