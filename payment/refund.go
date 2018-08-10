@@ -1,11 +1,13 @@
 package payment
 
 import (
+	"encoding/base64"
 	"encoding/xml"
 	"errors"
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/medivhzhan/weapp/util"
 )
@@ -160,12 +162,12 @@ func (r Refunder) Refund(key, certPath, keyPath string) (rres RefundedResponse, 
 
 //  退款结果通知
 type refundNotify struct {
-	AppID      string `xml:"appid,omitempty"` // 小程序ID
-	MchID      string `xml:"mch_id"`          // 商户号
-	NonceStr   string `xml:"nonce_str"`       // 随机字符串
-	Ciphertext string `xml:"req_info"`        // 加密信息
-	ReturnCode string `xml:"return_code"`     // 返回状态码: SUCCESS/FAIL
-	ReturnMsg  string `xml:"return_msg"`      // 返回信息: 返回信息，如非空，为错误原因
+	AppID      string `xml:"appid"`       // 小程序 APPID
+	MchID      string `xml:"mch_id"`      // 商户号
+	NonceStr   string `xml:"nonce_str"`   // 随机字符串
+	Ciphertext string `xml:"req_info"`    // 加密信息
+	ReturnCode string `xml:"return_code"` // 返回状态码: SUCCESS/FAIL
+	ReturnMsg  string `xml:"return_msg"`  // 返回信息: 返回信息，如非空，为错误原因
 }
 
 // 检测返回信息是否包含错误
@@ -236,7 +238,17 @@ func HandleRefundedNotify(res http.ResponseWriter, req *http.Request, key string
 		return err
 	}
 
-	bts, err := util.AesECBDecrypt(ref.Ciphertext, key)
+	ciphertext, err := base64.StdEncoding.DecodeString(ref.Ciphertext)
+	if err != nil {
+		return err
+	}
+	key, err = util.MD5(key)
+	if err != nil {
+		return err
+	}
+	key = strings.ToLower(key)
+
+	bts, err := util.AesECBDecrypt(ciphertext, []byte(key))
 	if err != nil {
 		return err
 	}

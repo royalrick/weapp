@@ -153,16 +153,11 @@ func CBCEncrypt(key, data string) (ciphertext []byte, err error) {
 	return PKCS5Padding(ciphertext, block.BlockSize()), nil
 }
 
-// AesECBDecrypt 解密
+// AesECBDecrypt CBC解密数据
 //
-// @str 解密退款通知数据
-// @key 商户号密钥
-func AesECBDecrypt(str, key string) (plaintext []byte, err error) {
-
-	ciphertext, err := base64.StdEncoding.DecodeString(str)
-	if err != nil {
-		return
-	}
+// @ciphertext 加密数据
+// @key 商户支付密钥
+func AesECBDecrypt(ciphertext, key []byte) (plaintext []byte, err error) {
 
 	if len(ciphertext) < aes.BlockSize {
 		return nil, errors.New("cipher too short")
@@ -172,17 +167,12 @@ func AesECBDecrypt(str, key string) (plaintext []byte, err error) {
 		return nil, errors.New("cipher is not a multiple of the block size")
 	}
 
-	key, err = MD5(key)
+	block, err := aes.NewCipher(key)
 	if err != nil {
 		return
 	}
 
-	block, err := aes.NewCipher([]byte(key))
-	if err != nil {
-		return
-	}
-
-	ecb.NewECBDecrypter(block).CryptBlocks(ciphertext, ciphertext)
+	ecb.NewDecrypter(block).CryptBlocks(ciphertext, ciphertext)
 
 	return PKCS5UnPadding(ciphertext), nil
 }
