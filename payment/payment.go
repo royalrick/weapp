@@ -56,7 +56,7 @@ type order struct {
 	Order
 	Sign      string `xml:"sign"`                // 签名
 	NonceStr  string `xml:"nonce_str"`           // 随机字符串
-	TradeType string `xml:"trade_type"`          // 小程序取值如下：JSAPI
+	TradeType string `xml:"trade_type"`          // 小程序取值如下: JSAPI
 	SignType  string `xml:"sign_type,omitempty"` // 签名类型: 目前支持HMAC-SHA256和MD5，默认为MD5
 
 	NoCredit  string `xml:"limit_pay,omitempty"`   // 上传此参数 no_credit 可限制用户不能使用信用卡支付
@@ -239,9 +239,9 @@ type PaidNotify struct {
 	TradeType     string  `xml:"trade_type"`                     // 交易类型 JSAPI
 	Bank          string  `xml:"bank_type"`                      // 银行类型，采用字符串类型的银行标识
 	Settlement    float64 `xml:"settlement_total_fee,omitempty"` // 应结订单金额=订单金额-非充值代金券金额，应结订单金额<=订单金额。
-	FeeType       string  `xml:"fee_type,omitempty"`             // 货币种类: 符合ISO4217标准的三位字母代码，默认人民币：CNY
+	FeeType       string  `xml:"fee_type,omitempty"`             // 货币种类: 符合ISO4217标准的三位字母代码，默认人民币: CNY
 	CashFee       float64 `xml:"cash_fee"`                       // 现金支付金额订单的现金支付金额
-	CashFeeType   string  `xml:"cash_fee_type,omitempty"`        // 现金支付货币类型: 符合ISO4217标准的三位字母代码，默认人民币：CNY
+	CashFeeType   string  `xml:"cash_fee_type,omitempty"`        // 现金支付货币类型: 符合ISO4217标准的三位字母代码，默认人民币: CNY
 	CouponFee     float64 `xml:"coupon_fee,omitempty"`           // 总代金券金额: 代金券金额<=订单金额，订单金额-代金券金额=现金支付金额
 	CouponCount   int     `xml:"coupon_count,omitempty"`         // 代金券使用数量
 	TransactionID string  `xml:"transaction_id"`                 // 微信支付订单号

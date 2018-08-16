@@ -28,7 +28,7 @@ type Refunder struct {
 	OutRefundNo   string `xml:"out_refund_no"`            // 商户退款单号: 商户系统内部的退款单号，商户系统内部唯一，只能是数字、大小写字母_-|*@ ，同一退款单号多次请求只退一笔。
 
 	// 选填 ...
-	// RefundFeeType string `xml:"refund_fee_type,omitempty"` // 货币种类: 货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY
+	// RefundFeeType string `xml:"refund_fee_type,omitempty"` // 货币种类: 货币类型，符合ISO 4217标准的三位字母代码，默认人民币: CNY
 	RefundDesc string `xml:"refund_desc,omitempty"` // 退款原因: 若商户传入，会在下发给用户的退款消息中体现退款原因
 
 	// 退款结果通知url: 异步接收微信支付退款结果通知的回调地址
@@ -205,7 +205,7 @@ type RefundedNotify struct {
 	// 资金退款至用户帐号的时间，格式2017-12-15 09:46:01
 	SuccessTime string `xml:"success_time,omitempty"`
 	// 退款入账账户:取当前退款单的退款入账方
-	// 1）退回银行卡： {银行名称}{卡类型}{卡尾号}
+	// 1）退回银行卡:  {银行名称}{卡类型}{卡尾号}
 	// 2）退回支付用户零钱: 支付用户零钱
 	// 3）退还商户: 商户基本账户 商户结算银行账户
 	// 4）退回支付用户零钱通: 支付用户零钱通

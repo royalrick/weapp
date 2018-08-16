@@ -77,7 +77,6 @@ func (srv *Server) HandleEvent(fuck func(Mixture)) {
 // Serve 启动服务
 func (srv *Server) Serve() error {
 	switch srv.Request.Method {
-	// dev: 真的只能POST?
 	case "POST":
 
 		// 处理加密消息
@@ -126,7 +125,7 @@ func (srv *Server) Serve() error {
 				srv.eventHandler(mix)
 			}
 		default:
-			return errors.New("无效的消息类型： " + string(mix.Type))
+			return errors.New("无效的消息类型: " + string(mix.Type))
 		}
 
 		srv.Writer.WriteHeader(http.StatusOK)

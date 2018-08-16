@@ -255,7 +255,10 @@ func Send(openid, template, page, formID string, data Mesage, emphasisKeyword, t
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	payload, _ := json.Marshal(body)
+	payload, err := json.Marshal(body)
+	if err != nil {
+		return err
+	}
 
 	res, err := http.Post(api, "application/json", strings.NewReader(string(payload)))
 	if err != nil {
