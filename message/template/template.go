@@ -225,8 +225,8 @@ func Delete(id, token string) error {
 	return nil
 }
 
-// Mesage 模版消息体
-type Mesage map[string]interface{}
+// Message 模版消息体
+type Message map[string]interface{}
 
 // Send 发送模板消息
 //
@@ -236,14 +236,14 @@ type Mesage map[string]interface{}
 // @formID 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
 // @data 模板内容，不填则下发空模板
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
-func Send(openid, template, page, formID string, data Mesage, emphasisKeyword, token string) error {
+func Send(openid, template, page, formID string, data Message, emphasisKeyword, token string) error {
 	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
 	}
 
 	for key := range data {
-		data[key] = Mesage{"value": data[key]}
+		data[key] = Message{"value": data[key]}
 	}
 
 	body := map[string]interface{}{

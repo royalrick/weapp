@@ -224,7 +224,7 @@ err := template.Delete(id, token string)
 
 import "github.com/medivhzhan/weapp/message/template"
 
-msg := template.Mesage{
+msg := template.Message{
     "keyword1": "content ...",
     "keyword2": "content ...",
 }
