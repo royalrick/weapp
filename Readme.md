@@ -86,7 +86,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ### 获取小程序码
 
-适用于需要的码数量较少的业务场景
+需要二维码数量较少的业务场景
 
 ```go
 
@@ -104,24 +104,17 @@ coder := code.QRCoder {
     },
 }
 
-// 获取小程序码
-// token: 微信access_token
+// token: 微信 access_token
 res, err := coder.AppCode(token string)
 if err != nil {
     // handle error
 }
 defer res.Body.Close()
-
 ```
 
-### 获取小程序二维码
-
-适用于需要的码数量极多的业务场景
+需要二维码数量极多的业务场景
 
 ```go
-
-import "github.com/medivhzhan/weapp/code"
-
 coder := code.QRCoder {
     Scene: "...", // 参数数据
     Page: "pages/index", // 识别二维码后进入小程序的页面链接
@@ -135,8 +128,7 @@ coder := code.QRCoder {
     },
 }
 
-// 获取小程序码
-// token: 微信access_token
+// token: 微信 access_token
 res, err := coder.UnlimitedAppCode(token string)
 if err != nil {
     // handle error
@@ -145,7 +137,9 @@ defer res.Body.Close()
 
 ```
 
-### 获取小程序二维码: 适用于需要的码数量较少的业务场景
+### 获取小程序二维码
+
+适用于需要的码数量较少的业务场景
 
 ```go
 
