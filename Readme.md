@@ -6,8 +6,18 @@
 - [AccessToken](#AccessToken)
 - [用户登录](#用户登录)
 - [二维码](#二维码)
+  - [获取小程序码](#获取小程序码)
+  - [获取小程序二维码](#获取小程序二维码)
 - [模板消息](#模板消息)
+  - [获取小程序模板库标题列表](#获取小程序模板库标题列表)
+  - [获取帐号下已存在的模板列表](#获取帐号下已存在的模板列表)
+  - [获取模板库某个模板标题下关键词库](#获取模板库某个模板标题下关键词库)
+  - [组合模板并添加至帐号下的个人模板库](#组合模板并添加至帐号下的个人模板库)
+  - [删除帐号下的某个模板](#删除帐号下的某个模板)
+  - [发送模板消息](#发送模板消息)
 - [客服消息](#客服消息)
+  - [接收客服消息](#接收客服消息)
+  - [发送客服消息](#发送客服消息)
 - [支付](#支付)
   - [付款](#付款)
   - [处理支付结果通知](#处理支付结果通知)
@@ -15,7 +25,6 @@
   - [处理退款结果通知](#处理退款结果通知)
   - [转账(企业付款)](#转账(企业付款))
   - [查询转账](#查询转账)
-- [微信通知](#微信通知)
 - [解密](#解密)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
@@ -34,6 +43,8 @@ go get -u github.com/medivhzhan/weapp
 
 ## AccessToken
 
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/token.html)
+
 ```go
 
 import "github.com/medivhzhan/weapp/token"
@@ -45,7 +56,7 @@ tok, exp, err := token.AccessToken(appID, secret string)
 
 ## 用户登录
 
-UnionID 只在满足一定条件的情况下返回。具体参看 [UnionID机制说明](https://developers.weixin.qq.com/miniprogram/dev/api/unionID.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/api-login.html)
 
 ```go
 
@@ -71,7 +82,11 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 二维码
 
-### 获取小程序码: 适用于需要的码数量较少的业务场景
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/qrcode.html)
+
+### 获取小程序码
+
+适用于需要的码数量较少的业务场景
 
 ```go
 
@@ -99,7 +114,9 @@ defer res.Body.Close()
 
 ```
 
-### 获取小程序码: 适用于需要的码数量极多的业务场景
+### 获取小程序二维码
+
+适用于需要的码数量极多的业务场景
 
 ```go
 
@@ -152,6 +169,8 @@ defer res.Body.Close()
 ---
 
 ## 模板消息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/notice.html)
 
 ### 获取小程序模板库标题列表
 
@@ -247,7 +266,41 @@ err := template.Send(openid, template, page, formID string, msg template.Message
 
 ## 客服消息
 
-### 回复
+### 接收客服消息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/custommsg/receive.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/notify"
+
+// 新建服务
+srv := notify.NewServer(http.ResponseWriter, *http.Request)
+
+srv.HandleTextMessage(func(msg notify.Text)) {
+    // 处理文本消息
+})
+
+srv.HandleCardMessage(func(msg notify.Card)) {
+    // 处理卡片消息
+})
+
+srv.HandleImageMessage(func(msg notify.Image)) {
+    // 处理图片消息
+})
+
+srv.HandleEvent(func(msg notify.Event)) {
+    // 处理事件
+})
+
+// 执行服务
+err := srv.Serve()
+
+```
+
+### 发送客服消息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/custommsg/conversation.html)
 
 ```go
 
@@ -260,7 +313,7 @@ msg := message.Text{
 
 // 图片消息
 msg := message.Image{
-    MediaID: "微信media_id"
+    MediaID: "微信 media_id"
 }
 
 // 图文链接消息
@@ -290,6 +343,8 @@ res, err := msg.SendTo(openid, token string)
 ## 支付
 
 ### 付款
+
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)
 
 ```go
 
@@ -335,6 +390,8 @@ if err != nil {
 
 ### 处理支付结果通知
 
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_7&index=8)
+
 ```go
 
 import "github.com/medivhzhan/weapp/payment"
@@ -352,6 +409,8 @@ err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(
 ```
 
 ### 退款
+
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4)
 
 ```go
 
@@ -386,6 +445,8 @@ fmt.Printf("返回结果: %#v", res)
 
 ### 处理退款结果通知
 
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_5)
+
 ```go
 
 import "github.com/medivhzhan/weapp/payment"
@@ -402,6 +463,8 @@ err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "
 ```
 
 ### 转账(企业付款到零钱)
+
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)
 
 ```go
 
@@ -438,6 +501,8 @@ fmt.Printf("返回结果: %#v", res)
 
 ### 查询转账
 
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3)
+
 ```go
 
 import "github.com/medivhzhan/weapp/payment"
@@ -462,43 +527,11 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
-## 微信通知
-
-### 消息
-
-```go
-
-import "github.com/medivhzhan/weapp/notify"
-
-// 新建服务
-srv := notify.NewServer(http.ResponseWriter, *http.Request)
-
-srv.HandleTextMessage(func(msg notify.Text)) {
-    // 处理文本消息
-})
-
-srv.HandleCardMessage(func(msg notify.Card)) {
-    // 处理卡片消息
-})
-
-srv.HandleImageMessage(func(msg notify.Image)) {
-    // 处理图片消息
-})
-
-srv.HandleEvent(func(msg notify.Event)) {
-    // 处理事件
-})
-
-// 执行服务
-err := srv.Serve()
-
-```
-
----
-
 ## 解密
 
 ### 解密手机号码
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html)
 
 ```go
 
@@ -517,6 +550,8 @@ fmt.Printf("手机数据: %#v", phone)
 
 ### 解密分享内容
 
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/share.html#wxgetshareinfoobject)
+
 ```go
 
 import "github.com/medivhzhan/weapp"
@@ -533,6 +568,8 @@ openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
 ```
 
 ### 解密用户信息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/open.html)
 
 ```go
 
@@ -560,7 +597,7 @@ fmt.Printf("用户数据: %#v", ui)
 
 ### 检测图片
 
-官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html)
 
 ```go
 
@@ -592,7 +629,7 @@ fmt.Printf("返回结果: %#v", ui)
 
 ### 检测文本
 
-官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/msgSecCheck.html
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/msgSecCheck.html)
 
 ```go
 
