@@ -9,17 +9,20 @@
 - [模板消息](#模板消息)
 - [客服消息](#客服消息)
 - [支付](#支付)
-    - [付款](#付款)
-    - [处理支付结果通知](#处理支付结果通知)
-    - [退款](#退款)
-    - [处理退款结果通知](#处理退款结果通知)
-    - [转账(企业付款)](#转账(企业付款))
-    - [查询转账](#查询转账)
+  - [付款](#付款)
+  - [处理支付结果通知](#处理支付结果通知)
+  - [退款](#退款)
+  - [处理退款结果通知](#处理退款结果通知)
+  - [转账(企业付款)](#转账(企业付款))
+  - [查询转账](#查询转账)
 - [微信通知](#微信通知)
 - [解密](#解密)
-    - [解密手机号码](#解密手机号码)
-    - [解密分享内容](#解密分享内容)
-    - [解密用户信息](#解密用户信息)
+  - [解密手机号码](#解密手机号码)
+  - [解密分享内容](#解密分享内容)
+  - [解密用户信息](#解密用户信息)
+- [内容检测](#内容检测)
+  - [检测图片](#检测图片)
+  - [检测文本](#检测文本)
 
 ## 拉取代码
 
@@ -292,41 +295,41 @@ res, err := msg.SendTo(openid, token string)
 
 import "github.com/medivhzhan/weapp/payment"
 
-    // 新建支付订单
-    form := payment.Order{
-        // 必填
-        AppID:      "APPID",
-        MchID:      "商户号",
-        Body:       "商品描述",
-        NotifyURL:  "通知地址",
-        OpenID:     "通知用户的 openid",
-        OutTradeNo: "商户订单号",
-        TotalFee:   "总金额(分)",
+// 新建支付订单
+form := payment.Order{
+    // 必填
+    AppID:      "APPID",
+    MchID:      "商户号",
+    Body:       "商品描述",
+    NotifyURL:  "通知地址",
+    OpenID:     "通知用户的 openid",
+    OutTradeNo: "商户订单号",
+    TotalFee:   "总金额(分)",
 
-        // 选填 ...
-        IP:        "发起支付终端IP",
-        NoCredit:  "是否允许使用信用卡",
-        StartedAt: "交易起始时间",
-        ExpiredAt: "交易结束时间",
-        Tag:       "订单优惠标记",
-        Detail:    "商品详情",
-        Attach:    "附加数据",
-    }
+    // 选填 ...
+    IP:        "发起支付终端IP",
+    NoCredit:  "是否允许使用信用卡",
+    StartedAt: "交易起始时间",
+    ExpiredAt: "交易结束时间",
+    Tag:       "订单优惠标记",
+    Detail:    "商品详情",
+    Attach:    "附加数据",
+}
 
-    res, err := form.Unify("支付密钥")
-    if err != nil {
-        // handle error
-        return
-    }
+res, err := form.Unify("支付密钥")
+if err != nil {
+    // handle error
+    return
+}
 
-    fmt.Printf("返回结果: %#v", res)
+fmt.Printf("返回结果: %#v", res)
 
-    // 获取小程序前点调用支付接口所需参数
-    params, err := payment.GetParams(res.AppID, "微信支付密钥", res.NonceStr, res.PrePayID)
-    if err != nil {
-        // handle error
-        return
-    }
+// 获取小程序前点调用支付接口所需参数
+params, err := payment.GetParams(res.AppID, "微信支付密钥", res.NonceStr, res.PrePayID)
+if err != nil {
+    // handle error
+    return
+}
 
 ```
 
@@ -354,30 +357,30 @@ err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(
 
 import "github.com/medivhzhan/weapp/payment"
 
-    // 新建退款订单
-    form := payment.Refunder{
-        // 必填
-        AppID:       "APPID",
-        MchID:       "商户号",
-        TotalFee:    "总金额(分)",
-        RefundFee:   "退款金额(分)",
-        OutRefundNo: "商户退款单号",
-        // 二选一
-        OutTradeNo: "商户订单号", // or TransactionID: "微信订单号",
+// 新建退款订单
+form := payment.Refunder{
+    // 必填
+    AppID:       "APPID",
+    MchID:       "商户号",
+    TotalFee:    "总金额(分)",
+    RefundFee:   "退款金额(分)",
+    OutRefundNo: "商户退款单号",
+    // 二选一
+    OutTradeNo: "商户订单号", // or TransactionID: "微信订单号",
 
-        // 选填 ...
-        RefundDesc: "退款原因",   // 若商户传入, 会在下发给用户的退款消息中体现退款原因
-        NotifyURL:  "结果通知地址", // 覆盖商户平台上配置的回调地址
-    }
+    // 选填 ...
+    RefundDesc: "退款原因",   // 若商户传入, 会在下发给用户的退款消息中体现退款原因
+    NotifyURL:  "结果通知地址", // 覆盖商户平台上配置的回调地址
+}
 
-    // 需要证书
-    res, err := form.Refund("支付密钥",  "cert 证书路径", "key 证书路径")
-    if err != nil {
-        // handle error
-        return
-    }
+// 需要证书
+res, err := form.Refund("支付密钥",  "cert 证书路径", "key 证书路径")
+if err != nil {
+    // handle error
+    return
+}
 
-    fmt.Printf("返回结果: %#v", res)
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
@@ -404,32 +407,32 @@ err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "
 
 import "github.com/medivhzhan/weapp/payment"
 
-    // 新建退款订单
-	form := payment.Transferer{
-		// 必填 ...
-		AppID:       "APPID",
-		MchID:       "商户号",
-		Amount:      "总金额(分)",
-		OutRefundNo: "商户退款单号",
-		OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
-		ToUser:      "转账目标用户的 openid",
-		Desc:        "转账描述", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
+// 新建退款订单
+form := payment.Transferer{
+    // 必填 ...
+    AppID:       "APPID",
+    MchID:       "商户号",
+    Amount:      "总金额(分)",
+    OutRefundNo: "商户退款单号",
+    OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
+    ToUser:      "转账目标用户的 openid",
+    Desc:        "转账描述", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
 
-		// 选填 ...
-		IP: "发起转账端 IP 地址", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
-		CheckName: "校验用户姓名选项 true/false",
-		RealName: "收款用户真实姓名", // 如果 CheckName 设置为 true 则必填用户真实姓名
-		Device:   "发起转账设备信息",
-	}
+    // 选填 ...
+    IP: "发起转账端 IP 地址", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
+    CheckName: "校验用户姓名选项 true/false",
+    RealName: "收款用户真实姓名", // 如果 CheckName 设置为 true 则必填用户真实姓名
+    Device:   "发起转账设备信息",
+}
 
-    // 需要证书
-    res, err := form.Transfer("支付密钥",  "cert 证书路径", "key 证书路径")
-    if err != nil {
-        // handle error
-        return
-    }
+// 需要证书
+res, err := form.Transfer("支付密钥",  "cert 证书路径", "key 证书路径")
+if err != nil {
+    // handle error
+    return
+}
 
-    fmt.Printf("返回结果: %#v", res)
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
@@ -439,21 +442,21 @@ import "github.com/medivhzhan/weapp/payment"
 
 import "github.com/medivhzhan/weapp/payment"
 
-    // 新建退款订单
-	form := payment.TransferInfo{
-		AppID:       "APPID",
-		MchID:       "商户号",
-		OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
-	}
+// 新建退款订单
+form := payment.TransferInfo{
+    AppID:       "APPID",
+    MchID:       "商户号",
+    OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
+}
 
-    // 需要证书
-    res, err := form.GetInfo("支付密钥",  "cert 证书路径", "key 证书路径")
-    if err != nil {
-        // handle error
-        return
-    }
+// 需要证书
+res, err := form.GetInfo("支付密钥",  "cert 证书路径", "key 证书路径")
+if err != nil {
+    // handle error
+    return
+}
 
-    fmt.Printf("返回结果: %#v", res)
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
@@ -543,7 +546,67 @@ import "github.com/medivhzhan/weapp"
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
 ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
+if err != nil {
+    return
+}
 
 fmt.Printf("用户数据: %#v", ui)
+
+```
+
+---
+
+## 内容检测
+
+### 检测图片
+
+官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 本地图片检测
+//
+// @filename 要检测的图片本地路径
+// @token 接口调用凭证(access_token)
+res, err := IMGSecCheck(filename, token string)
+if err != nil {
+    return
+}
+
+fmt.Printf("返回结果: %#v", ui)
+
+// 网络图片检测
+//
+// @url 要检测的图片网络路径
+// @token 接口调用凭证(access_token)
+res, err := IMGSecCheckFromNet(url, token string)
+if err != nil {
+    return
+}
+
+fmt.Printf("返回结果: %#v", ui)
+
+```
+
+### 检测文本
+
+官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/msgSecCheck.html
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 文本检测
+//
+// @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
+// @token 接口调用凭证(access_token)
+res, err := MSGSecCheck(content, token string)
+if err != nil {
+    return
+}
+
+fmt.Printf("返回结果: %#v", ui)
 
 ```
