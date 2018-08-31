@@ -18,7 +18,7 @@ import (
 func TokenAPI(api, token string) (string, error) {
 	u, err := url.Parse(api)
 	if err != nil {
-		return "", nil
+		return "", err
 	}
 	query := u.Query()
 	query.Set("access_token", token)

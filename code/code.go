@@ -96,6 +96,8 @@ func fetchCode(path, body, token string) (res *http.Response, err error) {
 	if err != nil {
 		return
 	}
+	defer res.Body.Close()
+
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
 		var data weapp.Response
