@@ -94,7 +94,7 @@ import "github.com/medivhzhan/weapp/code"
 
 coder := code.QRCoder {
     Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
-    With: 430, // 图片宽度
+    Width: 430, // 图片宽度
     IsHyaline: true, // 是否需要透明底色
     AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
     LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
@@ -118,7 +118,7 @@ defer res.Body.Close()
 coder := code.QRCoder {
     Scene: "...", // 参数数据
     Page: "pages/index", // 识别二维码后进入小程序的页面链接
-    With: 430, // 图片宽度
+    Width: 430, // 图片宽度
     IsHyaline: true, // 是否需要透明底色
     AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
     LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
@@ -147,7 +147,7 @@ import "github.com/medivhzhan/weapp/code"
 
 coder := code.QRCoder {
     Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
-    With: 430, // 图片宽度
+    Width: 430, // 图片宽度
 }
 
 // 获取小程序二维码
