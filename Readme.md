@@ -606,7 +606,7 @@ if err != nil {
     return
 }
 
-fmt.Printf("返回结果: %#v", ui)
+fmt.Printf("返回结果: %#v", res)
 
 // 网络图片检测
 //
@@ -617,7 +617,7 @@ if err != nil {
     return
 }
 
-fmt.Printf("返回结果: %#v", ui)
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
@@ -638,6 +638,6 @@ if err != nil {
     return
 }
 
-fmt.Printf("返回结果: %#v", ui)
+fmt.Printf("返回结果: %#v", res)
 
 ```
