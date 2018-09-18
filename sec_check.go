@@ -16,8 +16,8 @@ import (
 
 // 检测地址
 const (
-	IMGSecCheckURL = "/wxa/img_sec_check?access_token=ACCESS_TOKEN"
-	MSGSecCheckURL = "/wxa/msg_sec_check?access_token=ACCESS_TOKEN"
+	IMGSecCheckURL = "/wxa/img_sec_check"
+	MSGSecCheckURL = "/wxa/msg_sec_check"
 )
 
 // IMGSecCheckFromNet 网络图片检测
