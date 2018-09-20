@@ -48,12 +48,17 @@ func MD5(str string) (string, error) {
 
 // PKCS5UnPadding 反补
 // Golang AES没有64位的块, 如果采用PKCS5, 那么实质上就是采用PKCS7
-func PKCS5UnPadding(plaintext []byte) []byte {
+func PKCS5UnPadding(plaintext []byte) ([]byte, error) {
 	ln := len(plaintext)
 
 	// 去掉最后一个字节 unPadding 次
 	unPadding := int(plaintext[ln-1])
-	return plaintext[:(ln - unPadding)]
+
+	if unPadding > ln {
+		return []byte{}, errors.New("数据不正确")
+	}
+
+	return plaintext[:(ln - unPadding)], nil
 }
 
 // PKCS5Padding 补位
@@ -101,7 +106,7 @@ func CBCDecrypt(ssk, data, iv string) (bts []byte, err error) {
 		return
 	}
 
-	size := aes.BlockSize // 16 ?
+	size := aes.BlockSize
 
 	// The IV needs to be unique, but not secure. Therefore it's common to
 	// include it at the beginning of the ciphertext.
@@ -117,10 +122,10 @@ func CBCDecrypt(ssk, data, iv string) (bts []byte, err error) {
 	}
 
 	mode := cipher.NewCBCDecrypter(block, rawIV[:size])
-	plantext := make([]byte, len(ciphertext))
-	mode.CryptBlocks(plantext, ciphertext)
+	plaintext := make([]byte, len(ciphertext))
+	mode.CryptBlocks(plaintext, ciphertext)
 
-	return PKCS5UnPadding(plantext), nil
+	return PKCS5UnPadding(plaintext)
 }
 
 // CBCEncrypt CBC加密数据
@@ -174,5 +179,5 @@ func AesECBDecrypt(ciphertext, key []byte) (plaintext []byte, err error) {
 
 	ecb.NewDecrypter(block).CryptBlocks(ciphertext, ciphertext)
 
-	return PKCS5UnPadding(ciphertext), nil
+	return PKCS5UnPadding(ciphertext)
 }
