@@ -15,6 +15,7 @@
   - [组合模板并添加至帐号下的个人模板库](#组合模板并添加至帐号下的个人模板库)
   - [删除帐号下的某个模板](#删除帐号下的某个模板)
   - [发送模板消息](#发送模板消息)
+- [统一服务消息](#统一服务消息)
 - [客服消息](#客服消息)
   - [接收客服消息](#接收客服消息)
   - [发送客服消息](#发送客服消息)
@@ -253,6 +254,74 @@ msg := template.Message{
 // data: 模板内容, 不填则下发空模板
 // emphasisKeyword: 模板需要放大的关键词, 不填则默认无放大
 err := template.Send(openid, template, page, formID string, msg template.Message, emphasisKeyword, token string)
+
+```
+
+---
+
+## 统一服务消息
+
+小程序和公众号模板消息统一的服务消息下发接口
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/notice-uniform.html)
+
+```go
+
+// 消息体
+msg := template.UniformMsg{
+    ToUser: "用户 openid",
+    // 小程序模板消息
+    WeappTemplateMsg: template.WeappTemplateMsg{
+        TemplateID:      schedule.ActivityWillStartTemplateID,
+        Page:            "pages/messages/main",
+        FormID:          "1537411865951",
+        EmphasisKeyword: "keyword1.DATA", // dev:
+        Data: template.Data{
+            "first": template.Keyword{
+                Value: "恭喜你购买成功！",
+                Color: "#173177",
+            },
+            "keyword1": template.Keyword{
+                Value: "巧克力",
+                Color: "#173177",
+            },
+            "keyword2": template.Keyword{
+                Value: "39.8元",
+                Color: "#173177",
+            },
+        },
+    },
+    // 公众号模板消息
+    MPTemplateMsg: template.MPTemplateMsg{
+        AppID:      "wx2c5a33d31b4ee88f",
+        TemplateID: "UmuX15eBoonYkLy-7Xle1rA6xHhv4bsbie1Viidg2Cs",
+        URL:        "https://medivhzhan.me",
+        Miniprogram: template.Miniprogram{
+            AppID:    "wx7ad9cfdc85a2fdb2",
+            Pagepath: "pages/me/main",
+        },
+        Data: template.Data{
+            "first": template.Keyword{
+                Value: "恭喜你购买成功！",
+                Color: "#173177",
+            },
+            "keyword1": template.Keyword{
+                Value: "巧克力",
+                Color: "#173177",
+            },
+            "keyword2": template.Keyword{
+                Value: "39.8元",
+                Color: "#173177",
+            },
+            "remark": template.Keyword{
+                Value: "rrrrrrrmmmaaarrrrkkkk",
+                Color: "#173177",
+            },
+        },
+    },
+}
+
+err := msg.Send(token)
 
 ```
 

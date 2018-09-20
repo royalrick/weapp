@@ -22,8 +22,8 @@ const (
 	sendAPI   = "/cgi-bin/message/wxopen/template/send"
 )
 
-// Keyword 关键字
-type Keyword struct {
+// KeywordItem 关键字
+type KeywordItem struct {
 	KeywordID uint   `json:"keyword_id"`
 	Name      string `json:"name"`
 	Example   string `json:"example"`
@@ -38,7 +38,7 @@ type Template struct {
 	Content    string `json:"content,omitempty"`
 	Example    string `json:"example,omitempty"`
 
-	KeywordList []Keyword `json:"keyword_list,omitempty"`
+	KeywordList []KeywordItem `json:"keyword_list,omitempty"`
 }
 
 // Templates 获取模板列表返回的数据
@@ -116,7 +116,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 //
 // @id 模板ID
 // @token 微信 access_token
-func Get(id, token string) (keywords []Keyword, err error) {
+func Get(id, token string) (keywords []KeywordItem, err error) {
 	api, err := util.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
 		return
