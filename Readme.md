@@ -261,7 +261,7 @@ err := template.Send(openid, template, page, formID string, msg template.Message
 
 ## 统一服务消息
 
-小程序和公众号模板消息统一的服务消息下发接口
+小程序和公众号模板消息统一的服务消息下发接口(已经被官网下架 不建议使用)
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/notice-uniform.html)
 
@@ -275,17 +275,17 @@ msg := template.UniformMsg{
         TemplateID:      schedule.ActivityWillStartTemplateID,
         Page:            "pages/messages/main",
         FormID:          "1537411865951",
-        EmphasisKeyword: "keyword1.DATA", // dev:
+        EmphasisKeyword: "keyword1.DATA",
         Data: template.Data{
-            "first": template.Keyword{
+            "keyword1": template.Keyword{
                 Value: "恭喜你购买成功！",
                 Color: "#173177",
             },
-            "keyword1": template.Keyword{
+            "keyword2": template.Keyword{
                 Value: "巧克力",
                 Color: "#173177",
             },
-            "keyword2": template.Keyword{
+            "keyword3": template.Keyword{
                 Value: "39.8元",
                 Color: "#173177",
             },
@@ -309,12 +309,8 @@ msg := template.UniformMsg{
                 Value: "巧克力",
                 Color: "#173177",
             },
-            "keyword2": template.Keyword{
-                Value: "39.8元",
-                Color: "#173177",
-            },
             "remark": template.Keyword{
-                Value: "rrrrrrrmmmaaarrrrkkkk",
+                Value: "remark content ...",
                 Color: "#173177",
             },
         },
