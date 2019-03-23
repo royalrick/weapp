@@ -1,1 +1,1 @@
-module github.com/wanghuobo/weapp
+module github.com/wanghuobo/weapp.git
