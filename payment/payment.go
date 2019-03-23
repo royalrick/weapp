@@ -246,6 +246,9 @@ type PaidNotify struct {
 	CouponCount   int     `xml:"coupon_count,omitempty"`         // 代金券使用数量
 	TransactionID string  `xml:"transaction_id"`                 // 微信支付订单号
 	Attach        string  `xml:"attach,omitempty"`               // 商家数据包，原样返回
+	//ReturnCode    string  `xml:"return_code"`
+	//ResultCode    string  `xml:"return_result"`
+	IsSubscribe   string  `xml:"is_subscribe"`
 	// 商户系统内部订单号: 要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
 	OutTradeNo string `xml:"out_trade_no"`
 	// 支付完成时间，格式为yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010

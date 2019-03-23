@@ -37,6 +37,28 @@ func SignByMD5(data map[string]string, key string) (string, error) {
 	return strings.ToUpper(str), nil
 }
 
+// PaidNotifySignByMD5 微信支付通知多参数通过MD5签名，忽略value为空及0列
+func PaidNotifySignByMD5(data map[string]string, key string) (string, error) {
+
+	var query []string
+	for k, v := range data {
+		if v != "" && v != "0" {
+			query = append(query, k+"="+v)
+		}
+	}
+	sort.Strings(query)
+	query = append(query, "key="+key)
+
+	str := strings.Join(query, "&")
+
+	str, err := MD5(str)
+	if err != nil {
+		return "", err
+	}
+
+	return strings.ToUpper(str), nil
+}
+
 // MD5 加密
 func MD5(str string) (string, error) {
 	hs := md5.New()
