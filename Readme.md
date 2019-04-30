@@ -592,17 +592,17 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/payment"
 
-    q:= Query{
-		 AppID:       "APPID",
-         MchID:       "商户号",
-         OutTradeNo:  "商户订单号",//商户订单号和微信订单号 至少填一个
-         TransactionID: "微信订单号",
-	}
-	res, err := q.Query("支付密钥")  //只有当res.TradeState == "SUCCESS" 才是支付成功了
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-   fmt.Printf("返回结果: %#v", res)
+q := payment.Query{
+  AppID:       "APPID",
+  MchID:       "商户号",
+  OutTradeNo:  "商户订单号",//商户订单号和微信订单号 至少填一个
+  TransactionID: "微信订单号",
+}
+res, err := q.Query("支付密钥")  //只有当res.TradeState == "SUCCESS" 才是支付成功了
+if err != nil {
+   fmt.Println(err.Error())
+}
+fmt.Printf("返回结果: %#v", res)
 
 ```
 ---
