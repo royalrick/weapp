@@ -26,6 +26,7 @@
   - [处理退款结果通知](#处理退款结果通知)
   - [转账(企业付款)](#转账(企业付款))
   - [查询转账](#查询转账)
+  - [订单查询](#订单查询)
 - [解密](#解密)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
@@ -583,7 +584,27 @@ if err != nil {
 fmt.Printf("返回结果: %#v", res)
 
 ```
+### 订单查询
 
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2)
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+    q:= Query{
+		 AppID:       "APPID",
+         MchID:       "商户号",
+         OutTradeNo:  "商户订单号",//商户订单号和微信订单号 至少填一个
+         TransactionID: "微信订单号",
+	}
+	res, err := q.Query("支付密钥")  //只有当res.TradeState == "SUCCESS" 才是支付成功了
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+   fmt.Printf("返回结果: %#v", res)
+
+```
 ---
 
 ## 解密
