@@ -16,6 +16,7 @@ const (
 	baseURL = "https://api.mch.weixin.qq.com"
 
 	unifyAPI          = "/pay/unifiedorder"
+	queryAPI          = "/pay/orderquery"
 	paymentTimeFormat = "20060102150405"
 )
 
@@ -307,4 +308,86 @@ func HandlePaidNotify(res http.ResponseWriter, req *http.Request, fuck func(Paid
 	_, err = res.Write(b)
 
 	return err
+}
+
+type queryResponse struct {
+	response
+	OrderResponse
+}
+
+const (
+	TradeStateSuccess    = "SUCCESS"    //支付成功
+	TradeStateRefund     = "REFUND"     //转入退款
+	TradeStateNotpay     = "NOTPAY"     //未支付
+	TradeStateClosed     = "CLOSED"     //已关闭
+	TradeStateRevoked    = "REVOKED"    //已撤销
+	TradeStateUserpaying = "USERPAYING" //用户支付中
+	TradeStatePayerror   = "PAYERROR"   //支付失败(其他原因，如银行返回失败)
+)
+
+type OrderResponse struct {
+	DeviceInfo         string `xml:"device_info"`          // 设备号	微信支付分配的终端设备号，
+	OpenId             string `xml:"openid"`               //用户标识	用户在商户appid下的唯一标识
+	IsSubscribe        string `xml:"is_subscribe"`         //是否关注公众账号	用户是否关注公众账号，Y-关注，N-未关注
+	TradeType          string `xml:"trade_type"`           //交易类型 	JSAPI	调用接口提交的交易类型，取值如下：JSAPI，NATIVE，APP，MICROPAY，详细说明见参数规定
+	TradeState         string `xml:"trade_state"`          //交易状态 SUCCESS—支付成功 REFUND—转入退款 NOTPAY—未支付 CLOSED—已关闭  REVOKED—已撤销（刷卡支付） USERPAYING--用户支付中 PAYERROR--支付失败(其他原因，如银行返回失败)
+	BankType           string `xml:"bank_type"`            //付款银行 CMC	银行类型，采用字符串类型的银行标识
+	TotalFee           int    `xml:"total_fee"`            //标价金额 订单总金额，单位为分
+	SettlementTotalFee int    `xml:"settlement_total_fee"` //应结订单金额 当订单使用了免充值型优惠券后返回该参数，应结订单金额=订单金额-免充值优惠券金额。
+	FeeType            string `xml:"fee_type"`             //标价币种	CNY	货币类型，符合ISO 4217标准的三位字母代码，默认人民币：CNY，其他值列表详见货币类型
+	TransactionId      string `xml:"transaction_id"`       //微信支付订单号
+	OutTradeNo         string `xml:"out_trade_no"`         //商户系统内部订单号，要求32个字符内，只能是数字、大小写字母_-|*@ ，且在同一个商户号下唯一。
+	Attach             string `xml:"attach"`               //附加数据，原样返回
+	TimeEnd            string `xml:"time_end"`             //支付完成时间是 yyyyMMddHHmmss，如2009年12月25日9点10分10秒表示为20091225091010。其他详见时间规则
+	CashFee            int    `xml:"cash_fee"`             //现金支付金额订单现金支付金额
+	TradeStateDesc     string `xml:"trade_state_desc"`     //交易状态描述	支付失败，请重新下单支付	对当前查询订单状态的描述和下一步操作的指引
+}
+
+type Query struct {
+	AppID         string `xml:"appid"`                    // 小程序ID
+	MchID         string `xml:"mch_id"`                   // 商户号
+	OutTradeNo    string `xml:"out_trade_no,omitempty"`   // 商户订单号
+	TransactionID string `xml:"transaction_id,omitempty"` // 微信支付订单号
+	SignType      string `xml:"sign_type,omitempty"`      // 签名类型: 目前支持HMAC-SHA256和MD5，默认为MD5
+	NonceStr      string `xml:"nonce_str"`                // 随机字符串
+	Sign          string `xml:"sign"`                     // 签名
+}
+
+func (q Query) Query(key string) (resp OrderResponse, err error) {
+	q.SignType = "MD5"
+	q.NonceStr = util.RandomString(32)
+	signData := map[string]string{
+		"appid":     q.AppID,
+		"mch_id":    q.MchID,
+		"nonce_str": q.NonceStr,
+		"sign_type": q.SignType,
+	}
+	if q.OutTradeNo == "" && q.TransactionID == "" {
+		err = errors.New("参数错误: 至少out_trade_no或者transaction_id")
+		return
+	}
+	if q.OutTradeNo != "" {
+		signData["out_trade_no"] = q.OutTradeNo
+	}
+	if q.TransactionID != "" {
+		signData["transaction_id"] = q.TransactionID
+	}
+	sign, err := util.SignByMD5(signData, key)
+	if err != nil {
+		return
+	}
+	q.Sign = sign
+	data, err := util.PostXML(baseURL+queryAPI, q)
+	if err != nil {
+		return
+	}
+	var res queryResponse
+	if err = xml.Unmarshal(data, &res); err != nil {
+		return
+	}
+	if err = res.Check(); err != nil {
+		return
+	}
+	resp = res.OrderResponse
+	return
 }
