@@ -45,7 +45,7 @@ go get -u github.com/medivhzhan/weapp
 
 ## AccessToken
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/token.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html)
 
 ```go
 
@@ -58,7 +58,7 @@ tok, exp, err := token.AccessToken(appID, secret string)
 
 ## 用户登录
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/api-login.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html)
 
 ```go
 
@@ -84,7 +84,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 二维码
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/qrcode.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
 
 ### 获取小程序码
 
@@ -166,7 +166,7 @@ defer res.Body.Close()
 
 ## 模板消息
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/notice.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.addTemplate.html)
 
 ### 获取小程序模板库标题列表
 
@@ -262,9 +262,7 @@ err := template.Send(openid, template, page, formID string, msg template.Message
 
 ## 统一服务消息
 
-小程序和公众号模板消息统一的服务消息下发接口(已经被官网下架 不建议使用)
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/notice-uniform.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/uniform-message/uniformMessage.send.html)
 
 ```go
 
@@ -326,9 +324,9 @@ err := msg.Send(token)
 
 ## 客服消息
 
-### 接收客服消息
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/custommsg/receive.html)
+### 接收客服消息
 
 ```go
 
@@ -359,8 +357,6 @@ err := srv.Serve()
 ```
 
 ### 发送客服消息
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/custommsg/conversation.html)
 
 ```go
 
@@ -609,9 +605,9 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 解密
 
-### 解密手机号码
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95)
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/getPhoneNumber.html)
+### 解密手机号码
 
 ```go
 
@@ -630,8 +626,6 @@ fmt.Printf("手机数据: %#v", phone)
 
 ### 解密分享内容
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/share.html#wxgetshareinfoobject)
-
 ```go
 
 import "github.com/medivhzhan/weapp"
@@ -648,8 +642,6 @@ openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
 ```
 
 ### 解密用户信息
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api/open.html)
 
 ```go
 
