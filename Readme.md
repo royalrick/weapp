@@ -27,6 +27,7 @@
   - [转账(企业付款)](#转账(企业付款))
   - [查询转账](#查询转账)
   - [订单查询](#订单查询)
+  - [支付后获取UnionID](#支付后获取UnionID)
 - [解密](#解密)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
@@ -580,6 +581,7 @@ if err != nil {
 fmt.Printf("返回结果: %#v", res)
 
 ```
+
 ### 订单查询
 
 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2)
@@ -596,16 +598,45 @@ q := payment.Query{
 }
 res, err := q.Query("支付密钥")  //只有当res.TradeState == "SUCCESS" 才是支付成功了
 if err != nil {
-   fmt.Println(err.Error())
+   fmt.Println(err)
+   return
 }
 fmt.Printf("返回结果: %#v", res)
 
 ```
+
+### 支付后获取UnionID
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/payment"
+
+
+    res, err := payment.GetPaidUnionID("your-weapp-access-token", "user-open-id", "transaction-id")
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("返回结果: %#v", res)
+
+    res, err := payment.GetPaidUnionIDWithMCH("your-weapp-access-token", "user-open-id","out-trade-no", "mch-id")
+    if err != nil {
+        fmt.Println(err)
+        return
+    }
+    fmt.Printf("返回结果: %#v", res)
+
+```
+
 ---
 
 ## 解密
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95)
+
+> 请注意: 前端应当先完成**登录流程**再调用获取**加密数据**的相关接口。
 
 ### 解密手机号码
 

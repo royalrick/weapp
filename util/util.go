@@ -27,6 +27,24 @@ func TokenAPI(api, token string) (string, error) {
 	return u.String(), nil
 }
 
+// EncodeURL add and encode parameters.
+func EncodeURL(api string, params map[string]string) (string, error) {
+	url, err := url.Parse(api)
+	if err != nil {
+		return "", err
+	}
+
+	query := url.Query()
+
+	for k, v := range params {
+		query.Set(k, v)
+	}
+
+	url.RawQuery = query.Encode()
+
+	return url.String(), nil
+}
+
 // GetQuery returns url query value
 func GetQuery(req *http.Request, key string) string {
 	if values, ok := req.URL.Query()[key]; ok && len(values) > 0 {

@@ -2,6 +2,7 @@
 package payment
 
 import (
+	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"io/ioutil"
@@ -9,6 +10,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/util"
 )
 
@@ -390,4 +392,58 @@ func (q Query) Query(key string) (resp OrderResponse, err error) {
 	}
 	resp = res.OrderResponse
 	return
+}
+
+const getPaidUnionIDAPI = "/wxa/getpaidunionid"
+
+// GetPaidUnionIDResponse response data
+type GetPaidUnionIDResponse struct {
+	weapp.Response
+	UnionID string `json:"unionid"`
+}
+
+// GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
+func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDResponse, error) {
+	api := weapp.BaseURL + getPaidUnionIDAPI
+	url, err := util.EncodeURL(api, map[string]string{
+		"openid":         openID,
+		"access_token":   accessToken,
+		"transaction_id": transactionID,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return getPaidUnionIDRequest(url)
+}
+
+// GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
+func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
+	api := weapp.BaseURL + getPaidUnionIDAPI
+	url, err := util.EncodeURL(api, map[string]string{
+		"openid":       openID,
+		"mch_id":       mchID,
+		"out_trade_no": outTradeNo,
+		"access_token": accessToken,
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return getPaidUnionIDRequest(url)
+}
+
+func getPaidUnionIDRequest(url string) (*GetPaidUnionIDResponse, error) {
+	res, err := http.Post(url, "application/json", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	response := new(GetPaidUnionIDResponse)
+	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
+		return nil, err
+	}
+
+	return response, nil
 }
