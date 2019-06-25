@@ -5,6 +5,9 @@
 - [拉取代码](#拉取代码)
 - [AccessToken](#AccessToken)
 - [用户登录](#用户登录)
+- [数据分析](#数据分析)
+  - [访问留存](#访问留存)
+  - [访问趋势](#访问趋势)
 - [二维码](#二维码)
   - [获取小程序码](#获取小程序码)
   - [获取小程序二维码](#获取小程序二维码)
@@ -161,6 +164,141 @@ if err != nil {
     // handle error
 }
 defer res.Body.Close()
+
+```
+
+---
+
+## 数据分析
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/analysis"
+
+```
+
+### 访问留存
+
+#### 月留存
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getMonthlyRetain.html)
+
+```go
+
+// GetMonthlyRetain 获取用户访问小程序月留存
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetMonthlyRetain("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### 周留存
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getWeeklyRetain.html)
+
+```go
+
+// GetWeeklyRetain 获取用户访问小程序周留存
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetWeeklyRetain("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### 日留存
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getDailyRetain.html)
+
+```go
+
+// GetDailyRetainAPI 获取用户访问小程序日留存
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetDailyRetainAPI("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 访问趋势
+
+#### 月趋势
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getMonthlyVisitTrend.html)
+
+```go
+
+// GetMonthlyVisitTrend 获取用户访问小程序数据月趋势
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetMonthlyVisitTrend("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### 周趋势
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getWeeklyVisitTrend.html)
+
+```go
+
+// GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetWeeklyVisitTrend("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### 日趋势
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getDailyVisitTrend.html)
+
+```go
+
+// GetDailyVisitTrendAPI 获取用户访问小程序数据日趋势
+// @accessToken 接口调用凭证
+// @start 开始日期，为自然月第一天。格式为 yyyymmdd
+// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+res, err := analysis.GetDailyVisitTrendAPI("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
