@@ -35,6 +35,7 @@
 - [内容检测](#内容检测)
   - [检测图片](#检测图片)
   - [检测文本](#检测文本)
+- [生物认证秘钥签名验证](#生物认证秘钥签名验证)
 
 ## 拉取代码
 
@@ -747,6 +748,29 @@ if err != nil {
     return
 }
 
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 生物认证秘钥签名验证
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/soter/soter.verifySignature.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := VerifySignature("access-token", "user_openid", "result-json", "result-json-signature")
+if err != nil {
+    // handle error
+    return
+}
+
+// res.IsOk
+// res.Errcode
+// res.Errmsg
 fmt.Printf("返回结果: %#v", res)
 
 ```
