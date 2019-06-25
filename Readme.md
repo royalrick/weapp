@@ -615,14 +615,14 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp/payment"
 
 
-    res, err := payment.GetPaidUnionID("your-weapp-access-token", "user-open-id", "transaction-id")
+    res, err := payment.GetPaidUnionID("access-token", "user-openid", "transaction-id")
     if err != nil {
         fmt.Println(err)
         return
     }
     fmt.Printf("返回结果: %#v", res)
 
-    res, err := payment.GetPaidUnionIDWithMCH("your-weapp-access-token", "user-open-id","out-trade-no", "mch-id")
+    res, err := payment.GetPaidUnionIDWithMCH("access-token", "user-openid","out-trade-no", "mch-id")
     if err != nil {
         fmt.Println(err)
         return
@@ -762,7 +762,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := VerifySignature("access-token", "user_openid", "result-json", "result-json-signature")
+res, err := VerifySignature("access-token", "user-openid", "result-json", "result-json-signature")
 if err != nil {
     // handle error
     return
