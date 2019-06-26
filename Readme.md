@@ -26,7 +26,7 @@
 - [客服消息](#客服消息)
   - [接收客服消息](#接收客服消息)
   - [发送客服消息](#发送客服消息)
-- [支付](#支付)
+- [微信支付](#微信支付)
   - [付款](#付款)
   - [处理支付结果通知](#处理支付结果通知)
   - [退款](#退款)
@@ -35,14 +35,15 @@
   - [查询转账](#查询转账)
   - [订单查询](#订单查询)
   - [支付后获取 UnionID](#支付后获取UnionID)
-- [解密](#解密)
+- [数据解密](#数据解密)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
   - [解密用户信息](#解密用户信息)
 - [内容检测](#内容检测)
   - [检测图片](#检测图片)
   - [检测文本](#检测文本)
-- [生物认证秘钥签名验证](#生物认证秘钥签名验证)
+- [生物认证秘](#生物认证)
+  - [钥签名验证](#钥签名验证)
 
 ## 拉取代码
 
@@ -619,7 +620,7 @@ res, err := msg.SendTo(openid, token string)
 
 ---
 
-## 支付
+## 微信支付
 
 ### 付款
 
@@ -854,7 +855,7 @@ import "github.com/medivhzhan/weapp/payment"
 
 ---
 
-## 解密
+## 数据解密
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95)
 
@@ -975,7 +976,9 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
-## 生物认证秘钥签名验证
+## 生物认证
+
+### 钥签名验证
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/soter/soter.verifySignature.html)
 

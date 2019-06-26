@@ -390,14 +390,14 @@ func (q Query) Query(key string) (resp OrderResponse, err error) {
 
 const getPaidUnionIDAPI = "/wxa/getpaidunionid"
 
-// GetPaidUnionIDResponse response data
-type GetPaidUnionIDResponse struct {
+// PaidUnionID response data
+type PaidUnionID struct {
 	weapp.Response
 	UnionID string `json:"unionid"`
 }
 
 // GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
-func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDResponse, error) {
+func GetPaidUnionID(accessToken, openID, transactionID string) (*PaidUnionID, error) {
 	api := weapp.BaseURL + getPaidUnionIDAPI
 	url, err := util.EncodeURL(api, map[string]string{
 		"openid":         openID,
@@ -412,7 +412,7 @@ func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDR
 }
 
 // GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
-func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
+func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*PaidUnionID, error) {
 	api := weapp.BaseURL + getPaidUnionIDAPI
 	url, err := util.EncodeURL(api, map[string]string{
 		"openid":       openID,
@@ -428,8 +428,8 @@ func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetP
 	return getPaidUnionIDRequest(url)
 }
 
-func getPaidUnionIDRequest(api string) (*GetPaidUnionIDResponse, error) {
-	res := new(GetPaidUnionIDResponse)
+func getPaidUnionIDRequest(api string) (*PaidUnionID, error) {
+	res := new(PaidUnionID)
 	err := util.PostJSON(api, nil, res)
 	if err != nil {
 		return nil, err
