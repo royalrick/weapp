@@ -2,7 +2,6 @@
 package payment
 
 import (
-	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"io/ioutil"
@@ -146,7 +145,7 @@ type response struct {
 }
 
 // Check 检测返回信息是否包含错误
-func (res response) Check() error {
+func (res response) CheckError() error {
 	if res.ReturnCode != "SUCCESS" {
 		return errors.New("交易失败: " + res.ReturnMsg)
 	}
@@ -212,17 +211,13 @@ func (o Order) Unify(key string) (pres PaidResponse, err error) {
 		return
 	}
 
-	data, err := util.PostXML(baseURL+unifyAPI, reqData)
+	res := new(paidResponse)
+	err = util.PostXML(baseURL+unifyAPI, reqData, res)
 	if err != nil {
 		return
 	}
 
-	var res paidResponse
-	if err = xml.Unmarshal(data, &res); err != nil {
-		return
-	}
-
-	if err = res.Check(); err != nil {
+	if err = res.CheckError(); err != nil {
 		return
 	}
 
@@ -295,7 +290,7 @@ func HandlePaidNotify(res http.ResponseWriter, req *http.Request, fuck func(Paid
 		return err
 	}
 
-	if err := ntf.Check(); err != nil {
+	if err := ntf.CheckError(); err != nil {
 		return err
 	}
 
@@ -379,15 +374,14 @@ func (q Query) Query(key string) (resp OrderResponse, err error) {
 		return
 	}
 	q.Sign = sign
-	data, err := util.PostXML(baseURL+queryAPI, q)
+
+	res := new(queryResponse)
+	err = util.PostXML(baseURL+queryAPI, q, res)
 	if err != nil {
 		return
 	}
-	var res queryResponse
-	if err = xml.Unmarshal(data, &res); err != nil {
-		return
-	}
-	if err = res.Check(); err != nil {
+
+	if err = res.CheckError(); err != nil {
 		return
 	}
 	resp = res.OrderResponse
@@ -434,16 +428,12 @@ func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetP
 	return getPaidUnionIDRequest(url)
 }
 
-func getPaidUnionIDRequest(url string) (*GetPaidUnionIDResponse, error) {
-	res, err := http.Post(url, "application/json", nil)
+func getPaidUnionIDRequest(api string) (*GetPaidUnionIDResponse, error) {
+	res := new(GetPaidUnionIDResponse)
+	err := util.PostJSON(api, nil, res)
 	if err != nil {
 		return nil, err
 	}
 
-	response := new(GetPaidUnionIDResponse)
-	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
-		return nil, err
-	}
-
-	return response, nil
+	return res, nil
 }

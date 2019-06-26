@@ -1,10 +1,7 @@
 package template
 
 import (
-	"encoding/json"
 	"errors"
-	"net/http"
-	"strings"
 
 	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/util"
@@ -61,29 +58,13 @@ func (msg UniformMsg) Send(token string) error {
 		return err
 	}
 
-	body, err := json.Marshal(msg)
-	if err != nil {
+	res := new(weapp.Response)
+	if err := util.PostJSON(api, msg, res); err != nil {
 		return err
 	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(string(body)))
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
-		return err
-	}
-
-	var resp weapp.Response
-	if err = json.NewDecoder(res.Body).Decode(&resp); err != nil {
-		return err
-	}
-
-	if resp.Errcode != 0 {
-		return errors.New(resp.Errmsg)
+	if res.HasError() {
+		return res.CreateError("failed to send uniform message")
 	}
 
 	return nil

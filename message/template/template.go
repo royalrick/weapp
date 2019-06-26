@@ -2,10 +2,7 @@
 package template
 
 import (
-	"encoding/json"
 	"errors"
-	"fmt"
-	"net/http"
 	"strconv"
 	"strings"
 
@@ -84,31 +81,24 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 		return
 	}
 
-	body := fmt.Sprintf(`{"offset": "%v","count":"%v"}`, offset, count)
+	params := map[string]interface{}{
+		"offset": offset,
+		"count":  count,
+	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	res := new(Templates)
+	err = util.PostJSON(api, params, res)
 	if err != nil {
 		return
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
+	if res.HasError() {
+		err = res.CreateError("failed to get template list")
 		return
 	}
 
-	var data Templates
-	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
-		return
-	}
-
-	if data.Errcode != 0 {
-		err = errors.New(data.Errmsg)
-		return
-	}
-
-	list = data.List
-	total = data.TotalCount
+	list = res.List
+	total = res.TotalCount
 	return
 }
 
@@ -122,30 +112,22 @@ func Get(id, token string) (keywords []KeywordItem, err error) {
 		return
 	}
 
-	body := fmt.Sprintf(`{"id": "%s"}`, id)
+	params := map[string]string{
+		"id": id,
+	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	res := new(Template)
+	err = util.PostJSON(api, params, res)
 	if err != nil {
 		return
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
+	if res.HasError() {
+		err = res.CreateError("failed to get template keywords")
 		return
 	}
 
-	var data Template
-	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
-		return
-	}
-
-	if data.Errcode != 0 {
-		err = errors.New(data.Errmsg)
-		return
-	}
-
-	keywords = data.KeywordList
+	keywords = res.KeywordList
 	return
 }
 
@@ -166,28 +148,22 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 		list = append(list, strconv.Itoa(int(v)))
 	}
 
-	body := fmt.Sprintf(`{"id": "%s", "keyword_id_list": [%s]}`, id, strings.Join(list, ","))
+	params := map[string]string{
+		"id":              id,
+		"keyword_id_list": "[" + strings.Join(list, ",") + "]",
+	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	res := new(Template)
+	err = util.PostJSON(api, params, res)
 	if err != nil {
 		return "", err
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		return "", errors.New(weapp.WeChatServerError)
+	if res.HasError() {
+		return "", res.CreateError("failed to add template")
 	}
 
-	var tmp Template
-	if err = json.NewDecoder(res.Body).Decode(&tmp); err != nil {
-		return "", err
-	}
-
-	if tmp.Errcode != 0 {
-		return "", errors.New(tmp.Errmsg)
-	}
-
-	return tmp.TemplateID, nil
+	return res.TemplateID, nil
 }
 
 // Delete 删除帐号下的某个模板
@@ -200,26 +176,18 @@ func Delete(id, token string) error {
 		return err
 	}
 
-	body := fmt.Sprintf(`{"template_id": "%s"}`, id)
+	params := map[string]string{
+		"template_id": id,
+	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	res := new(weapp.Response)
+	err = util.PostJSON(api, params, res)
 	if err != nil {
 		return err
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
-		return err
-	}
-
-	var data weapp.Response
-	if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
-		return err
-	}
-
-	if data.Errcode != 0 {
-		return errors.New(data.Errmsg)
+	if res.HasError() {
+		return res.CreateError("failed to delete template")
 	}
 
 	return nil
@@ -246,7 +214,7 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 		data[key] = Message{"value": data[key]}
 	}
 
-	body := map[string]interface{}{
+	params := map[string]interface{}{
 		"touser":           openid,
 		"template_id":      template,
 		"page":             page,
@@ -255,29 +223,14 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	payload, err := json.Marshal(body)
+	res := new(weapp.Response)
+	err = util.PostJSON(api, params, res)
 	if err != nil {
 		return err
 	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(string(payload)))
-	if err != nil {
-		return err
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
-		return err
-	}
-
-	var resp weapp.Response
-	if err = json.NewDecoder(res.Body).Decode(&resp); err != nil {
-		return err
-	}
-
-	if resp.Errcode != 0 {
-		return errors.New(resp.Errmsg)
+	if res.HasError() {
+		return res.CreateError("failed to send template message")
 	}
 
 	return nil

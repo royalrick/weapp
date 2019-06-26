@@ -1,10 +1,6 @@
 package weapp
 
 import (
-	"bytes"
-	"encoding/json"
-	"net/http"
-
 	"github.com/medivhzhan/weapp/util"
 )
 
@@ -29,28 +25,19 @@ func VerifySignature(accessToken, openID, data, signature string) (*VerifySignat
 		return nil, err
 	}
 
-	verifier := map[string]string{
+	params := map[string]string{
 		"openid":         openID,
 		"json_string":    data,
 		"json_signature": signature,
 	}
 
-	raw, err := json.Marshal(verifier)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := http.Post(api, "application/json", bytes.NewReader(raw))
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
 	res := new(VerifySignatureResponse)
-
-	err = json.NewDecoder(resp.Body).Decode(res)
-	if err != nil {
+	if err := util.PostJSON(api, params, res); err != nil {
 		return nil, err
+	}
+
+	if res.HasError() {
+		return nil, res.CreateError("failed to verify signature")
 	}
 
 	return res, nil

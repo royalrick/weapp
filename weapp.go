@@ -16,15 +16,20 @@ const (
 	codeAPI = "/sns/jscode2session"
 )
 
-const (
-	// WeChatServerError 微信服务器错误时返回返回消息
-	WeChatServerError = "微信服务器发生错误"
-)
-
 // Response 请求微信返回基础数据
 type Response struct {
-	Errcode int    `json:"errcode"`
-	Errmsg  string `json:"errmsg"`
+	ErrCode int    `json:"errcode"`
+	ErrMSG  string `json:"errmsg"`
+}
+
+// HasError return has error
+func (res Response) HasError() bool {
+	return res.ErrCode != 0
+}
+
+// CreateError create and return error
+func (res Response) CreateError(msg string) error {
+	return errors.New(msg + ": " + res.ErrMSG)
 }
 
 // PhoneNumber 解密后的用户手机号码信息
@@ -67,7 +72,7 @@ type loginResponse struct {
 // @appID 小程序 appID
 // @secret 小程序的 app secret
 // @code 小程序登录时获取的 code
-func Login(appID, secret, code string) (lres LoginResponse, err error) {
+func Login(appID, secret, code string) (response LoginResponse, err error) {
 	if code == "" {
 		err = errors.New("code can not be null")
 		return
@@ -78,29 +83,24 @@ func Login(appID, secret, code string) (lres LoginResponse, err error) {
 		return
 	}
 
-	res, err := http.Get(api)
+	resp, err := http.Get(api)
 	if err != nil {
 		return
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = errors.New(WeChatServerError)
-		return
-	}
-
-	var data loginResponse
-	err = json.NewDecoder(res.Body).Decode(&data)
+	res := new(loginResponse)
+	err = json.NewDecoder(resp.Body).Decode(res)
 	if err != nil {
 		return
 	}
 
-	if data.Errcode != 0 {
-		err = errors.New(data.Errmsg)
+	if res.HasError() {
+		err = res.CreateError("failed to login")
 		return
 	}
 
-	lres = data.LoginResponse
+	response = res.LoginResponse
 	return
 }
 

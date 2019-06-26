@@ -73,27 +73,24 @@ func (t *TransferInfo) prepare(key string) (transferInfo, error) {
 }
 
 // GetInfo 转账信息
-func (t TransferInfo) GetInfo(key string, certPath, keyPath string) (res TransferInfoResponse, err error) {
+func (t TransferInfo) GetInfo(key string, certPath, keyPath string) (response TransferInfoResponse, err error) {
 	reqData, err := t.prepare(key)
 	if err != nil {
 		return
 	}
 
-	resData, err := util.TSLPostXML(baseURL+transferInfoAPI, reqData, certPath, keyPath)
+	res := new(transferInfoResponse)
+	err = util.TSLPostXML(baseURL+transferInfoAPI, reqData, certPath, keyPath, res)
 	if err != nil {
 		return
 	}
-	var tres transferInfoResponse
-	if err = xml.Unmarshal(resData, &tres); err != nil {
+
+	if err = res.CheckError(); err != nil {
 		return
 	}
 
-	if err = tres.Check(); err != nil {
-		return
-	}
-
-	res.transferInfoResponse = tres
-	res.TransferTime, err = time.Parse(transferTimeFormat, tres.TransferTime)
+	response.transferInfoResponse = *res
+	response.TransferTime, err = time.Parse(transferTimeFormat, res.TransferTime)
 
 	return
 }

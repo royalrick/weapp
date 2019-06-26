@@ -2,11 +2,6 @@
 package message
 
 import (
-	"encoding/json"
-	"errors"
-	"net/http"
-	"strings"
-
 	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/util"
 )
@@ -77,18 +72,13 @@ type Link struct {
 // @token 微信 access_token
 func (msg Text) SendTo(openID, token string) (wres weapp.Response, err error) {
 
-	m := message{
+	params := message{
 		Receiver: openID,
 		Type:     "text",
 		Text:     msg,
 	}
 
-	body, err := json.Marshal(m)
-	if err != nil {
-		return
-	}
-
-	return send(token, string(body))
+	return send(token, params)
 }
 
 // SendTo 发送图片消息
@@ -97,18 +87,13 @@ func (msg Text) SendTo(openID, token string) (wres weapp.Response, err error) {
 // @token 微信 access_token
 func (msg Image) SendTo(openID, token string) (wres weapp.Response, err error) {
 
-	m := message{
+	params := message{
 		Receiver: openID,
 		Type:     "image",
 		Image:    msg,
 	}
 
-	body, err := json.Marshal(m)
-	if err != nil {
-		return
-	}
-
-	return send(token, string(body))
+	return send(token, params)
 }
 
 // SendTo 发送图文链接消息
@@ -117,18 +102,13 @@ func (msg Image) SendTo(openID, token string) (wres weapp.Response, err error) {
 // @token 微信 access_token
 func (msg Link) SendTo(openID, token string) (wres weapp.Response, err error) {
 
-	m := message{
+	params := message{
 		Receiver: openID,
 		Type:     "link",
 		Link:     msg,
 	}
 
-	body, err := json.Marshal(m)
-	if err != nil {
-		return
-	}
-
-	return send(token, string(body))
+	return send(token, params)
 }
 
 // SendTo 发送卡片消息
@@ -137,44 +117,33 @@ func (msg Link) SendTo(openID, token string) (wres weapp.Response, err error) {
 // @token 微信 access_token
 func (msg Card) SendTo(openID, token string) (wres weapp.Response, err error) {
 
-	m := message{
+	params := message{
 		Receiver: openID,
 		Type:     "miniprogrampage",
 		Card:     msg,
 	}
 
-	body, err := json.Marshal(m)
-	if err != nil {
-		return
-	}
-
-	return send(token, string(body))
+	return send(token, params)
 }
 
 // send 发送消息
 //
 // @token 微信 access_token
-func send(token, body string) (wres weapp.Response, err error) {
+func send(token string, params interface{}) (res weapp.Response, err error) {
 	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return
 	}
 
-	res, err := http.Post(api, "application/json", strings.NewReader(body))
+	err = util.PostJSON(api, params, &res)
 	if err != nil {
 		return
 	}
-	defer res.Body.Close()
 
-	if res.StatusCode != 200 {
-		err = errors.New(weapp.WeChatServerError)
+	if res.HasError() {
+		err = res.CreateError("failed to send message")
 		return
 	}
 
-	if err = json.NewDecoder(res.Body).Decode(&wres); err != nil {
-		return
-	}
-
-	err = errors.New(wres.Errmsg)
 	return
 }

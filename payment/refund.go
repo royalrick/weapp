@@ -136,27 +136,24 @@ type refundedResponse struct {
 }
 
 // Refund 发起退款请求
-func (r Refunder) Refund(key, certPath, keyPath string) (rres RefundedResponse, err error) {
+func (r Refunder) Refund(key, certPath, keyPath string) (response RefundedResponse, err error) {
 	data, err := r.prepare(key)
 	if err != nil {
 		return
 	}
 
-	resData, err := util.TSLPostXML(baseURL+refundAPI, data, certPath, keyPath)
+	res := new(refundedResponse)
+	err = util.TSLPostXML(baseURL+refundAPI, data, certPath, keyPath, res)
 	if err != nil {
 		return
 	}
 
-	var res refundedResponse
-	if err = xml.Unmarshal(resData, &res); err != nil {
-		return
-	}
-	err = res.Check()
+	err = res.CheckError()
 	if err != nil {
 		return
 	}
 
-	rres = res.RefundedResponse
+	response = res.RefundedResponse
 	return
 }
 
@@ -234,7 +231,7 @@ func HandleRefundedNotify(res http.ResponseWriter, req *http.Request, key string
 		return err
 	}
 
-	if err := ref.Check(); err != nil {
+	if err := ref.CheckError(); err != nil {
 		return err
 	}
 

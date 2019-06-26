@@ -3,10 +3,9 @@ package util
 import (
 	"bytes"
 	"crypto/tls"
+	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
-	"io/ioutil"
 	"math/rand"
 	"net"
 	"net/http"
@@ -68,53 +67,76 @@ func RandomString(ln int) string {
 	return string(b)
 }
 
-// PostXML perform a HTTP/POST request with XML body
-func PostXML(uri string, obj interface{}) ([]byte, error) {
-	data, err := xml.Marshal(obj)
+// PostJSON perform a HTTP/POST request with json body
+func PostJSON(api string, params interface{}, response interface{}) error {
+	resp, err := PostJSONWithBody(api, params)
 	if err != nil {
-		return nil, err
+		return err
 	}
+	defer resp.Body.Close()
 
-	body := bytes.NewBuffer(data)
-	res, err := http.Post(uri, "application/xml; charset=utf-8", body)
-	if err != nil {
-		return nil, err
-	}
-	defer res.Body.Close()
-
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http code error : uri=%v , statusCode=%v", uri, res.StatusCode)
-	}
-
-	return ioutil.ReadAll(res.Body)
+	return json.NewDecoder(resp.Body).Decode(response)
 }
 
-// TSLPostXML ...
-func TSLPostXML(uri string, obj interface{}, certPath, keyPath string) ([]byte, error) {
+// PostJSONWithBody return with http body.
+func PostJSONWithBody(api string, params interface{}) (*http.Response, error) {
+	var reader *bytes.Reader
+	if params != nil {
+		raw, err := json.Marshal(params)
+		if err != nil {
+			return nil, err
+		}
 
-	data, err := xml.Marshal(obj)
+		reader = bytes.NewReader(raw)
+	}
+
+	return http.Post(api, "application/json; charset=utf-8", reader)
+}
+
+// PostXML perform a HTTP/POST request with XML body.
+func PostXML(api string, params interface{}, response interface{}) error {
+	var reader *bytes.Reader
+	if params != nil {
+
+		raw, err := xml.Marshal(params)
+		if err != nil {
+			return err
+		}
+
+		reader = bytes.NewReader(raw)
+	}
+
+	resp, err := http.Post(api, "application/xml; charset=utf-8", reader)
 	if err != nil {
-		return nil, err
+		return err
+	}
+	defer resp.Body.Close()
+
+	return xml.NewDecoder(resp.Body).Decode(response)
+}
+
+// TSLPostXML perform a HTTPS/POST request with XML body.
+func TSLPostXML(uri string, params interface{}, certPath, keyPath string, response interface{}) error {
+
+	data, err := xml.Marshal(params)
+	if err != nil {
+		return err
 	}
 
 	body := bytes.NewBuffer(data)
 
 	cli, err := NewTLSClient(certPath, keyPath)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	res, err := cli.Post(uri, "application/xml; charset=utf-8", body)
+	resp, err := cli.Post(uri, "application/xml; charset=utf-8", body)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 
-	if res.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("http code error : uri=%v , statusCode=%v", uri, res.StatusCode)
-	}
-
-	return ioutil.ReadAll(res.Body)
+	return xml.NewDecoder(resp.Body).Decode(response)
 }
 
 // NewTLSClient 创建支持双向证书认证的 http.Client.

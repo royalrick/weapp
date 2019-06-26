@@ -3,12 +3,11 @@ package token
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
-	"net/url"
 	"time"
 
 	"github.com/medivhzhan/weapp"
+	"github.com/medivhzhan/weapp/util"
 )
 
 const tokenAPI = "/cgi-bin/token"
@@ -22,37 +21,31 @@ type response struct {
 
 // AccessToken 通过微信服务器获取 access_token 以及其有效期
 func AccessToken(appID, secret string) (string, time.Duration, error) {
-	url, err := url.Parse(weapp.BaseURL + tokenAPI)
+
+	params := map[string]string{
+		"appid":      appID,
+		"secret":     secret,
+		"grant_type": "client_credential",
+	}
+	api, err := util.EncodeURL(weapp.BaseURL+tokenAPI, params)
 	if err != nil {
 		return "", 0, err
 	}
 
-	query := url.Query()
-
-	query.Set("appid", appID)
-	query.Set("secret", secret)
-	query.Set("grant_type", "client_credential")
-
-	url.RawQuery = query.Encode()
-
-	res, err := http.Get(url.String())
+	resp, err := http.Get(api)
 	if err != nil {
 		return "", 0, err
 	}
-	defer res.Body.Close()
+	defer resp.Body.Close()
 
-	if res.StatusCode != 200 {
-		return "", 0, errors.New(weapp.WeChatServerError)
-	}
-
-	var data response
-	if err := json.NewDecoder(res.Body).Decode(&data); err != nil {
+	res := new(response)
+	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
 		return "", 0, err
 	}
 
-	if data.Errcode != 0 {
-		return "", 0, errors.New(data.Errmsg)
+	if res.HasError() {
+		return "", 0, res.CreateError("failed to get access token")
 	}
 
-	return data.AccessToken, time.Second * data.ExpireIn, nil
+	return res.AccessToken, time.Second * res.ExpireIn, nil
 }

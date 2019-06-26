@@ -119,27 +119,24 @@ func (t *Transferer) prepare(key string) (transferer, error) {
 }
 
 // Transfer 转账到微信用户零钱
-func (t Transferer) Transfer(key string, certPath, keyPath string) (res TransferResponse, err error) {
+func (t Transferer) Transfer(key string, certPath, keyPath string) (response TransferResponse, err error) {
 	reqData, err := t.prepare(key)
 	if err != nil {
 		return
 	}
 
-	resData, err := util.TSLPostXML(baseURL+transferAPI, reqData, certPath, keyPath)
+	res := new(transferResponse)
+	err = util.TSLPostXML(baseURL+transferAPI, reqData, certPath, keyPath, res)
 	if err != nil {
 		return
 	}
-	var tres transferResponse
-	if err = xml.Unmarshal(resData, &tres); err != nil {
+
+	if err = res.CheckError(); err != nil {
 		return
 	}
 
-	if err = tres.Check(); err != nil {
-		return
-	}
-
-	res.transferResponse = tres
-	res.Datetime, err = time.Parse(transferTimeFormat, tres.Datetime)
+	response.transferResponse = *res
+	response.Datetime, err = time.Parse(transferTimeFormat, res.Datetime)
 
 	return
 }

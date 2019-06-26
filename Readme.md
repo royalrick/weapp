@@ -8,6 +8,10 @@
 - [数据分析](#数据分析)
   - [访问留存](#访问留存)
   - [访问趋势](#访问趋势)
+  - [用户画像](#用户画像)
+  - [分布数据](#分布数据)
+  - [访问页面](#访问页面)
+  - [访问概况](#访问概况)
 - [二维码](#二维码)
   - [获取小程序码](#获取小程序码)
   - [获取小程序二维码](#获取小程序二维码)
@@ -27,10 +31,10 @@
   - [处理支付结果通知](#处理支付结果通知)
   - [退款](#退款)
   - [处理退款结果通知](#处理退款结果通知)
-  - [转账(企业付款)](#转账(企业付款))
+  - [转账(企业付款)](<#转账(企业付款)>)
   - [查询转账](#查询转账)
   - [订单查询](#订单查询)
-  - [支付后获取UnionID](#支付后获取UnionID)
+  - [支付后获取 UnionID](#支付后获取UnionID)
 - [解密](#解密)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
@@ -293,6 +297,85 @@ fmt.Printf("返回结果: %#v", res)
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetDailyVisitTrendAPI("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 用户画像
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getUserPortrait.html)
+
+```go
+
+// GetUserPortrait 获取小程序新增或活跃用户的画像分布数据。
+// 时间范围支持昨天、最近7天、最近30天。
+// 其中，新增用户数为时间范围内首次访问小程序的去重用户数，活跃用户数为时间范围内访问过小程序的去重用户数。
+// @start 开始日期。格式为 yyyymmdd
+// @end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+res, err := analysis.GetUserPortrait("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 分布数据
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getVisitDistribution.html)
+
+```go
+
+// GetVisitDistribution 获取用户小程序访问分布数据
+// @start 开始日期。格式为 yyyymmdd
+// @end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+res, err := analysis.GetVisitDistribution("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 访问页面
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getVisitPage.html)
+
+```go
+
+// GetVisitPage 访问页面。
+// 目前只提供按 page_visit_pv 排序的 top200。
+// @start 开始日期。格式为 yyyymmdd
+// @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+res, err := analysis.GetVisitPage("access-token", "start-date-string", "end-date-string")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 访问概况
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getDailySummary.html)
+
+```go
+
+// getDailySummary 获取用户访问小程序数据概况
+// @start 开始日期。格式为 yyyymmdd
+// @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+res, err := analysis.getDailySummary("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
     return
@@ -744,7 +827,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-### 支付后获取UnionID
+### 支付后获取 UnionID
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
 

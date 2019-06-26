@@ -46,12 +46,7 @@ type Color struct {
 //
 // @token 微信access_token
 func (code QRCoder) AppCode(token string) (*http.Response, error) {
-	body, err := json.Marshal(code)
-	if err != nil {
-		return nil, err
-	}
-
-	return fetchCode(appCodeAPI, string(body), token)
+	return fetchCode(appCodeAPI, token, code)
 }
 
 // UnlimitedAppCode 获取小程序码
@@ -60,13 +55,7 @@ func (code QRCoder) AppCode(token string) (*http.Response, error) {
 //
 // @token 微信access_token
 func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
-
-	body, err := json.Marshal(code)
-	if err != nil {
-		return nil, err
-	}
-
-	return fetchCode(unlimitedAppCodeAPI, string(body), token)
+	return fetchCode(unlimitedAppCodeAPI, token, code)
 }
 
 // QRCode 获取小程序二维码
@@ -74,41 +63,34 @@ func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
 //
 // @token 微信access_token
 func (code QRCoder) QRCode(token string) (*http.Response, error) {
-
-	body, err := json.Marshal(code)
-	if err != nil {
-		return nil, err
-	}
-
-	return fetchCode(QRCodeAPI, string(body), token)
+	return fetchCode(QRCodeAPI, token, code)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func fetchCode(path, body, token string) (res *http.Response, err error) {
+func fetchCode(api, token string, params interface{}) (*http.Response, error) {
 
-	api, err := util.TokenAPI(weapp.BaseURL+path, token)
+	api, err := util.TokenAPI(weapp.BaseURL+api, token)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	res, err = http.Post(api, "application/json", strings.NewReader(body))
+	res, err := util.PostJSONWithBody(api, params)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
-		var data weapp.Response
-		if err = json.NewDecoder(res.Body).Decode(&data); err != nil {
-			return
+		response := new(weapp.Response)
+		if err := json.NewDecoder(res.Body).Decode(response); err != nil {
+			return nil, err
 		}
 
-		return res, errors.New(data.Errmsg)
+		return nil, errors.New(response.Errmsg)
 	case header == "image/jpeg": // 返回文件
 		return res, nil
 	default:
-		err = errors.New("unknown response header: " + header)
-		return
+		return nil, errors.New("unknown response header: " + header)
 	}
 }

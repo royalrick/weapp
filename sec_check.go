@@ -109,15 +109,19 @@ func MSGSecCheck(content, token string) (res Response, err error) {
 		return
 	}
 
-	body := fmt.Sprintf(`{"content": "%s"}`, content)
+	params := map[string]string{
+		"content": content,
+	}
 
-	resp, err := http.Post(api, "application/json", strings.NewReader(body))
+	err = util.PostJSON(api, params, &res)
 	if err != nil {
 		return
 	}
-	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	if res.HasError() {
+		err = res.CreateError("failed to check message sec")
+		return
+	}
 
 	return
 }
