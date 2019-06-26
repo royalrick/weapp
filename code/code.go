@@ -87,7 +87,7 @@ func fetchCode(api, token string, params interface{}) (*http.Response, error) {
 			return nil, err
 		}
 
-		return nil, errors.New(response.Errmsg)
+		return nil, response.CreateError("failed to fetch code")
 	case header == "image/jpeg": // 返回文件
 		return res, nil
 	default:

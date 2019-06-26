@@ -231,10 +231,6 @@ func HandleRefundedNotify(res http.ResponseWriter, req *http.Request, key string
 		return err
 	}
 
-	if err := ref.CheckError(); err != nil {
-		return err
-	}
-
 	ciphertext, err := base64.StdEncoding.DecodeString(ref.Ciphertext)
 	if err != nil {
 		return err

@@ -82,7 +82,7 @@ func (srv *Server) Serve() error {
 		// 处理加密消息
 		if encrypted(srv.Request) {
 			return errors.New("SDK 暂时还不支持加密消息")
-			// dev: handle encrypted message
+			// TODO: handle encrypted message
 		}
 
 		body, err := ioutil.ReadAll(srv.Request.Body)
