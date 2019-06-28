@@ -63,7 +63,7 @@ type Param struct {
 }
 
 // TargetState 动态消息修改后的状态
-type TargetState uint8
+type TargetState = uint8
 
 // 动态消息状态
 const (

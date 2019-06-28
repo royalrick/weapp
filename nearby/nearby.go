@@ -187,11 +187,20 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 	return res, nil
 }
 
+// ShowStatus 展示状态
+type ShowStatus = uint8
+
+// 所有展示状态
+const (
+	Hide ShowStatus = 0 // 不展示
+	Show            = 1 // 展示
+)
+
 // SetShowStatus 展示/取消展示附近小程序
 // @accessToken  接口调用凭证
 // @poiID  附近地点 ID
 // @status  是否展示
-func SetShowStatus(accessToken, poiID string, status uint8) (*weapp.Response, error) {
+func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.Response, error) {
 	api, err := util.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
 	if err != nil {
 		return nil, err

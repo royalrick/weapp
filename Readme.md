@@ -727,7 +727,7 @@ import "github.com/medivhzhan/weapp/message/nearby"
 // @accessToken  接口调用凭证
 // @poiID  附近地点 ID
 // @status  是否展示
-res, err := point.SetShowStatus("access-token", "poi-id", 1)
+res, err := point.SetShowStatus("access-token", "poi-id", nearby.Show)
 if err != nil {
     // handle error
     return
