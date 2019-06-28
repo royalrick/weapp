@@ -23,6 +23,7 @@
   - [删除帐号下的某个模板](#删除帐号下的某个模板)
   - [发送模板消息](#发送模板消息)
 - [统一服务消息](#统一服务消息)
+- [动态消息](#动态消息)
 - [附近的小程序](#附近的小程序)
   - [添加地点](#添加地点)
   - [删除地点](#删除地点)
@@ -495,6 +496,9 @@ err := template.Send(openid, template, page, formID string, msg template.Message
 
 ```go
 
+// 引入子包
+import "github.com/medivhzhan/weapp/message/template"
+
 // 消息体
 msg := template.UniformMsg{
     ToUser: "用户 openid",
@@ -546,6 +550,62 @@ msg := template.UniformMsg{
 }
 
 err := msg.Send(token)
+
+```
+
+---
+
+## 动态消息
+
+### 创建被分享动态消息的 activity_id
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/updatable"
+
+// @accessToken 接口调用凭证
+res, err :=  CreateActivityID("access-token")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 修改被分享的动态消息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.setUpdatableMsg.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/updatable"
+
+msg := updatable.Message{
+    ID:    "activity-id",
+    State: updatable.Started, // or updatable. Unstarted
+    Template: updatable.Template{
+        Params: []updatable.Param{
+            updatable.Param{
+                Name:  "param-name-you-want-change",
+                Value: "value-you-want-change",
+            },
+        },
+    },
+}
+// @accessToken 接口调用凭证
+res, err := msg.SetUpdatableMsg("access-token")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
