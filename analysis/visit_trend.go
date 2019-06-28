@@ -70,7 +70,7 @@ func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
 	}
 
 	if res.HasError() {
-		return nil, res.CreateError("failed to get visit trend")
+		return nil, res.ErrorWithInfo("failed to get visit trend")
 	}
 
 	return res, nil

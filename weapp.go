@@ -27,9 +27,14 @@ func (res Response) HasError() bool {
 	return res.ErrCode != 0
 }
 
-// CreateError create and return error
-func (res Response) CreateError(msg string) error {
-	return errors.New(msg + ": " + res.ErrMSG)
+// ErrorWithInfo create and return error
+func (res Response) ErrorWithInfo(info string) error {
+	em := res.ErrMSG
+	if info != "" {
+		em = info + ": " + em
+	}
+
+	return errors.New(em)
 }
 
 // PhoneNumber 解密后的用户手机号码信息
@@ -96,7 +101,7 @@ func Login(appID, secret, code string) (response LoginResponse, err error) {
 	}
 
 	if res.HasError() {
-		err = res.CreateError("failed to login")
+		err = res.ErrorWithInfo("failed to login")
 		return
 	}
 

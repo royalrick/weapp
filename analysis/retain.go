@@ -66,7 +66,7 @@ func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
 	}
 
 	if res.HasError() {
-		return nil, res.CreateError("failed to get retain")
+		return nil, res.ErrorWithInfo("failed to get retain")
 	}
 
 	return res, nil

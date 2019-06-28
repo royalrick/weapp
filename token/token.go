@@ -44,7 +44,7 @@ func AccessToken(appID, secret string) (string, time.Duration, error) {
 	}
 
 	if res.HasError() {
-		return "", 0, res.CreateError("failed to get access token")
+		return "", 0, res.ErrorWithInfo("failed to get access token")
 	}
 
 	return res.AccessToken, time.Second * res.ExpireIn, nil

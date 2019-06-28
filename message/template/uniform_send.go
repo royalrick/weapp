@@ -64,7 +64,7 @@ func (msg UniformMsg) Send(token string) error {
 	}
 
 	if res.HasError() {
-		return res.CreateError("failed to send uniform message")
+		return res.ErrorWithInfo("failed to send uniform message")
 	}
 
 	return nil

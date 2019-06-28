@@ -14,7 +14,7 @@ import (
 const (
 	appCodeAPI          = "/wxa/getwxacode"
 	unlimitedAppCodeAPI = "/wxa/getwxacodeunlimit"
-	QRCodeAPI           = "/cgi-bin/wxaapp/createwxaqrcode"
+	qrCodeAPI           = "/cgi-bin/wxaapp/createwxaqrcode"
 )
 
 // QRCoder 小程序码参数
@@ -63,7 +63,7 @@ func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
 //
 // @token 微信access_token
 func (code QRCoder) QRCode(token string) (*http.Response, error) {
-	return fetchCode(QRCodeAPI, token, code)
+	return fetchCode(qrCodeAPI, token, code)
 }
 
 // 向微信服务器获取二维码
@@ -87,7 +87,7 @@ func fetchCode(api, token string, params interface{}) (*http.Response, error) {
 			return nil, err
 		}
 
-		return nil, response.CreateError("failed to fetch code")
+		return nil, response.ErrorWithInfo("failed to fetch code")
 	case header == "image/jpeg": // 返回文件
 		return res, nil
 	default:

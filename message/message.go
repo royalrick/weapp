@@ -141,7 +141,7 @@ func send(token string, params interface{}) (res weapp.Response, err error) {
 	}
 
 	if res.HasError() {
-		err = res.CreateError("failed to send message")
+		err = res.ErrorWithInfo("failed to send message")
 		return
 	}
 

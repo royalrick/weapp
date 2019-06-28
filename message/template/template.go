@@ -93,7 +93,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 	}
 
 	if res.HasError() {
-		err = res.CreateError("failed to get template list")
+		err = res.ErrorWithInfo("failed to get template list")
 		return
 	}
 
@@ -123,7 +123,7 @@ func Get(id, token string) (keywords []KeywordItem, err error) {
 	}
 
 	if res.HasError() {
-		err = res.CreateError("failed to get template keywords")
+		err = res.ErrorWithInfo("failed to get template keywords")
 		return
 	}
 
@@ -160,7 +160,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	}
 
 	if res.HasError() {
-		return "", res.CreateError("failed to add template")
+		return "", res.ErrorWithInfo("failed to add template")
 	}
 
 	return res.TemplateID, nil
@@ -187,7 +187,7 @@ func Delete(id, token string) error {
 	}
 
 	if res.HasError() {
-		return res.CreateError("failed to delete template")
+		return res.ErrorWithInfo("failed to delete template")
 	}
 
 	return nil
@@ -230,7 +230,7 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 	}
 
 	if res.HasError() {
-		return res.CreateError("failed to send template message")
+		return res.ErrorWithInfo("failed to send template message")
 	}
 
 	return nil
