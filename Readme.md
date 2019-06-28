@@ -23,6 +23,11 @@
   - [删除帐号下的某个模板](#删除帐号下的某个模板)
   - [发送模板消息](#发送模板消息)
 - [统一服务消息](#统一服务消息)
+- [附近的小程序](#附近的小程序)
+  - [添加地点](#添加地点)
+  - [删除地点](#删除地点)
+  - [查看地点列表](#查看地点列表)
+  - [展示/取消展示附近小程序](#展示/取消展示附近小程序)
 - [客服消息](#客服消息)
   - [接收客服消息](#接收客服消息)
   - [发送客服消息](#发送客服消息)
@@ -546,6 +551,134 @@ err := msg.Send(token)
 
 ---
 
+## 附近的小程序
+
+### 添加地点
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.add.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/nearby"
+
+picList := nearby.PicList{
+    List: []string{
+        "your",
+        "picture",
+        "url",
+        "list",
+    },
+}
+serviceInfos := nearby.ServiceInfos{
+    ServiceInfos: []nearby.ServiceInfo{
+        nearby.ServiceInfo{
+            ID:    1,
+            Type:  2,
+            Name:  "name",
+            AppID: "appid",
+            Path:  "path",
+        },
+    },
+}
+
+kfInfo := nearby.KFInfo{
+    OpenKF:    true,
+    KDHeading: "kf-head-img-url",
+    KFName:    "kf-name",
+}
+
+point := nearby.Position{
+    PicList:           picList,              // 门店图片，最多9张，最少1张，上传门店图片如门店外景、环境设施、商品服务等，图片将展示在微信客户端的门店页。图片链接通过文档https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729中的《上传图文消息内的图片获取URL》接口获取。必填，文件格式为bmp、png、jpeg、jpg或gif，大小不超过5M pic_list是字符串，内容是一个json！
+    ServiceInfos:      serviceInfos,         // 必服务标签列表 选填，需要填写服务标签ID、APPID、对应服务落地页的path路径，详细字段格式见下方示例
+    StoreName:         "store_name",         // 门店名字 必填，门店名称需按照所选地理位置自动拉取腾讯地图门店名称，不可修改，如需修改请重现选择地图地点或重新创建地点
+    Hour:              "hour",               // 营业时间，格式11:11-12:12 必填
+    Credential:        "credential",         // 资质号 必填, 15位营业执照注册号或9位组织机构代码
+    Address:           "address",            // 地址 必填
+    CompanyName:       "company-name",       // 主体名字 必填
+    QualificationList: "qualification-list", // 证明材料 必填 如果company_name和该小程序主体不一致，需要填qualification_list，详细规则见附近的小程序使用指南-如何证明门店的经营主体跟公众号或小程序帐号主体相关http://kf.qq.com/faq/170401MbUnim17040122m2qY.html
+    KFInfo:            kfInfo,               // 客服信息 选填，可自定义服务头像与昵称，具体填写字段见下方示例kf_info pic_list是字符串，内容是一个json！
+    PoiID:             "poi-id",             // 如果创建新的门店，poi_id字段为空 如果更新门店，poi_id参数则填对应门店的poi_id 选填
+}
+
+// @accessToken  接口调用凭证
+res, err := point.Add("access-token")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 删除地点
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.delete.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/nearby"
+
+// @accessToken  接口调用凭证
+// @id  附近地点 ID
+res, err := point.Delete("access-token", "poi-id")
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 查看地点列表
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.getList.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/nearby"
+
+// @accessToken  接口调用凭证
+// @page  起始页id（从1开始计数）
+// @pageRows  每页展示个数（最多1000个）
+res, err := point.GetList("access-token", 1, 10)
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 展示/取消展示附近小程序
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.setShowStatus.html)
+
+```go
+
+// 引入子包
+import "github.com/medivhzhan/weapp/message/nearby"
+
+// @accessToken  接口调用凭证
+// @poiID  附近地点 ID
+// @status  是否展示
+res, err := point.SetShowStatus("access-token", "poi-id", 1)
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
 ## 客服消息
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
@@ -576,7 +709,9 @@ srv.HandleEvent(func(msg notify.Event)) {
 })
 
 // 执行服务
-err := srv.Serve()
+if err := srv.Serve(); err != nil{
+    // handle error and do something
+}
 
 ```
 
@@ -615,6 +750,12 @@ msg := message.Card{
 // openid: 用户 openid
 // token: 微信 access_token
 res, err := msg.SendTo(openid, token string)
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
