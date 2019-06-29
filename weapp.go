@@ -85,11 +85,6 @@ func Login(appID, secret, code string) (response LoginResponse, err error) {
 		return
 	}
 
-	if res.HasError() {
-		err = res.ErrorWithInfo("failed to login")
-		return
-	}
-
 	response = res.LoginResponse
 	return
 }
