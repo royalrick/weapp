@@ -188,7 +188,7 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 }
 
 // ShowStatus 展示状态
-type ShowStatus = uint8
+type ShowStatus = int8
 
 // 所有展示状态
 const (
