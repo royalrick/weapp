@@ -2,7 +2,6 @@ package updatable
 
 import (
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -20,13 +19,13 @@ type Activity struct {
 // CreateActivityID 创建被分享动态消息的 activity_id。
 // @accessToken 接口调用凭证
 func CreateActivityID(accessToken string) (*Activity, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+apiCreateActivityID, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+apiCreateActivityID, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(Activity)
-	if err := util.PostJSON(api, nil, res); err != nil {
+	if err := weapp.PostJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -70,13 +69,13 @@ const (
 // SetUpdatableMsg 修改被分享的动态消息。
 // @accessToken 接口调用凭证
 func (msg *Message) SetUpdatableMsg(accessToken string) (*weapp.Response, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+apiSetUpdatableMsg, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+apiSetUpdatableMsg, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(weapp.Response)
-	if err := util.PostJSON(api, msg, res); err != nil {
+	if err := weapp.PostJSON(api, msg, res); err != nil {
 		return nil, err
 	}
 

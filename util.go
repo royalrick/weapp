@@ -1,13 +1,9 @@
-package util
+package weapp
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
-	"encoding/xml"
-	"errors"
 	"math/rand"
-	"net"
 	"net/http"
 	"net/url"
 	"time"

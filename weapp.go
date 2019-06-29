@@ -5,8 +5,6 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
-
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -100,7 +98,7 @@ type watermark struct {
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
 func DecryptPhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
-	bts, err := util.CBCDecrypt(ssk, data, iv)
+	bts, err := CBCDecrypt(ssk, data, iv)
 	if err != nil {
 		return
 	}
@@ -122,7 +120,7 @@ type group struct {
 // @gid 小程序唯一群号
 func DecryptShareInfo(ssk, data, iv string) (string, error) {
 
-	bts, err := util.CBCDecrypt(ssk, data, iv)
+	bts, err := CBCDecrypt(ssk, data, iv)
 	if err != nil {
 		return "", err
 	}
@@ -141,12 +139,12 @@ func DecryptShareInfo(ssk, data, iv string) (string, error) {
 // @ssk 微信 session_key
 func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (ui Userinfo, err error) {
 
-	if ok := util.Validate(rawData, ssk, signature); !ok {
+	if ok := Validate(rawData, ssk, signature); !ok {
 		err = errors.New("数据校验失败")
 		return
 	}
 
-	bts, err := util.CBCDecrypt(ssk, encryptedData, iv)
+	bts, err := CBCDecrypt(ssk, encryptedData, iv)
 	if err != nil {
 		return
 	}

@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const tokenAPI = "/cgi-bin/token"
@@ -27,7 +26,7 @@ func AccessToken(appID, secret string) (string, time.Duration, error) {
 		"secret":     secret,
 		"grant_type": "client_credential",
 	}
-	api, err := util.EncodeURL(weapp.BaseURL+tokenAPI, params)
+	api, err := weapp.EncodeURL(weapp.BaseURL+tokenAPI, params)
 	if err != nil {
 		return "", 0, err
 	}

@@ -2,7 +2,6 @@ package analysis
 
 import (
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -54,7 +53,7 @@ func GetDailyVisitTrendAPI(accessToken, start, end string) (*VisitTrend, error) 
 }
 
 func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
-	api, err := util.TokenAPI(api, accessToken)
+	api, err := weapp.TokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -65,7 +64,7 @@ func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
 	}
 
 	res := new(VisitTrend)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

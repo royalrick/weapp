@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"os"
 	"strings"
-
-	"github.com/medivhzhan/weapp/util"
 )
 
 // 检测地址
@@ -82,7 +80,7 @@ func IMGSecCheck(filename, token string) (res Response, err error) {
 
 func imgSecCheck(body io.Reader, contentType, token string) (res Response, err error) {
 
-	api, err := util.TokenAPI(BaseURL+IMGSecCheckURL, token)
+	api, err := TokenAPI(BaseURL+IMGSecCheckURL, token)
 	if err != nil {
 		return
 	}
@@ -104,7 +102,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (res Response, err e
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
 func MSGSecCheck(content, token string) (res Response, err error) {
-	api, err := util.TokenAPI(BaseURL+MSGSecCheckURL, token)
+	api, err := TokenAPI(BaseURL+MSGSecCheckURL, token)
 	if err != nil {
 		return
 	}
@@ -113,7 +111,7 @@ func MSGSecCheck(content, token string) (res Response, err error) {
 		"content": content,
 	}
 
-	err = util.PostJSON(api, params, &res)
+	err = PostJSON(api, params, &res)
 	if err != nil {
 		return
 	}

@@ -3,7 +3,6 @@ package message
 
 import (
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -130,12 +129,12 @@ func (msg Card) SendTo(openID, token string) (wres weapp.Response, err error) {
 //
 // @token 微信 access_token
 func send(token string, params interface{}) (res weapp.Response, err error) {
-	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return
 	}
 
-	err = util.PostJSON(api, params, &res)
+	err = weapp.PostJSON(api, params, &res)
 	if err != nil {
 		return
 	}

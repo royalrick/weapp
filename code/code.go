@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -70,12 +69,12 @@ func (code QRCoder) QRCode(token string) (*http.Response, error) {
 // 返回 HTTP 请求实例
 func fetchCode(api, token string, params interface{}) (*http.Response, error) {
 
-	api, err := util.TokenAPI(weapp.BaseURL+api, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res, err := util.PostJSONWithBody(api, params)
+	res, err := weapp.PostJSONWithBody(api, params)
 	if err != nil {
 		return nil, err
 	}

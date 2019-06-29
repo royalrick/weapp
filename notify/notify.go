@@ -9,8 +9,8 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/message"
-	"github.com/medivhzhan/weapp/util"
 )
 
 // Server 微信服务接收器
@@ -133,7 +133,7 @@ func (srv *Server) Serve() error {
 		return err
 	case "GET":
 		srv.Writer.WriteHeader(http.StatusOK)
-		_, err := io.WriteString(srv.Writer, util.GetQuery(srv.Request, "echostr"))
+		_, err := io.WriteString(srv.Writer, weapp.GetQuery(srv.Request, "echostr"))
 		return err
 	default:
 		return errors.New("无效的请求方法: " + srv.Request.Method)
@@ -142,7 +142,7 @@ func (srv *Server) Serve() error {
 
 // 判断是否加密消息
 func encrypted(req *http.Request) bool {
-	return util.GetQuery(req, "encrypt_type") == "aes"
+	return weapp.GetQuery(req, "encrypt_type") == "aes"
 }
 
 // 检验消息的真实性，并且获取解密后的明文
@@ -174,9 +174,9 @@ func encrypt(token, aesKey, appID, msg, nonce string, timestamp int64) error {
 	// 	return errors.New("invalid encoding AES key")
 	// }
 
-	// str := util.RandomString(16) + msg + appID
+	// str := weapp.RandomString(16) + msg + appID
 
-	// bts := util.PKCS5Padding([]byte(str), aes.BlockSize)
+	// bts := weapp.PKCS5Padding([]byte(str), aes.BlockSize)
 
 	// ....
 

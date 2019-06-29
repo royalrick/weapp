@@ -1,16 +1,13 @@
-package util
+package weapp
 
 import (
 	"bytes"
 	"crypto/aes"
 	"crypto/cipher"
-	"crypto/md5"
-	"crypto/rand"
 	"crypto/sha1"
 	"encoding/base64"
 	"encoding/hex"
 	"errors"
-	"io"
 )
 
 // PKCS5UnPadding 反补

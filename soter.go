@@ -1,9 +1,5 @@
 package weapp
 
-import (
-	"github.com/medivhzhan/weapp/util"
-)
-
 const (
 	verifySignatureAPI = "/cgi-bin/soter/verify_signature"
 )
@@ -20,7 +16,7 @@ type VerifySignatureResponse struct {
 // @data 通过 wx.startSoterAuthentication 成功回调获得的 resultJSON 字段
 // @signature 通过 wx.startSoterAuthentication 成功回调获得的 resultJSONSignature 字段
 func VerifySignature(accessToken, openID, data, signature string) (*VerifySignatureResponse, error) {
-	api, err := util.TokenAPI(BaseURL+verifySignatureAPI, accessToken)
+	api, err := TokenAPI(BaseURL+verifySignatureAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -32,7 +28,7 @@ func VerifySignature(accessToken, openID, data, signature string) (*VerifySignat
 	}
 
 	res := new(VerifySignatureResponse)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

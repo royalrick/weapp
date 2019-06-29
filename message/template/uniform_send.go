@@ -2,7 +2,6 @@ package template
 
 import (
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const uniformSendAPI = "/cgi-bin/message/wxopen/template/uniform_send"
@@ -51,13 +50,13 @@ type UniformMsg struct {
 //
 // @token access_token
 func (msg UniformMsg) Send(token string) error {
-	api, err := util.TokenAPI(weapp.BaseURL+uniformSendAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+uniformSendAPI, token)
 	if err != nil {
 		return err
 	}
 
 	res := new(weapp.Response)
-	if err := util.PostJSON(api, msg, res); err != nil {
+	if err := weapp.PostJSON(api, msg, res); err != nil {
 		return err
 	}
 

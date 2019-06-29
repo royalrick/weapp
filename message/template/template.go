@@ -7,7 +7,6 @@ import (
 	"strings"
 
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -76,7 +75,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 		return
 	}
 
-	api, err = util.TokenAPI(api, token)
+	api, err = weapp.TokenAPI(api, token)
 	if err != nil {
 		return
 	}
@@ -87,7 +86,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 	}
 
 	res := new(Templates)
-	err = util.PostJSON(api, params, res)
+	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return
 	}
@@ -102,7 +101,7 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 // @id 模板ID
 // @token 微信 access_token
 func Get(id, token string) (keywords []KeywordItem, err error) {
-	api, err := util.TokenAPI(weapp.BaseURL+detailAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
 		return
 	}
@@ -112,7 +111,7 @@ func Get(id, token string) (keywords []KeywordItem, err error) {
 	}
 
 	res := new(Template)
-	err = util.PostJSON(api, params, res)
+	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return
 	}
@@ -128,7 +127,7 @@ func Get(id, token string) (keywords []KeywordItem, err error) {
 // @keywordIDList 关键词 ID 列表
 // 返回新建模板ID和错误信息
 func Add(id, token string, keywordIDList []uint) (string, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+addAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, token)
 	if err != nil {
 		return "", err
 	}
@@ -144,7 +143,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	}
 
 	res := new(Template)
-	err = util.PostJSON(api, params, res)
+	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return "", err
 	}
@@ -157,7 +156,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 // @id 模板ID
 // @token 微信 aceess_token
 func Delete(id, token string) error {
-	api, err := util.TokenAPI(weapp.BaseURL+deleteAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+deleteAPI, token)
 	if err != nil {
 		return err
 	}
@@ -167,7 +166,7 @@ func Delete(id, token string) error {
 	}
 
 	res := new(weapp.Response)
-	err = util.PostJSON(api, params, res)
+	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return err
 	}
@@ -187,7 +186,7 @@ type Message map[string]interface{}
 // @data 模板内容，不填则下发空模板
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
 func Send(openid, template, page, formID string, data Message, emphasisKeyword, token string) error {
-	api, err := util.TokenAPI(weapp.BaseURL+sendAPI, token)
+	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return err
 	}
@@ -206,7 +205,7 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 	}
 
 	res := new(weapp.Response)
-	err = util.PostJSON(api, params, res)
+	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return err
 	}

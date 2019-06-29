@@ -2,7 +2,6 @@ package analysis
 
 import (
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 const (
@@ -50,7 +49,7 @@ func GetDailyRetainAPI(accessToken, start, end string) (*RetainResponse, error) 
 }
 
 func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
-	api, err := util.TokenAPI(api, accessToken)
+	api, err := weapp.TokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +60,7 @@ func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
 	}
 
 	res := new(RetainResponse)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

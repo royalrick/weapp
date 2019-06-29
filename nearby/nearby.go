@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/medivhzhan/weapp"
-	"github.com/medivhzhan/weapp/util"
 )
 
 // apis
@@ -99,13 +98,13 @@ func (p *Position) Add(accessToken string) (*PositionResponse, error) {
 		"poi_id":             p.PoiID,
 	}
 
-	api, err := util.TokenAPI(weapp.BaseURL+addAPI, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PositionResponse)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -116,7 +115,7 @@ func (p *Position) Add(accessToken string) (*PositionResponse, error) {
 // @accessToken  接口调用凭证
 // @id  附近地点 ID
 func Delete(accessToken, id string) (*weapp.Response, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+deleteAPI, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+deleteAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +125,7 @@ func Delete(accessToken, id string) (*weapp.Response, error) {
 	}
 
 	res := new(weapp.Response)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -157,7 +156,7 @@ type PositionList struct {
 // @page  起始页id（从1开始计数）
 // @pageRows  每页展示个数（最多1000个）
 func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -168,7 +167,7 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 	}
 
 	res := new(PositionList)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -189,7 +188,7 @@ const (
 // @poiID  附近地点 ID
 // @status  是否展示
 func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.Response, error) {
-	api, err := util.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
+	api, err := weapp.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -200,7 +199,7 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.Respons
 	}
 
 	res := new(weapp.Response)
-	if err := util.PostJSON(api, params, res); err != nil {
+	if err := weapp.PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
