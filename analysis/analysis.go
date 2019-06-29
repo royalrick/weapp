@@ -64,10 +64,6 @@ func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to get user portrait")
-	}
-
 	return res, nil
 }
 
@@ -115,10 +111,6 @@ func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, e
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to get visit distribution")
-	}
-
 	return res, nil
 }
 
@@ -162,10 +154,6 @@ func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to get visit page")
-	}
-
 	return res, nil
 }
 
@@ -200,10 +188,6 @@ func getDailySummary(accessToken, start, end string) (*DailySummary, error) {
 	res := new(DailySummary)
 	if err := util.PostJSON(api, params, res); err != nil {
 		return nil, err
-	}
-
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to get daily summary")
 	}
 
 	return res, nil

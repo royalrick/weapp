@@ -36,9 +36,5 @@ func VerifySignature(accessToken, openID, data, signature string) (*VerifySignat
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to verify signature")
-	}
-
 	return res, nil
 }

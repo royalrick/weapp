@@ -118,10 +118,5 @@ func MSGSecCheck(content, token string) (res Response, err error) {
 		return
 	}
 
-	if res.HasError() {
-		err = res.ErrorWithInfo("failed to check message sec")
-		return
-	}
-
 	return
 }

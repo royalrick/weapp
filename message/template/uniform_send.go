@@ -1,8 +1,6 @@
 package template
 
 import (
-	"errors"
-
 	"github.com/medivhzhan/weapp"
 	"github.com/medivhzhan/weapp/util"
 )
@@ -61,10 +59,6 @@ func (msg UniformMsg) Send(token string) error {
 	res := new(weapp.Response)
 	if err := util.PostJSON(api, msg, res); err != nil {
 		return err
-	}
-
-	if res.HasError() {
-		return res.ErrorWithInfo("failed to send uniform message")
 	}
 
 	return nil

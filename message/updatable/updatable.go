@@ -30,10 +30,6 @@ func CreateActivityID(accessToken string) (*Activity, error) {
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to create activity id")
-	}
-
 	return res, nil
 }
 
@@ -82,10 +78,6 @@ func (msg *Message) SetUpdatableMsg(accessToken string) (*weapp.Response, error)
 	res := new(weapp.Response)
 	if err := util.PostJSON(api, msg, res); err != nil {
 		return nil, err
-	}
-
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to set updatable message")
 	}
 
 	return res, nil

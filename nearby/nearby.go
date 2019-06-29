@@ -109,10 +109,6 @@ func (p *Position) Add(accessToken string) (*PositionResponse, error) {
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to add position")
-	}
-
 	return res, nil
 }
 
@@ -132,10 +128,6 @@ func Delete(accessToken, id string) (*weapp.Response, error) {
 	res := new(weapp.Response)
 	if err := util.PostJSON(api, params, res); err != nil {
 		return nil, err
-	}
-
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to delete position")
 	}
 
 	return res, nil
@@ -180,10 +172,6 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 		return nil, err
 	}
 
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to delete position")
-	}
-
 	return res, nil
 }
 
@@ -214,10 +202,6 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.Respons
 	res := new(weapp.Response)
 	if err := util.PostJSON(api, params, res); err != nil {
 		return nil, err
-	}
-
-	if res.HasError() {
-		return nil, res.ErrorWithInfo("failed to delete position")
 	}
 
 	return res, nil

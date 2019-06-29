@@ -22,21 +22,6 @@ type Response struct {
 	ErrMSG  string `json:"errmsg"`
 }
 
-// HasError return has error
-func (res Response) HasError() bool {
-	return res.ErrCode != 0
-}
-
-// ErrorWithInfo create and return error
-func (res Response) ErrorWithInfo(info string) error {
-	em := res.ErrMSG
-	if info != "" {
-		em = info + ": " + em
-	}
-
-	return errors.New(em)
-}
-
 // PhoneNumber 解密后的用户手机号码信息
 type PhoneNumber struct {
 	PhoneNumber     string    `json:"phoneNumber"`
