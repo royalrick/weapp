@@ -1,10 +1,13 @@
 # ![title](title.png)
 
+> 2.0 版本开始支付相关内容会分离到一个单独的包
+
 ## 目录
 
-- [拉取代码](#拉取代码)
-- [AccessToken](#AccessToken)
+- [获取代码](#获取代码)
 - [用户登录](#用户登录)
+- [用户信息](#用户信息)
+- [接口调用凭证](#接口调用凭证)
 - [数据分析](#数据分析)
   - [访问留存](#访问留存)
   - [访问趋势](#访问趋势)
@@ -12,9 +15,9 @@
   - [分布数据](#分布数据)
   - [访问页面](#访问页面)
   - [访问概况](#访问概况)
-- [二维码](#二维码)
-  - [获取小程序码](#获取小程序码)
-  - [获取小程序二维码](#获取小程序二维码)
+- [客服消息](#客服消息)
+  - [接收客服消息](#接收客服消息)
+  - [发送客服消息](#发送客服消息)
 - [模板消息](#模板消息)
   - [获取小程序模板库标题列表](#获取小程序模板库标题列表)
   - [获取帐号下已存在的模板列表](#获取帐号下已存在的模板列表)
@@ -24,34 +27,27 @@
   - [发送模板消息](#发送模板消息)
 - [统一服务消息](#统一服务消息)
 - [动态消息](#动态消息)
+  - [创建被分享动态消息](#创建被分享动态消息)
+  - [修改被分享的动态消息](#修改被分享的动态消息)
 - [附近的小程序](#附近的小程序)
   - [添加地点](#添加地点)
   - [删除地点](#删除地点)
   - [查看地点列表](#查看地点列表)
   - [展示/取消展示附近小程序](#展示/取消展示附近小程序)
-- [客服消息](#客服消息)
-  - [接收客服消息](#接收客服消息)
-  - [发送客服消息](#发送客服消息)
-- [微信支付](#微信支付)
-  - [付款](#付款)
-  - [处理支付结果通知](#处理支付结果通知)
-  - [退款](#退款)
-  - [处理退款结果通知](#处理退款结果通知)
-  - [转账(企业付款)](<#转账(企业付款)>)
-  - [查询转账](#查询转账)
-  - [订单查询](#订单查询)
-  - [支付后获取 UnionID](#支付后获取UnionID)
-- [数据解密](#数据解密)
-  - [解密手机号码](#解密手机号码)
-  - [解密分享内容](#解密分享内容)
-  - [解密用户信息](#解密用户信息)
+- [二维码](#二维码)
+  - [获取小程序码](#获取小程序码)
+  - [获取小程序二维码](#获取小程序二维码)
 - [内容检测](#内容检测)
   - [检测图片](#检测图片)
   - [检测文本](#检测文本)
-- [生物认证秘](#生物认证)
+- [生物认证](#生物认证)
   - [钥签名验证](#钥签名验证)
+- [其他](#其他)
+  - [解密手机号码](#解密手机号码)
+  - [解密分享内容](#解密分享内容)
+  - [解密用户信息](#解密用户信息)
 
-## 拉取代码
+## 获取代码
 
 ```sh
 
@@ -59,20 +55,11 @@ go get -u github.com/medivhzhan/weapp
 
 ```
 
-## AccessToken
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html)
-
-```go
-
-import "github.com/medivhzhan/weapp/token"
-
-// 获取次数有限制 获取后请缓存
-tok, exp, err := token.AccessToken(appID, secret string)
-
-```
+---
 
 ## 用户登录
+
+### 登录凭证校验
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html)
 
@@ -98,83 +85,46 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
-## 二维码
+## 用户信息
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
+### 支付后获取 UnionID
 
-### 获取小程序码
-
-需要二维码数量较少的业务场景
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
 
 ```go
 
-import "github.com/medivhzhan/weapp/code"
+import "github.com/medivhzhan/weapp/payment"
 
-coder := code.QRCoder {
-    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
-    Width: 430, // 图片宽度
-    IsHyaline: true, // 是否需要透明底色
-    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
-    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
-        R: "50",
-        G: "50",
-        B: "50",
-    },
-}
-
-// token: 微信 access_token
-res, err := coder.AppCode(token string)
+res, err := payment.GetPaidUnionID("access-token", "user-openid", "transaction-id")
 if err != nil {
-    // handle error
+    fmt.Println(err)
+    return
 }
-defer res.Body.Close()
-```
+fmt.Printf("返回结果: %#v", res)
 
-需要二维码数量极多的业务场景
-
-```go
-coder := code.QRCoder {
-    Scene: "...", // 参数数据
-    Page: "pages/index", // 识别二维码后进入小程序的页面链接
-    Width: 430, // 图片宽度
-    IsHyaline: true, // 是否需要透明底色
-    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
-    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
-        R: "50",
-        G: "50",
-        B: "50",
-    },
-}
-
-// token: 微信 access_token
-res, err := coder.UnlimitedAppCode(token string)
+res, err := payment.GetPaidUnionIDWithMCH("access-token", "user-openid","out-trade-no", "mch-id")
 if err != nil {
-    // handle error
+    fmt.Println(err)
+    return
 }
-defer res.Body.Close()
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
-### 获取小程序二维码
+---
 
-适用于需要的码数量较少的业务场景
+## 接口调用凭证
+
+### 获取 AccessToken
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html)
 
 ```go
 
-import "github.com/medivhzhan/weapp/code"
+import "github.com/medivhzhan/weapp/token"
 
-coder := code.QRCoder {
-    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
-    Width: 430, // 图片宽度
-}
-
-// 获取小程序二维码
-// token: 微信access_token
-res, err := coder.QRCode(token string)
-if err != nil {
-    // handle error
-}
-defer res.Body.Close()
+// 获取次数有限制 获取后请缓存
+tok, exp, err := token.AccessToken(appID, secret string)
 
 ```
 
@@ -394,6 +344,88 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
+## 客服消息
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
+
+### 接收客服消息
+
+```go
+
+import "github.com/medivhzhan/weapp/notify"
+
+// 新建服务
+srv := notify.NewServer(http.ResponseWriter, *http.Request)
+
+srv.HandleTextMessage(func(msg notify.Text)) {
+    // 处理文本消息
+})
+
+srv.HandleCardMessage(func(msg notify.Card)) {
+    // 处理卡片消息
+})
+
+srv.HandleImageMessage(func(msg notify.Image)) {
+    // 处理图片消息
+})
+
+srv.HandleEvent(func(msg notify.Event)) {
+    // 处理事件
+})
+
+// 执行服务
+if err := srv.Serve(); err != nil{
+    // handle error and do something
+}
+
+```
+
+### 发送客服消息
+
+```go
+
+import "github.com/medivhzhan/weapp/message"
+
+// 文本消息
+msg := message.Text{
+    Content: "消息内容",
+}
+
+// 图片消息
+msg := message.Image{
+    MediaID: "微信 media_id"
+}
+
+// 图文链接消息
+msg := message.Link{
+    Title: "标题"
+    Description: "描述"
+    URL: "点击跳转链接"
+    ThumbURL: "图片链接"
+}
+
+// 卡片消息
+msg := message.Card{
+    Title: "标题"
+    PagePath: "小程序页面路径"
+    ThumbMediaID: "卡封面图片 media_id"
+}
+
+// 发送消息
+// openid: 用户 openid
+// token: 微信 access_token
+res, err := msg.SendTo(openid, token string)
+if err != nil {
+    // handle error
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
 ## 模板消息
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.addTemplate.html)
@@ -492,6 +524,8 @@ err := template.Send(openid, template, page, formID string, msg template.Message
 
 ## 统一服务消息
 
+### 发送统一服务消息
+
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/uniform-message/uniformMessage.send.html)
 
 ```go
@@ -557,7 +591,7 @@ err := msg.Send(token)
 
 ## 动态消息
 
-### 创建被分享动态消息的 activity_id
+### 创建被分享动态消息
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html)
 
@@ -739,382 +773,83 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
-## 客服消息
+## 二维码
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
 
-### 接收客服消息
+### 获取小程序码
 
-```go
-
-import "github.com/medivhzhan/weapp/notify"
-
-// 新建服务
-srv := notify.NewServer(http.ResponseWriter, *http.Request)
-
-srv.HandleTextMessage(func(msg notify.Text)) {
-    // 处理文本消息
-})
-
-srv.HandleCardMessage(func(msg notify.Card)) {
-    // 处理卡片消息
-})
-
-srv.HandleImageMessage(func(msg notify.Image)) {
-    // 处理图片消息
-})
-
-srv.HandleEvent(func(msg notify.Event)) {
-    // 处理事件
-})
-
-// 执行服务
-if err := srv.Serve(); err != nil{
-    // handle error and do something
-}
-
-```
-
-### 发送客服消息
+需要二维码数量较少的业务场景
 
 ```go
 
-import "github.com/medivhzhan/weapp/message"
+import "github.com/medivhzhan/weapp/code"
 
-// 文本消息
-msg := message.Text{
-    Content: "消息内容",
+coder := code.QRCoder {
+    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
+    Width: 430, // 图片宽度
+    IsHyaline: true, // 是否需要透明底色
+    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
+        R: "50",
+        G: "50",
+        B: "50",
+    },
 }
 
-// 图片消息
-msg := message.Image{
-    MediaID: "微信 media_id"
-}
-
-// 图文链接消息
-msg := message.Link{
-    Title: "标题"
-    Description: "描述"
-    URL: "点击跳转链接"
-    ThumbURL: "图片链接"
-}
-
-// 卡片消息
-msg := message.Card{
-    Title: "标题"
-    PagePath: "小程序页面路径"
-    ThumbMediaID: "卡封面图片 media_id"
-}
-
-// 发送消息
-// openid: 用户 openid
 // token: 微信 access_token
-res, err := msg.SendTo(openid, token string)
+res, err := coder.AppCode(token string)
 if err != nil {
     // handle error
-    return
 }
-
-fmt.Printf("返回结果: %#v", res)
-
+defer res.Body.Close()
 ```
 
----
-
-## 微信支付
-
-### 付款
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_1)
+需要二维码数量极多的业务场景
 
 ```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 新建支付订单
-form := payment.Order{
-    // 必填
-    AppID:      "APPID",
-    MchID:      "商户号",
-    Body:       "商品描述",
-    NotifyURL:  "通知地址",
-    OpenID:     "通知用户的 openid",
-    OutTradeNo: "商户订单号",
-    TotalFee:   "总金额(分)",
-
-    // 选填 ...
-    IP:        "发起支付终端IP",
-    NoCredit:  "是否允许使用信用卡",
-    StartedAt: "交易起始时间",
-    ExpiredAt: "交易结束时间",
-    Tag:       "订单优惠标记",
-    Detail:    "商品详情",
-    Attach:    "附加数据",
+coder := code.QRCoder {
+    Scene: "...", // 参数数据
+    Page: "pages/index", // 识别二维码后进入小程序的页面链接
+    Width: 430, // 图片宽度
+    IsHyaline: true, // 是否需要透明底色
+    AutoColor: true, // 自动配置线条颜色, 如果颜色依然是黑色, 则说明不建议配置主色调
+    LineColor: code.Color{ //  AutoColor 为 false 时生效, 使用 rgb 设置颜色 十进制表示
+        R: "50",
+        G: "50",
+        B: "50",
+    },
 }
 
-res, err := form.Unify("支付密钥")
+// token: 微信 access_token
+res, err := coder.UnlimitedAppCode(token string)
 if err != nil {
     // handle error
-    return
+}
+defer res.Body.Close()
+
+```
+
+### 获取小程序二维码
+
+适用于需要的码数量较少的业务场景
+
+```go
+
+import "github.com/medivhzhan/weapp/code"
+
+coder := code.QRCoder {
+    Path: "pages/index?query=1", // 识别二维码后进入小程序的页面链接
+    Width: 430, // 图片宽度
 }
 
-fmt.Printf("返回结果: %#v", res)
-
-// 获取小程序前点调用支付接口所需参数
-params, err := payment.GetParams(res.AppID, "微信支付密钥", res.NonceStr, res.PrePayID)
+// 获取小程序二维码
+// token: 微信access_token
+res, err := coder.QRCode(token string)
 if err != nil {
     // handle error
-    return
 }
-
-```
-
-### 处理支付结果通知
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_7&index=8)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 必须在下单时指定的 notify_url 的路由处理器下
-err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(ntf payment.PaidNotify) (bool, string) {
-    // 处理通知
-    fmt.Printf("%#v", ntf)
-
-    // 处理成功 return true, ""
-    // or
-    // 处理失败 return false, "失败原因..."
-})
-
-```
-
-### 退款
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_4)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 新建退款订单
-form := payment.Refunder{
-    // 必填
-    AppID:       "APPID",
-    MchID:       "商户号",
-    TotalFee:    "总金额(分)",
-    RefundFee:   "退款金额(分)",
-    OutRefundNo: "商户退款单号",
-    // 二选一
-    OutTradeNo: "商户订单号", // or TransactionID: "微信订单号",
-
-    // 选填 ...
-    RefundDesc: "退款原因",   // 若商户传入, 会在下发给用户的退款消息中体现退款原因
-    NotifyURL:  "结果通知地址", // 覆盖商户平台上配置的回调地址
-}
-
-// 需要证书
-res, err := form.Refund("支付密钥",  "cert 证书路径", "key 证书路径")
-if err != nil {
-    // handle error
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
-
-### 处理退款结果通知
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_5)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 必须在商户平台上配置的回调地址或者发起退款时指定的 notify_url 的路由处理器下
-err := payment.HandleRefundedNotify(w http.ResponseWriter, req *http.Request,  "支付密钥", func(ntf payment.RefundedNotify) (bool,         // 处理通知
-    fmt.Printf("%#v", ntf)
-
-    // 处理成功 return true, ""
-    // or
-    // 处理失败 return false, "失败原因..."
-})
-
-```
-
-### 转账(企业付款到零钱)
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_2)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 新建退款订单
-form := payment.Transferer{
-    // 必填 ...
-    AppID:       "APPID",
-    MchID:       "商户号",
-    Amount:      "总金额(分)",
-    OutRefundNo: "商户退款单号",
-    OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
-    ToUser:      "转账目标用户的 openid",
-    Desc:        "转账描述", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
-
-    // 选填 ...
-    IP: "发起转账端 IP 地址", // 若商户传入, 会在下发给用户的退款消息中体现退款原因
-    CheckName: "校验用户姓名选项 true/false",
-    RealName: "收款用户真实姓名", // 如果 CheckName 设置为 true 则必填用户真实姓名
-    Device:   "发起转账设备信息",
-}
-
-// 需要证书
-res, err := form.Transfer("支付密钥",  "cert 证书路径", "key 证书路径")
-if err != nil {
-    // handle error
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
-
-### 查询转账
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/tools/mch_pay.php?chapter=14_3)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-// 新建退款订单
-form := payment.TransferInfo{
-    AppID:       "APPID",
-    MchID:       "商户号",
-    OutTradeNo:  "商户订单号", // or TransactionID: "微信订单号",
-}
-
-// 需要证书
-res, err := form.GetInfo("支付密钥",  "cert 证书路径", "key 证书路径")
-if err != nil {
-    // handle error
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
-
-### 订单查询
-
-[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_2)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-q := payment.Query{
-  AppID:       "APPID",
-  MchID:       "商户号",
-  OutTradeNo:  "商户订单号",//商户订单号和微信订单号 至少填一个
-  TransactionID: "微信订单号",
-}
-res, err := q.Query("支付密钥")  //只有当res.TradeState == "SUCCESS" 才是支付成功了
-if err != nil {
-   fmt.Println(err)
-   return
-}
-fmt.Printf("返回结果: %#v", res)
-
-```
-
-### 支付后获取 UnionID
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
-
-```go
-
-import "github.com/medivhzhan/weapp/payment"
-
-
-    res, err := payment.GetPaidUnionID("access-token", "user-openid", "transaction-id")
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    fmt.Printf("返回结果: %#v", res)
-
-    res, err := payment.GetPaidUnionIDWithMCH("access-token", "user-openid","out-trade-no", "mch-id")
-    if err != nil {
-        fmt.Println(err)
-        return
-    }
-    fmt.Printf("返回结果: %#v", res)
-
-```
-
----
-
-## 数据解密
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95)
-
-> 请注意: 前端应当先完成**登录流程**再调用获取**加密数据**的相关接口。
-
-### 解密手机号码
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-// 解密手机号码
-//
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @data 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
-phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
-
-fmt.Printf("手机数据: %#v", phone)
-
-```
-
-### 解密分享内容
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-// 解密转发信息的加密数据
-//
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @data 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
-//
-// @gid 小程序唯一群号
-openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
-
-```
-
-### 解密用户信息
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-// 解密用户信息
-//
-// @rawData 不包括敏感信息的原始数据字符串, 用于计算签名。
-// @encryptedData 包括敏感数据在内的完整用户信息的加密数据
-// @signature 使用 sha1( rawData + session_key ) 得到字符串, 用于校验用户信息
-// @iv 加密算法的初始向量
-// @ssk 微信 session_key
-ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
-if err != nil {
-    return
-}
-
-fmt.Printf("用户数据: %#v", ui)
+defer res.Body.Close()
 
 ```
 
@@ -1197,5 +932,69 @@ if err != nil {
 // res.Errcode
 // res.Errmsg
 fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 数据解密
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/signature.html#%E5%8A%A0%E5%AF%86%E6%95%B0%E6%8D%AE%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95)
+
+> 请注意: 前端应当先完成**登录流程**再调用获取**加密数据**的相关接口。
+
+### 解密手机号码
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 解密手机号码
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
+
+fmt.Printf("手机数据: %#v", phone)
+
+```
+
+### 解密分享内容
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 解密转发信息的加密数据
+//
+// @ssk 通过 Login 向微信服务端请求得到的 session_key
+// @data 小程序通过 api 得到的加密数据(encryptedData)
+// @iv 小程序通过 api 得到的初始向量(iv)
+//
+// @gid 小程序唯一群号
+openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
+
+```
+
+### 解密用户信息
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+// 解密用户信息
+//
+// @rawData 不包括敏感信息的原始数据字符串, 用于计算签名。
+// @encryptedData 包括敏感数据在内的完整用户信息的加密数据
+// @signature 使用 sha1( rawData + session_key ) 得到字符串, 用于校验用户信息
+// @iv 加密算法的初始向量
+// @ssk 微信 session_key
+ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
+if err != nil {
+    return
+}
+
+fmt.Printf("用户数据: %#v", ui)
 
 ```
