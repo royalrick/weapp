@@ -11,40 +11,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"io"
-	"sort"
-	"strings"
-
-	"github.com/medivhzhan/weapp/util/ecb"
 )
-
-// SignByMD5 多参数通过MD5签名
-func SignByMD5(data map[string]string, key string) (string, error) {
-
-	var query []string
-	for k, v := range data {
-		query = append(query, k+"="+v)
-	}
-
-	sort.Strings(query)
-	query = append(query, "key="+key)
-	str := strings.Join(query, "&")
-
-	str, err := MD5(str)
-	if err != nil {
-		return "", err
-	}
-
-	return strings.ToUpper(str), nil
-}
-
-// MD5 加密
-func MD5(str string) (string, error) {
-	hs := md5.New()
-	if _, err := hs.Write([]byte(str)); err != nil {
-		return "", err
-	}
-	return hex.EncodeToString(hs.Sum(nil)), nil
-}
 
 // PKCS5UnPadding 反补
 // Golang AES没有64位的块, 如果采用PKCS5, 那么实质上就是采用PKCS7
@@ -126,58 +93,4 @@ func CBCDecrypt(ssk, data, iv string) (bts []byte, err error) {
 	mode.CryptBlocks(plaintext, ciphertext)
 
 	return PKCS5UnPadding(plaintext)
-}
-
-// CBCEncrypt CBC加密数据
-func CBCEncrypt(key, data string) (ciphertext []byte, err error) {
-	dk, err := hex.DecodeString(key)
-	if err != nil {
-		return
-	}
-
-	plaintext := []byte(data)
-
-	if len(plaintext)%aes.BlockSize != 0 {
-		err = errors.New("plaintext is not a multiple of the block size")
-		return
-	}
-
-	block, err := aes.NewCipher(dk)
-	if err != nil {
-		return
-	}
-
-	ciphertext = make([]byte, aes.BlockSize+len(plaintext))
-	iv := ciphertext[:aes.BlockSize]
-	if _, err = io.ReadFull(rand.Reader, iv); err != nil {
-		return
-	}
-
-	cipher.NewCBCEncrypter(block, iv).CryptBlocks(ciphertext[aes.BlockSize:], plaintext)
-
-	return PKCS5Padding(ciphertext, block.BlockSize()), nil
-}
-
-// AesECBDecrypt CBC解密数据
-//
-// @ciphertext 加密数据
-// @key 商户支付密钥
-func AesECBDecrypt(ciphertext, key []byte) (plaintext []byte, err error) {
-
-	if len(ciphertext) < aes.BlockSize {
-		return nil, errors.New("cipher too short")
-	}
-	// ECB mode always works in whole blocks.
-	if len(ciphertext)%aes.BlockSize != 0 {
-		return nil, errors.New("cipher is not a multiple of the block size")
-	}
-
-	block, err := aes.NewCipher(key)
-	if err != nil {
-		return
-	}
-
-	ecb.NewDecrypter(block).CryptBlocks(ciphertext, ciphertext)
-
-	return PKCS5UnPadding(ciphertext)
 }
