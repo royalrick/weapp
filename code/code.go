@@ -44,7 +44,7 @@ type Color struct {
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // @token 微信access_token
-func (code QRCoder) AppCode(token string) (*http.Response, error) {
+func (code QRCoder) AppCode(token string) (*http.Response, *weapp.Response, error) {
 	return fetchCode(appCodeAPI, token, code)
 }
 
@@ -53,7 +53,7 @@ func (code QRCoder) AppCode(token string) (*http.Response, error) {
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
 //
 // @token 微信access_token
-func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
+func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, *weapp.Response, error) {
 	return fetchCode(unlimitedAppCodeAPI, token, code)
 }
 
@@ -61,35 +61,37 @@ func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
 // 可接受path参数较长，生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // @token 微信access_token
-func (code QRCoder) QRCode(token string) (*http.Response, error) {
+func (code QRCoder) QRCode(token string) (*http.Response, *weapp.Response, error) {
 	return fetchCode(qrCodeAPI, token, code)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func fetchCode(api, token string, params interface{}) (*http.Response, error) {
+func fetchCode(api, token string, params interface{}) (*http.Response, *weapp.Response, error) {
 
 	api, err := weapp.TokenAPI(weapp.BaseURL+api, token)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	res, err := weapp.PostJSONWithBody(api, params)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
+		defer res.Body.Close()
 		response := new(weapp.Response)
 		if err := json.NewDecoder(res.Body).Decode(response); err != nil {
-			return nil, err
+			return nil, nil, err
 		}
+		return nil, response, nil
 
-		return nil, response.ErrorWithInfo("failed to fetch code")
 	case header == "image/jpeg": // 返回文件
-		return res, nil
+		return res, nil, nil
+
 	default:
-		return nil, errors.New("unknown response header: " + header)
+		return nil, nil, errors.New("invalid response header: " + header)
 	}
 }
