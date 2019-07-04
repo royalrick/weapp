@@ -17,7 +17,7 @@ type ContactGetter struct {
 
 // GetContactResponse 获取面单联系人信息返回数据
 type GetContactResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	WaybillID string        `json:"waybill_id"` // 运单 ID
 	Sender    []ContactUser `json:"sender"`     // 发件人信息
 	Receiver  []ContactUser `json:"receiver"`   // 收件人信息
@@ -58,7 +58,7 @@ type TemplateViewer struct {
 
 // PreviewTemplateResponse 预览面单模板返回数据
 type PreviewTemplateResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	WaybillID               string `json:"waybill_id"`                // 运单 ID
 	RenderedWaybillTemplate string `json:"rendered_waybill_template"` // 渲染后的面单 HTML 文件（已经过 Base64 编码）
 }
@@ -98,13 +98,13 @@ type BusinnessUpdater struct {
 
 // Update 更新商户审核结果
 // @accessToken 接口调用凭证
-func (bu *BusinnessUpdater) Update(accessToken string) (*weapp.Response, error) {
+func (bu *BusinnessUpdater) Update(accessToken string) (*weapp.BaseResponse, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+apiPreviewTemplate, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, bu, res); err != nil {
 		return nil, err
 	}
@@ -123,13 +123,13 @@ type PathUpdater struct {
 
 // Update 更新运单轨迹
 // @accessToken 接口调用凭证
-func (pu *PathUpdater) Update(accessToken string) (*weapp.Response, error) {
+func (pu *PathUpdater) Update(accessToken string) (*weapp.BaseResponse, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+apiPreviewTemplate, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, pu, res); err != nil {
 		return nil, err
 	}

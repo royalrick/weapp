@@ -69,7 +69,7 @@ type Link struct {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Text) SendTo(openID, token string) (wres weapp.Response, err error) {
+func (msg Text) SendTo(openID, token string) (wres weapp.BaseResponse, err error) {
 
 	params := message{
 		Receiver: openID,
@@ -84,7 +84,7 @@ func (msg Text) SendTo(openID, token string) (wres weapp.Response, err error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Image) SendTo(openID, token string) (wres weapp.Response, err error) {
+func (msg Image) SendTo(openID, token string) (wres weapp.BaseResponse, err error) {
 
 	params := message{
 		Receiver: openID,
@@ -99,7 +99,7 @@ func (msg Image) SendTo(openID, token string) (wres weapp.Response, err error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Link) SendTo(openID, token string) (wres weapp.Response, err error) {
+func (msg Link) SendTo(openID, token string) (wres weapp.BaseResponse, err error) {
 
 	params := message{
 		Receiver: openID,
@@ -114,7 +114,7 @@ func (msg Link) SendTo(openID, token string) (wres weapp.Response, err error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Card) SendTo(openID, token string) (wres weapp.Response, err error) {
+func (msg Card) SendTo(openID, token string) (wres weapp.BaseResponse, err error) {
 
 	params := message{
 		Receiver: openID,
@@ -128,7 +128,7 @@ func (msg Card) SendTo(openID, token string) (wres weapp.Response, err error) {
 // send 发送消息
 //
 // @token 微信 access_token
-func send(token string, params interface{}) (res weapp.Response, err error) {
+func send(token string, params interface{}) (res weapp.BaseResponse, err error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
 	if err != nil {
 		return

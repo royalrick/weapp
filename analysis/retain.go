@@ -18,7 +18,7 @@ type Retain struct {
 
 // RetainResponse 生物认证秘钥签名验证请求返回数据
 type RetainResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	RefDate    string   `json:"ref_date"`     // 时间，月格式为 yyyymm | 周格式为 yyyymmdd-yyyymmdd | 天格式为 yyyymmdd
 	VisitUV    []Retain `json:"visit_uv"`     // 活跃用户留存
 	VisitUVNew []Retain `json:"visit_uv_new"` // 新增用户留存

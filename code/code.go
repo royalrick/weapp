@@ -44,7 +44,7 @@ type Color struct {
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // @token 微信access_token
-func (code QRCoder) AppCode(token string) (*http.Response, *weapp.Response, error) {
+func (code QRCoder) AppCode(token string) (*http.Response, *weapp.BaseResponse, error) {
 	return fetchCode(appCodeAPI, token, code)
 }
 
@@ -53,7 +53,7 @@ func (code QRCoder) AppCode(token string) (*http.Response, *weapp.Response, erro
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
 //
 // @token 微信access_token
-func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, *weapp.Response, error) {
+func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, *weapp.BaseResponse, error) {
 	return fetchCode(unlimitedAppCodeAPI, token, code)
 }
 
@@ -61,13 +61,13 @@ func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, *weapp.Respo
 // 可接受path参数较长，生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // @token 微信access_token
-func (code QRCoder) QRCode(token string) (*http.Response, *weapp.Response, error) {
+func (code QRCoder) QRCode(token string) (*http.Response, *weapp.BaseResponse, error) {
 	return fetchCode(qrCodeAPI, token, code)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func fetchCode(api, token string, params interface{}) (*http.Response, *weapp.Response, error) {
+func fetchCode(api, token string, params interface{}) (*http.Response, *weapp.BaseResponse, error) {
 
 	api, err := weapp.TokenAPI(weapp.BaseURL+api, token)
 	if err != nil {
@@ -81,7 +81,7 @@ func fetchCode(api, token string, params interface{}) (*http.Response, *weapp.Re
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
-		response := new(weapp.Response)
+		response := new(weapp.BaseResponse)
 		if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 			res.Body.Close()
 			return nil, nil, err

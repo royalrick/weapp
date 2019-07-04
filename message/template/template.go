@@ -27,7 +27,7 @@ type KeywordItem struct {
 
 // Template 消息模板
 type Template struct {
-	weapp.Response
+	weapp.BaseResponse
 	ID         string `json:"id,omitempty"`
 	TemplateID string `json:"template_id,omitempty"`
 	Title      string `json:"title"`
@@ -39,7 +39,7 @@ type Template struct {
 
 // Templates 获取模板列表返回的数据
 type Templates struct {
-	weapp.Response
+	weapp.BaseResponse
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
 }
@@ -165,7 +165,7 @@ func Delete(id, token string) error {
 		"template_id": id,
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return err
@@ -204,7 +204,7 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	err = weapp.PostJSON(api, params, res)
 	if err != nil {
 		return err

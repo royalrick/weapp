@@ -23,7 +23,7 @@ const (
 //
 // @url 要检测的图片网络路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheckFromNet(url, token string) (res Response, err error) {
+func IMGSecCheckFromNet(url, token string) (res BaseResponse, err error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return
@@ -55,7 +55,7 @@ func IMGSecCheckFromNet(url, token string) (res Response, err error) {
 //
 // @filename 要检测的图片本地路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheck(filename, token string) (res Response, err error) {
+func IMGSecCheck(filename, token string) (res BaseResponse, err error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return
@@ -78,7 +78,7 @@ func IMGSecCheck(filename, token string) (res Response, err error) {
 	return imgSecCheck(body, contentType, token)
 }
 
-func imgSecCheck(body io.Reader, contentType, token string) (res Response, err error) {
+func imgSecCheck(body io.Reader, contentType, token string) (res BaseResponse, err error) {
 
 	api, err := TokenAPI(BaseURL+IMGSecCheckURL, token)
 	if err != nil {
@@ -101,7 +101,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (res Response, err e
 //
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
-func MSGSecCheck(content, token string) (res Response, err error) {
+func MSGSecCheck(content, token string) (res BaseResponse, err error) {
 	api, err := TokenAPI(BaseURL+MSGSecCheckURL, token)
 	if err != nil {
 		return

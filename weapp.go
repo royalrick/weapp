@@ -14,8 +14,8 @@ const (
 	codeAPI = "/sns/jscode2session"
 )
 
-// Response 请求微信返回基础数据
-type Response struct {
+// BaseResponse 请求微信返回基础数据
+type BaseResponse struct {
 	ErrCode int    `json:"errcode"`
 	ErrMSG  string `json:"errmsg"`
 }
@@ -52,7 +52,7 @@ type LoginResponse struct {
 }
 
 type loginResponse struct {
-	Response
+	BaseResponse
 	LoginResponse
 }
 

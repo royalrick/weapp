@@ -55,7 +55,7 @@ func (msg UniformMsg) Send(token string) error {
 		return err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, msg, res); err != nil {
 		return err
 	}

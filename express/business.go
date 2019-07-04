@@ -37,13 +37,13 @@ const (
 
 // Bind 绑定、解绑物流账号
 // @accessToken 接口调用凭证
-func (ac *Account) Bind(accessToken string) (*weapp.Response, error) {
+func (ac *Account) Bind(accessToken string) (*weapp.BaseResponse, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+apiBindAccount, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, ac, res); err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (ac *Account) Bind(accessToken string) (*weapp.Response, error) {
 
 // AccountList 所有绑定的物流账号
 type AccountList struct {
-	weapp.Response
+	weapp.BaseResponse
 	Count uint `json:"count"` // 账号数量
 	List  []struct {
 		BizID           string     `json:"biz_id"`            // 	快递公司客户编码
@@ -105,7 +105,7 @@ type PathGetter struct {
 
 // Path 运单轨迹
 type Path struct {
-	weapp.Response
+	weapp.BaseResponse
 	OpenID       string     `json:"openid"`         // 用户openid
 	DeliveryID   string     `json:"delivery_id"`    // 快递公司 ID
 	WaybillID    string     `json:"waybill_id"`     // 运单 ID
@@ -244,7 +244,7 @@ const (
 
 // AddOrderResponse 创建订单返回数据
 type AddOrderResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	OrderID     string `json:"order_id"`   //	订单ID，下单成功时返回
 	WaybillID   string `json:"waybill_id"` //	运单ID，下单成功时返回
 	WaybillData []struct {
@@ -282,7 +282,7 @@ type OrderCanceler struct {
 
 // CancelOrderResponse 取消订单返回数据
 type CancelOrderResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	Count uint `json:"count"` //快递公司数量
 	Data  []struct {
 		DeliveryID   string `json:"delivery_id"`   // 快递公司 ID
@@ -293,13 +293,13 @@ type CancelOrderResponse struct {
 
 // Cancel 取消运单
 // @accessToken 接口调用凭证
-func (oc *OrderCanceler) Cancel(accessToken string) (*weapp.Response, error) {
+func (oc *OrderCanceler) Cancel(accessToken string) (*weapp.BaseResponse, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+apiCancelOrder, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, oc, res); err != nil {
 		return nil, err
 	}
@@ -309,7 +309,7 @@ func (oc *OrderCanceler) Cancel(accessToken string) (*weapp.Response, error) {
 
 // DeliveryList 支持的快递公司列表
 type DeliveryList struct {
-	weapp.Response
+	weapp.BaseResponse
 	Count uint `json:"count"` // 快递公司数量
 	Data  []struct {
 		ID   string `json:"delivery_id"`   // 快递公司 ID
@@ -344,7 +344,7 @@ type OrderGetter struct {
 
 // GetOrderResponse 获取运单返回数据
 type GetOrderResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	PrintHTML   string `json:"print_html"` // 运单 html 的 BASE64 结果
 	WaybillData []struct {
 		Key   string `json:"key"`   // 运单信息 key
@@ -371,7 +371,7 @@ func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
 
 // GetPrinterResponse 获取打印员返回数据
 type GetPrinterResponse struct {
-	weapp.Response
+	weapp.BaseResponse
 	Count  uint     `json:"count"`  // 已经绑定的打印员数量
 	OpenID []string `json:"openid"` // 打印员 openid 列表
 
@@ -402,7 +402,7 @@ type QuotaGetter struct {
 
 // Quota 电子面单余额
 type Quota struct {
-	weapp.Response
+	weapp.BaseResponse
 	Number uint // 电子面单余额
 }
 
@@ -428,13 +428,13 @@ type PrinterUpdater struct {
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (pu *PrinterUpdater) Update(accessToken string) (*weapp.Response, error) {
+func (pu *PrinterUpdater) Update(accessToken string) (*weapp.BaseResponse, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+apiUpdatePrinter, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.Response)
+	res := new(weapp.BaseResponse)
 	if err := weapp.PostJSON(api, pu, res); err != nil {
 		return nil, err
 	}

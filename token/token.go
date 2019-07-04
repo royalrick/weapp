@@ -13,7 +13,7 @@ const tokenAPI = "/cgi-bin/token"
 
 // 获取 access_token 成功返回数据
 type response struct {
-	weapp.Response
+	weapp.BaseResponse
 	AccessToken string        `json:"access_token"`
 	ExpireIn    time.Duration `json:"expires_in"`
 }
