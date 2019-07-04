@@ -45,7 +45,7 @@
   - [检测图片](#检测图片)
   - [检测文本](#检测文本)
 - [生物认证](#生物认证)
-  - [钥签名验证](#钥签名验证)
+  - [秘钥签名验证](#秘钥签名验证)
 - [其他](#其他)
   - [解密手机号码](#解密手机号码)
   - [解密分享内容](#解密分享内容)
@@ -918,7 +918,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 生物认证
 
-### 钥签名验证
+### 秘钥签名验证
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/soter/soter.verifySignature.html)
 

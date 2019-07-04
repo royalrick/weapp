@@ -81,17 +81,18 @@ func fetchCode(api, token string, params interface{}) (*http.Response, *weapp.Re
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
-		defer res.Body.Close()
 		response := new(weapp.Response)
 		if err := json.NewDecoder(res.Body).Decode(response); err != nil {
+			res.Body.Close()
 			return nil, nil, err
 		}
-		return nil, response, nil
+		return res, response, nil
 
 	case header == "image/jpeg": // 返回文件
 		return res, nil, nil
 
 	default:
+		res.Body.Close()
 		return nil, nil, errors.New("invalid response header: " + header)
 	}
 }
