@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"net/http"
-	"net/url"
 )
 
 const (
@@ -44,6 +43,7 @@ type Userinfo struct {
 
 // LoginResponse 返回给用户的数据
 type LoginResponse struct {
+	BaseResponse
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	// 用户在开放平台的唯一标识符
@@ -51,40 +51,29 @@ type LoginResponse struct {
 	UnionID string `json:"unionid"`
 }
 
-type loginResponse struct {
-	BaseResponse
-	LoginResponse
-}
-
 // Login 用户登录
 // @appID 小程序 appID
 // @secret 小程序的 app secret
 // @code 小程序登录时获取的 code
-func Login(appID, secret, code string) (response LoginResponse, err error) {
-	if code == "" {
-		err = errors.New("code can not be null")
-		return
-	}
+func Login(appID, secret, code string) (*LoginResponse, error) {
 
 	api, err := code2url(appID, secret, code)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	resp, err := http.Get(api)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	res := new(loginResponse)
-	err = json.NewDecoder(resp.Body).Decode(res)
-	if err != nil {
-		return
+	res := new(LoginResponse)
+	if err = json.NewDecoder(resp.Body).Decode(res); err != nil {
+		return nil, err
 	}
 
-	response = res.LoginResponse
-	return
+	return res, nil
 }
 
 type watermark struct {
@@ -141,38 +130,35 @@ func DecryptShareInfo(ssk, data, iv string) (string, error) {
 // @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
-func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (ui Userinfo, err error) {
+func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*Userinfo, error) {
 
 	if ok := ValidateSignature(rawData, ssk, signature); !ok {
-		err = errors.New("数据校验失败")
-		return
+		return nil, errors.New("failed to validate signature")
 	}
 
-	bts, err := decryptShareData(ssk, encryptedData, iv)
+	raw, err := decryptShareData(ssk, encryptedData, iv)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	err = json.Unmarshal(bts, &ui)
-	return
+	info := new(Userinfo)
+	if err := json.Unmarshal(raw, info); err != nil {
+		return nil, err
+	}
+
+	return info, nil
 }
 
 // 拼接 获取 session_key 的 URL
 func code2url(appID, secret, code string) (string, error) {
 
-	url, err := url.Parse(BaseURL + codeAPI)
-	if err != nil {
-		return "", err
+	api := BaseURL + codeAPI
+	params := map[string]string{
+		"appid":      appID,
+		"secret":     secret,
+		"js_code":    code,
+		"grant_type": "authorization_code",
 	}
 
-	query := url.Query()
-
-	query.Set("appid", appID)
-	query.Set("secret", secret)
-	query.Set("js_code", code)
-	query.Set("grant_type", "authorization_code")
-
-	url.RawQuery = query.Encode()
-
-	return url.String(), nil
+	return EncodeURL(api, params)
 }

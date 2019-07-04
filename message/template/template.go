@@ -2,7 +2,6 @@
 package template
 
 import (
-	"errors"
 	"strconv"
 	"strings"
 
@@ -37,8 +36,8 @@ type Template struct {
 	KeywordList []KeywordItem `json:"keyword_list,omitempty"`
 }
 
-// Templates 获取模板列表返回的数据
-type Templates struct {
+// GetTemplateListResponse 获取模板列表返回的数据
+type GetTemplateListResponse struct {
 	weapp.BaseResponse
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
@@ -49,7 +48,7 @@ type Templates struct {
 // @offset 开始获取位置 从0开始
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
-func List(offset uint, count uint, token string) (list []Template, total uint, err error) {
+func List(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
 	return templates(weapp.BaseURL+listAPI, offset, count, token)
 }
 
@@ -58,7 +57,7 @@ func List(offset uint, count uint, token string) (list []Template, total uint, e
 // @offset 开始获取位置 从0开始
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
-func Selves(offset uint, count uint, token string) (list []Template, total uint, err error) {
+func Selves(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
 	return templates(weapp.BaseURL+selvesAPI, offset, count, token)
 }
 
@@ -68,16 +67,11 @@ func Selves(offset uint, count uint, token string) (list []Template, total uint,
 // @offset 开始获取位置 从0开始
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
-func templates(api string, offset, count uint, token string) (list []Template, total uint, err error) {
+func templates(api string, offset, count uint, token string) (*GetTemplateListResponse, error) {
 
-	if count > 20 {
-		err = errors.New("'count' cannot be great than 20")
-		return
-	}
-
-	api, err = weapp.TokenAPI(api, token)
+	api, err := weapp.TokenAPI(api, token)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	params := map[string]interface{}{
@@ -85,25 +79,22 @@ func templates(api string, offset, count uint, token string) (list []Template, t
 		"count":  count,
 	}
 
-	res := new(Templates)
-	err = weapp.PostJSON(api, params, res)
-	if err != nil {
-		return
+	res := new(GetTemplateListResponse)
+	if err := weapp.PostJSON(api, params, res); err != nil {
+		return nil, err
 	}
 
-	list = res.List
-	total = res.TotalCount
-	return
+	return res, nil
 }
 
 // Get 获取模板库某个模板标题下关键词库
 //
 // @id 模板ID
 // @token 微信 access_token
-func Get(id, token string) (keywords []KeywordItem, err error) {
+func Get(id, token string) ([]KeywordItem, error) {
 	api, err := weapp.TokenAPI(weapp.BaseURL+detailAPI, token)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	params := map[string]string{
@@ -111,13 +102,11 @@ func Get(id, token string) (keywords []KeywordItem, err error) {
 	}
 
 	res := new(Template)
-	err = weapp.PostJSON(api, params, res)
-	if err != nil {
-		return
+	if err = weapp.PostJSON(api, params, res); err != nil {
+		return nil, err
 	}
 
-	keywords = res.KeywordList
-	return
+	return res.KeywordList, nil
 }
 
 // Add 组合模板并添加至帐号下的个人模板库

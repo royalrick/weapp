@@ -3,7 +3,6 @@ package weapp
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"mime/multipart"
@@ -23,10 +22,10 @@ const (
 //
 // @url 要检测的图片网络路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheckFromNet(url, token string) (res BaseResponse, err error) {
+func IMGSecCheckFromNet(url, token string) (*BaseResponse, error) {
 	resp, err := http.Get(url)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer resp.Body.Close()
 	bts, err := ioutil.ReadAll(resp.Body)
@@ -34,15 +33,13 @@ func IMGSecCheckFromNet(url, token string) (res BaseResponse, err error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 	str := strings.Split(url, "/")
-	fmt.Println(str)
-	fmt.Println(str[len(str)-1])
 	fileWriter, err := writer.CreateFormFile("media", str[len(str)-1])
 	if err != nil {
-		return
+		return nil, err
 	}
 	_, err = fileWriter.Write(bts)
 	if err != nil {
-		return
+		return nil, err
 	}
 	contentType := writer.FormDataContentType()
 	writer.Close()
@@ -55,22 +52,22 @@ func IMGSecCheckFromNet(url, token string) (res BaseResponse, err error) {
 //
 // @filename 要检测的图片本地路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheck(filename, token string) (res BaseResponse, err error) {
+func IMGSecCheck(filename, token string) (*BaseResponse, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer file.Close()
 
-	body := &bytes.Buffer{}
+	body := &bytes.Buffer{} // TODO: 优化
 	writer := multipart.NewWriter(body)
 	fileWriter, err := writer.CreateFormFile("media", filename)
 	if err != nil {
-		return
+		return nil, err
 	}
 	_, err = io.Copy(fileWriter, file)
 	if err != nil {
-		return
+		return nil, err
 	}
 	contentType := writer.FormDataContentType()
 	writer.Close()
@@ -78,22 +75,25 @@ func IMGSecCheck(filename, token string) (res BaseResponse, err error) {
 	return imgSecCheck(body, contentType, token)
 }
 
-func imgSecCheck(body io.Reader, contentType, token string) (res BaseResponse, err error) {
+func imgSecCheck(body io.Reader, contentType, token string) (*BaseResponse, error) {
 
 	api, err := TokenAPI(BaseURL+IMGSecCheckURL, token)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	resp, err := http.Post(api, contentType, body)
 	if err != nil {
-		return
+		return nil, err
 	}
 	defer resp.Body.Close()
 
-	err = json.NewDecoder(resp.Body).Decode(&res)
+	res := new(BaseResponse)
+	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
+		return nil, err
+	}
 
-	return
+	return res, nil
 }
 
 // MSGSecCheck 文本检测
@@ -101,20 +101,20 @@ func imgSecCheck(body io.Reader, contentType, token string) (res BaseResponse, e
 //
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
-func MSGSecCheck(content, token string) (res BaseResponse, err error) {
+func MSGSecCheck(content, token string) (*BaseResponse, error) {
 	api, err := TokenAPI(BaseURL+MSGSecCheckURL, token)
 	if err != nil {
-		return
+		return nil, err
 	}
 
 	params := map[string]string{
 		"content": content,
 	}
 
-	err = PostJSON(api, params, &res)
-	if err != nil {
-		return
+	res := new(BaseResponse)
+	if err = PostJSON(api, params, res); err != nil {
+		return nil, err
 	}
 
-	return
+	return res, nil
 }
