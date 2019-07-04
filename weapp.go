@@ -20,8 +20,8 @@ type BaseResponse struct {
 	ErrMSG  string `json:"errmsg"`
 }
 
-// PhoneNumber 解密后的用户手机号码信息
-type PhoneNumber struct {
+// Mobile 解密后的用户手机号码信息
+type Mobile struct {
 	PhoneNumber     string    `json:"phoneNumber"`
 	PurePhoneNumber string    `json:"purePhoneNumber"`
 	CountryCode     string    `json:"countryCode"`
@@ -97,14 +97,18 @@ type watermark struct {
 // @ssk 通过 Login 向微信服务端请求得到的 session_key
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
-func DecryptPhoneNumber(ssk, data, iv string) (phone PhoneNumber, err error) {
-	bts, err := decryptShareData(ssk, data, iv)
+func DecryptPhoneNumber(ssk, data, iv string) (*Mobile, error) {
+	raw, err := decryptShareData(ssk, data, iv)
 	if err != nil {
-		return
+		return nil, err
 	}
 
-	err = json.Unmarshal(bts, &phone)
-	return
+	mobile := new(Mobile)
+	if err := json.Unmarshal(raw, mobile); err != nil {
+		return nil, err
+	}
+
+	return mobile, nil
 }
 
 type group struct {
