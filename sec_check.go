@@ -32,6 +32,7 @@ func IMGSecCheckFromNet(url, token string) (*BaseResponse, error) {
 
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
+	defer writer.Close()
 	str := strings.Split(url, "/")
 	fileWriter, err := writer.CreateFormFile("media", str[len(str)-1])
 	if err != nil {
@@ -42,7 +43,6 @@ func IMGSecCheckFromNet(url, token string) (*BaseResponse, error) {
 		return nil, err
 	}
 	contentType := writer.FormDataContentType()
-	writer.Close()
 
 	return imgSecCheck(body, contentType, token)
 }
@@ -61,6 +61,7 @@ func IMGSecCheck(filename, token string) (*BaseResponse, error) {
 
 	body := &bytes.Buffer{} // TODO: 优化
 	writer := multipart.NewWriter(body)
+	defer writer.Close()
 	fileWriter, err := writer.CreateFormFile("media", filename)
 	if err != nil {
 		return nil, err
@@ -70,7 +71,6 @@ func IMGSecCheck(filename, token string) (*BaseResponse, error) {
 		return nil, err
 	}
 	contentType := writer.FormDataContentType()
-	writer.Close()
 
 	return imgSecCheck(body, contentType, token)
 }
