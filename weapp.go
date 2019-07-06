@@ -19,6 +19,11 @@ type BaseResponse struct {
 	ErrMSG  string `json:"errmsg"`
 }
 
+// HasError 判断返回数据是否包含错误
+func (res *BaseResponse) HasError() bool {
+	return res.ErrCode != 0
+}
+
 // Mobile 解密后的用户手机号码信息
 type Mobile struct {
 	PhoneNumber     string    `json:"phoneNumber"`
