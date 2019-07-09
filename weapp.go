@@ -32,8 +32,8 @@ type Mobile struct {
 	Watermark       watermark `json:"watermark"`
 }
 
-// Userinfo 解密后的用户信息
-type Userinfo struct {
+// UserInfo 解密后的用户信息
+type UserInfo struct {
 	OpenID    string    `json:"openId"`
 	Nickname  string    `json:"nickName"`
 	Gender    int       `json:"gender"`
@@ -135,7 +135,7 @@ func DecryptShareInfo(ssk, data, iv string) (string, error) {
 // @signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // @iv 加密算法的初始向量
 // @ssk 微信 session_key
-func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*Userinfo, error) {
+func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserInfo, error) {
 
 	if ok := ValidateSignature(rawData, ssk, signature); !ok {
 		return nil, errors.New("failed to validate signature")
@@ -146,7 +146,7 @@ func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*Userin
 		return nil, err
 	}
 
-	info := new(Userinfo)
+	info := new(UserInfo)
 	if err := json.Unmarshal(raw, info); err != nil {
 		return nil, err
 	}
