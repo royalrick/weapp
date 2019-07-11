@@ -92,7 +92,6 @@ func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 
 	size := aes.BlockSize
 	iv = iv[:size]
-	ciphertext = ciphertext[aes.BlockSize:]
 
 	if len(ciphertext) < size {
 		return nil, errors.New("ciphertext too short")
@@ -103,10 +102,9 @@ func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 	}
 
 	mode := cipher.NewCBCDecrypter(block, iv)
-	plaintext := make([]byte, len(ciphertext))
 	mode.CryptBlocks(ciphertext, ciphertext)
 
-	return pkcs7decode(plaintext), nil
+	return pkcs7decode(ciphertext), nil
 }
 
 // decryptShareData CBC解密数据
