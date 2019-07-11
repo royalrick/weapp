@@ -4,11 +4,13 @@ package weapp
 import (
 	"crypto/sha1"
 	"encoding/base64"
+	"encoding/binary"
 	"encoding/hex"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"sort"
 	"strconv"
@@ -98,22 +100,19 @@ type Server struct {
 	EncodingAESKey string // 消息加密密钥
 	ValidateServer bool   // 是否验证请求来自微信服务器
 
-	Writer  http.ResponseWriter
-	Request *http.Request
-
 	TextMessageHandler  func(Text) bool     // 文本消息处理器
 	CardMessageHandler  func(Card) bool     // 卡片消息处理器
 	ImageMessageHandler func(Image) bool    // 图片消息处理器
 	EventHandler        func(*Mixture) bool // 事件处理器
 }
 
+func NewServer(AppID, Token, AESKeyBase64, MerchantID, MerchantAPIKey string) *Server {
+	return &Server{appID: AppID, mchID: MerchantID, apiKey: MerchantAPIKey, token: Token, EncodingAESKey: AESKeyBase64}
+}
+
 func (srv *Server) getAESKey() ([]byte, error) {
 	str := srv.EncodingAESKey + "="
 	return base64.StdEncoding.DecodeString(str)
-}
-
-func (srv *Server) dataType() dataType {
-	return srv.Request.Header.Get("Content-Type")
 }
 
 type dataType = string
@@ -122,24 +121,6 @@ const (
 	dataJSON dataType = "application/json"
 	dataXML           = "application/xml"
 )
-
-func (srv *Server) decode(v interface{}) error {
-	ct := srv.dataType()
-	switch ct {
-	case dataJSON:
-		if err := json.NewDecoder(srv.Request.Body).Decode(v); err != nil {
-			return err
-		}
-	case dataXML:
-		if err := xml.NewDecoder(srv.Request.Body).Decode(v); err != nil {
-			return err
-		}
-	default:
-		return errors.New("invalid content type: " + ct)
-	}
-
-	return nil
-}
 
 func unmarshal(data []byte, v interface{}, ct dataType) error {
 	switch ct {
@@ -158,29 +139,37 @@ func unmarshal(data []byte, v interface{}, ct dataType) error {
 	return nil
 }
 
-// Serve 启动服务
-func (srv *Server) Serve() error {
-	switch srv.Request.Method {
+func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
 	case "POST":
 		mix := new(Mixture)
 
-		if isEncrypted(srv.Request) { // 处理加密消息
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			panic(err)
+		}
+		if isEncrypted(r) { // 处理加密消息
 			encrypted := new(EncryptedMsgResponse)
-			if err := srv.decode(encrypted); err != nil {
-				return err
+
+			if err := unmarshal(body, encrypted, r.Header.Get("Content-Type")); err != nil {
+				panic(err)
 			}
 
-			nonce := GetQuery(srv.Request, "nonce")
-			signature := GetQuery(srv.Request, "msg_signature")
-			timestamp := GetQuery(srv.Request, "timestamp")
+			nonce := GetQuery(r, "nonce")
+			signature := GetQuery(r, "msg_signature")
+			timestamp := GetQuery(r, "timestamp")
 
-			err := srv.decryptMsg(signature, timestamp, nonce, encrypted.Encrypt, mix)
+			// 检验消息的真实性
+			if !validateSignature(signature, srv.token, timestamp, nonce, encrypted.Encrypt) {
+				panic(errors.New("invalid signature"))
+			}
+			err := srv.decryptMsg(encrypted.Encrypt, mix, r.Header.Get("Content-Type"))
 			if err != nil {
-				return err
+				panic(err)
 			}
 		} else {
-			if err := srv.decode(mix); err != nil {
-				return err
+			if err := unmarshal(body, mix, r.Header.Get("Content-Type")); err != nil {
+				panic(err)
 			}
 		}
 
@@ -217,32 +206,39 @@ func (srv *Server) Serve() error {
 			}
 
 		default:
-			return errors.New("invalid message type: " + mix.Type)
+			panic(errors.New("invalid message type: " + mix.Type))
 		}
 
 		if ok {
-			_, err := io.WriteString(srv.Writer, "SUCCESS")
-			return err
+			_, err := io.WriteString(w, "SUCCESS")
+			if err != nil {
+				panic(err)
+			}
 		}
 
-		return nil
+		return
 	case "GET":
-		echostr := GetQuery(srv.Request, "echostr")
+		echostr := GetQuery(r, "echostr")
 		if srv.ValidateServer {
 
 			// 请求来自微信验证成功后原样返回 echostr 参数内容
-			if validateServer(srv.Request) {
-				_, err := io.WriteString(srv.Writer, echostr)
-				return err
+			if srv.validateServer(r) {
+				_, err := io.WriteString(w, echostr)
+				if err != nil {
+					panic(err)
+				}
+				return
 			}
 
-			return errors.New("request server is invalid")
+			panic(errors.New("request server is invalid"))
 		}
 
-		_, err := io.WriteString(srv.Writer, echostr)
-		return err
+		_, err := io.WriteString(w, echostr)
+		if err != nil {
+			panic(err)
+		}
 	default:
-		return errors.New("invalid request method: " + srv.Request.Method)
+		panic(errors.New("invalid request method: " + r.Method))
 	}
 }
 
@@ -255,13 +251,17 @@ func isEncrypted(req *http.Request) bool {
 // 1.将token、timestamp、nonce三个参数进行字典序排序
 // 2.将三个参数字符串拼接成一个字符串进行sha1加密
 // 3.开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
-func validateServer(req *http.Request) bool {
+func (srv *Server) validateServer(req *http.Request) bool {
 	nonce := GetQuery(req, "nonce")
 	signature := GetQuery(req, "signature")
 	timestamp := GetQuery(req, "timestamp")
 
-	raw := sha1.Sum([]byte(nonce + nonce + timestamp))
+	return validateSignature(signature, nonce, timestamp, srv.token)
+}
 
+func validateSignature(signature string, parts ...string) bool {
+	sort.Strings(parts)
+	raw := sha1.Sum([]byte(strings.Join(parts, "")))
 	return signature == hex.EncodeToString(raw[:])
 }
 
@@ -301,28 +301,25 @@ func (srv *Server) encryptMsg(message, nonce string, timestamp int) (*EncryptedM
 }
 
 // 检验消息的真实性，并且获取解密后的明文.
-func (srv *Server) decryptMsg(signature, timestamp, nonce, encrypted string, msg *Mixture) error {
+func (srv *Server) decryptMsg(encryptedBase64 string, msg *Mixture, contentType string) error {
 	// EncodingAESKey长度固定为43个字符，从a-z,A-Z,0-9共62个字符中选取。
 	if len(srv.EncodingAESKey) != 43 {
 		return errors.New("invalid aes key")
 	}
 
-	// 检验消息的真实性
-	raw := sha1.Sum([]byte(encrypted + nonce + timestamp + srv.token))
-	if signature != hex.EncodeToString(raw[:]) {
-		return errors.New("invalid signature")
-	}
 	key, err := srv.getAESKey()
 	if err != nil {
 		return err
 	}
 
-	data, err := cbcDecrypt(key, []byte(encrypted), key)
+	encrypted, err := base64.StdEncoding.DecodeString(encryptedBase64)
+	data, err := cbcDecrypt(key, encrypted, key)
 	if err != nil {
 		return err
 	}
 
-	if err := unmarshal(data[:], msg, srv.dataType()); err != nil {
+	length := binary.BigEndian.Uint32(data[16:20])
+	if err := unmarshal(data[20:20+length], msg, contentType); err != nil {
 		return err
 	}
 
