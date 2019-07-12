@@ -10,6 +10,8 @@ import (
 	"encoding/hex"
 	"errors"
 	"io"
+	"sort"
+	"strings"
 )
 
 const pkcs7blocksize = 32
@@ -45,15 +47,17 @@ func pkcs7decode(plaintext []byte) []byte {
 	return plaintext[:(ln - pad)]
 }
 
-// ValidateSignature 对数据包进行签名校验，确保数据的完整性。
-//
-// @rawData 不包括敏感信息的原始数据字符串，用于计算签名。
-// @signature 使用 sha1( rawData + sessionkey ) 得到字符串，用于校验用户信息
-// @ssk 微信 session_key
-func ValidateSignature(rawData, ssk, signature string) bool {
-	r := sha1.Sum([]byte(rawData + ssk))
+//  对数据包进行签名校验，确保数据的完整性。
+func validateSignature(signature string, parts ...string) bool {
+	return signature == createSignature(parts...)
+}
 
-	return signature == hex.EncodeToString(r[:])
+// 拼凑签名
+func createSignature(parts ...string) string {
+	sort.Strings(parts)
+	raw := sha1.Sum([]byte(strings.Join(parts, "")))
+
+	return hex.EncodeToString(raw[:])
 }
 
 // cbcEncrypt CBC 加密数据
@@ -92,6 +96,7 @@ func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 
 	size := aes.BlockSize
 	iv = iv[:size]
+	// ciphertext = ciphertext[size:] TODO: really useless?
 
 	if len(ciphertext) < size {
 		return nil, errors.New("ciphertext too short")

@@ -13,6 +13,11 @@ const (
 	codeAPI = "/sns/jscode2session"
 )
 
+type watermark struct {
+	AppID     string `json:"appid"`
+	Timestamp int64  `json:"timestamp"`
+}
+
 // BaseResponse 请求微信返回基础数据
 type BaseResponse struct {
 	ErrCode int    `json:"errcode"`
@@ -22,28 +27,6 @@ type BaseResponse struct {
 // HasError 判断返回数据是否包含错误
 func (res *BaseResponse) HasError() bool {
 	return res.ErrCode != 0
-}
-
-// Mobile 解密后的用户手机号码信息
-type Mobile struct {
-	PhoneNumber     string    `json:"phoneNumber"`
-	PurePhoneNumber string    `json:"purePhoneNumber"`
-	CountryCode     string    `json:"countryCode"`
-	Watermark       watermark `json:"watermark"`
-}
-
-// UserInfo 解密后的用户信息
-type UserInfo struct {
-	OpenID    string    `json:"openId"`
-	Nickname  string    `json:"nickName"`
-	Gender    int       `json:"gender"`
-	Province  string    `json:"province"`
-	Language  string    `json:"language"`
-	Country   string    `json:"country"`
-	City      string    `json:"city"`
-	Avatar    string    `json:"avatarUrl"`
-	UnionID   string    `json:"unionId"`
-	Watermark watermark `json:"watermark"`
 }
 
 // LoginResponse 返回给用户的数据
@@ -81,9 +64,12 @@ func Login(appID, secret, code string) (*LoginResponse, error) {
 	return res, nil
 }
 
-type watermark struct {
-	AppID     string `json:"appid"`
-	Timestamp int64  `json:"timestamp"`
+// Mobile 解密后的用户手机号码信息
+type Mobile struct {
+	PhoneNumber     string    `json:"phoneNumber"`
+	PurePhoneNumber string    `json:"purePhoneNumber"`
+	CountryCode     string    `json:"countryCode"`
+	Watermark       watermark `json:"watermark"`
 }
 
 // DecryptPhoneNumber 解密手机号码
@@ -105,7 +91,8 @@ func DecryptPhoneNumber(ssk, data, iv string) (*Mobile, error) {
 	return mobile, nil
 }
 
-type group struct {
+// ShareInfo 解密后的分享信息
+type ShareInfo struct {
 	GID string `json:"openGId"`
 }
 
@@ -116,16 +103,33 @@ type group struct {
 // @iv 小程序通过 api 得到的初始向量(iv)
 //
 // @gid 小程序唯一群号
-func DecryptShareInfo(ssk, data, iv string) (string, error) {
+func DecryptShareInfo(ssk, data, iv string) (*ShareInfo, error) {
 
-	bts, err := decryptShareData(ssk, data, iv)
+	raw, err := decryptShareData(ssk, data, iv)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 
-	var g group
-	err = json.Unmarshal(bts, &g)
-	return g.GID, err
+	info := new(ShareInfo)
+	if err = json.Unmarshal(raw, info); err != nil {
+		return nil, err
+	}
+
+	return info, nil
+}
+
+// UserInfo 解密后的用户信息
+type UserInfo struct {
+	OpenID    string    `json:"openId"`
+	Nickname  string    `json:"nickName"`
+	Gender    int       `json:"gender"`
+	Province  string    `json:"province"`
+	Language  string    `json:"language"`
+	Country   string    `json:"country"`
+	City      string    `json:"city"`
+	Avatar    string    `json:"avatarUrl"`
+	UnionID   string    `json:"unionId"`
+	Watermark watermark `json:"watermark"`
 }
 
 // DecryptUserInfo 解密用户信息
@@ -137,7 +141,7 @@ func DecryptShareInfo(ssk, data, iv string) (string, error) {
 // @ssk 微信 session_key
 func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserInfo, error) {
 
-	if ok := ValidateSignature(rawData, ssk, signature); !ok {
+	if ok := validateSignature(signature, rawData, ssk); !ok {
 		return nil, errors.New("failed to validate signature")
 	}
 
