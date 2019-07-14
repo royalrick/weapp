@@ -65,6 +65,7 @@ type Mixture struct {
 	Text
 	Card
 	Image
+	RawData map[string]interface{} `json:"-"`
 }
 
 // Text 接收的文本消息
@@ -184,6 +185,9 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 			raw = body[20 : 20+length]
 		}
 		if err := unmarshal(raw, tp, mix); err != nil {
+			return err
+		}
+		if err := unmarshal(raw, tp, &(mix.RawData)); err != nil {
 			return err
 		}
 
