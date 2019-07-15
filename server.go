@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -65,7 +66,7 @@ type Mixture struct {
 	Text
 	Card
 	Image
-	RawData map[string]interface{} `json:"-"`
+	RawData *map[string]interface{} `json:"-" xml:"-"` // 原始数据
 }
 
 // Text 接收的文本消息
@@ -90,12 +91,12 @@ type Card struct {
 
 // Server 微信通知服务处理器
 type Server struct {
-	appID          string // 小程序 ID
-	mchID          string // 商户号
-	apiKey         string // 商户签名密钥
-	token          string // 微信服务器验证令牌
-	aesKey         []byte // base64 解码后的消息加密密钥
-	ValidateServer bool   // 是否验证请求来自微信服务器
+	appID    string // 小程序 ID
+	mchID    string // 商户号
+	apiKey   string // 商户签名密钥
+	token    string // 微信服务器验证令牌
+	aesKey   []byte // base64 解码后的消息加密密钥
+	validate bool   // 是否验证请求来自微信服务器
 
 	TextMessageHandler  func(Text) bool     // 文本消息处理器
 	CardMessageHandler  func(Card) bool     // 卡片消息处理器
@@ -111,16 +112,27 @@ const (
 )
 
 // NewServer 返回经过初始化的Server
-func NewServer(appID, token, aesKeyString, mchID, apiKey string) *Server {
-	if len(aesKeyString) != 43 {
-		panic(errors.New("invalid aes key"))
+func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Server, error) {
+	ruleLen, keyLen := 43, len(aesKey)
+	if keyLen != ruleLen {
+		return nil, fmt.Errorf("the length of AES key should be %d, not %d", ruleLen, keyLen)
 	}
 
-	aesKey, err := base64.RawStdEncoding.DecodeString(aesKeyString)
+	key, err := base64.RawStdEncoding.DecodeString(aesKey + "=")
 	if err != nil {
-		panic(errors.New("invalid aes key"))
+		return nil, errors.New("invalid aes key")
 	}
-	return &Server{appID: appID, mchID: mchID, apiKey: apiKey, token: token, aesKey: aesKey}
+
+	server := Server{
+		appID:    appID,
+		mchID:    mchID,
+		apiKey:   apiKey,
+		token:    token,
+		aesKey:   key,
+		validate: validate,
+	}
+
+	return &server, nil
 }
 
 func getDataType(req *http.Request) dataType {
@@ -187,7 +199,8 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 		if err := unmarshal(raw, tp, mix); err != nil {
 			return err
 		}
-		if err := unmarshal(raw, tp, &(mix.RawData)); err != nil {
+
+		if err := unmarshal(raw, tp, mix.RawData); err != nil {
 			return err
 		}
 
@@ -237,7 +250,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	case "GET":
 		echostr := GetQuery(r, "echostr")
-		if srv.ValidateServer {
+		if srv.validate {
 
 			// 请求来自微信验证成功后原样返回 echostr 参数内容
 			if srv.validateServer(r) {
@@ -322,5 +335,9 @@ func (srv *Server) decryptMsg(encrypted string) ([]byte, error) {
 	}
 
 	data, err := cbcDecrypt(key, ciphertext, key)
-	return data, err
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
 }
