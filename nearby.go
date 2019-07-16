@@ -1,22 +1,20 @@
-package nearby
+package weapp
 
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/medivhzhan/weapp"
 )
 
 // apis
 const (
-	addAPI           = "/wxa/addnearbypoi"
-	deleteAPI        = "/wxa/delnearbypoi"
-	getListAPI       = "/wxa/getnearbypoilist"
-	setShowStatusAPI = "/wxa/setnearbypoishowstatus"
+	apiAddPosition          = "/wxa/addnearbypoi"
+	apiDeletePosition       = "/wxa/delnearbypoi"
+	apiGetPositionList      = "/wxa/getnearbypoilist"
+	apiSetPostionShowStatus = "/wxa/setnearbypoishowstatus"
 )
 
-// Position 地点
-type Position struct {
+// NearbyPosition 附近地点
+type NearbyPosition struct {
 	PicList           PicList      `json:"pic_list"`           // 门店图片，最多9张，最少1张，上传门店图片如门店外景、环境设施、商品服务等，图片将展示在微信客户端的门店页。图片链接通过文档https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729中的《上传图文消息内的图片获取URL》接口获取。必填，文件格式为bmp、png、jpeg、jpg或gif，大小不超过5M pic_list是字符串，内容是一个json！
 	ServiceInfos      ServiceInfos `json:"service_infos"`      // 必服务标签列表 选填，需要填写服务标签ID、APPID、对应服务落地页的path路径，详细字段格式见下方示例
 	StoreName         string       `json:"store_name"`         // 门店名字 必填，门店名称需按照所选地理位置自动拉取腾讯地图门店名称，不可修改，如需修改请重现选择地图地点或重新创建地点
@@ -57,7 +55,7 @@ type KFInfo struct {
 
 // PositionResponse response of add position.
 type PositionResponse struct {
-	weapp.BaseResponse
+	BaseResponse
 	Data struct {
 		AuditID           string `json:"audit_id"`           //	审核单 ID
 		PoiID             string `json:"poi_id"`             //	附近地点 ID
@@ -67,7 +65,7 @@ type PositionResponse struct {
 
 // Add 添加地点
 // @accessToken  接口调用凭证
-func (p *Position) Add(accessToken string) (*PositionResponse, error) {
+func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 
 	pisList, err := json.Marshal(p.PicList)
 	if err != nil {
@@ -98,13 +96,13 @@ func (p *Position) Add(accessToken string) (*PositionResponse, error) {
 		"poi_id":             p.PoiID,
 	}
 
-	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, accessToken)
+	api, err := TokenAPI(BaseURL+apiAddPosition, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PositionResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -114,8 +112,8 @@ func (p *Position) Add(accessToken string) (*PositionResponse, error) {
 // Delete 删除地点
 // @accessToken  接口调用凭证
 // @id  附近地点 ID
-func Delete(accessToken, id string) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+deleteAPI, accessToken)
+func Delete(accessToken, id string) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiDeletePosition, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -124,8 +122,8 @@ func Delete(accessToken, id string) (*weapp.BaseResponse, error) {
 		"poi_id": id,
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -134,7 +132,7 @@ func Delete(accessToken, id string) (*weapp.BaseResponse, error) {
 
 // PositionList 地点列表
 type PositionList struct {
-	weapp.BaseResponse
+	BaseResponse
 	Data struct {
 		LeftApplyNum uint `json:"left_apply_num"` // 剩余可添加地点个数
 		MaxApplyNum  uint `json:"max_apply_num"`  // 最大可添加地点个数
@@ -156,7 +154,7 @@ type PositionList struct {
 // @page  起始页id（从1开始计数）
 // @pageRows  每页展示个数（最多1000个）
 func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
+	api, err := TokenAPI(BaseURL+apiGetPositionList, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -167,7 +165,7 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 	}
 
 	res := new(PositionList)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -187,8 +185,8 @@ const (
 // @accessToken  接口调用凭证
 // @poiID  附近地点 ID
 // @status  是否展示
-func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getListAPI, accessToken)
+func SetShowStatus(accessToken, poiID string, status ShowStatus) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiSetPostionShowStatus, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -198,8 +196,8 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*weapp.BaseRes
 		"status": status,
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
