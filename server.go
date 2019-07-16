@@ -118,7 +118,7 @@ func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Serv
 		return nil, fmt.Errorf("the length of AES key should be %d, not %d", ruleLen, keyLen)
 	}
 
-	key, err := base64.RawStdEncoding.DecodeString(aesKey + "=")
+	key, err := base64.RawStdEncoding.DecodeString(aesKey)
 	if err != nil {
 		return nil, errors.New("invalid aes key")
 	}
