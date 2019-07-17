@@ -1,20 +1,18 @@
-// Package template 模版消息
-package template
+package weapp
 
 import (
 	"strconv"
 	"strings"
-
-	"github.com/medivhzhan/weapp"
 )
 
 const (
-	listAPI   = "/cgi-bin/wxopen/template/library/list"
-	detailAPI = "/cgi-bin/wxopen/template/library/get"
-	addAPI    = "/cgi-bin/wxopen/template/add"
-	selvesAPI = "/cgi-bin/wxopen/template/list"
-	deleteAPI = "/cgi-bin/wxopen/template/del"
-	sendAPI   = "/cgi-bin/message/wxopen/template/send"
+	apiGetTemplateMessageList     = "/cgi-bin/wxopen/template/library/list"
+	apiGetTempalteMessageDetail   = "/cgi-bin/wxopen/template/library/get"
+	apiAddTemplateMessage         = "/cgi-bin/wxopen/template/add"
+	apiSelvesTemplateMessageList  = "/cgi-bin/wxopen/template/list"
+	apiDeleteTemplateMessage      = "/cgi-bin/wxopen/template/del"
+	apiSendTemplateMessage        = "/cgi-bin/message/wxopen/template/send"
+	apiUniformSendTemplateMessage = "/cgi-bin/message/wxopen/template/uniform_send"
 )
 
 // KeywordItem 关键字
@@ -26,7 +24,7 @@ type KeywordItem struct {
 
 // Template 消息模板
 type Template struct {
-	weapp.BaseResponse
+	BaseResponse
 	ID         string `json:"id,omitempty"`
 	TemplateID string `json:"template_id,omitempty"`
 	Title      string `json:"title"`
@@ -38,7 +36,7 @@ type Template struct {
 
 // GetTemplateListResponse 获取模板列表返回的数据
 type GetTemplateListResponse struct {
-	weapp.BaseResponse
+	BaseResponse
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
 }
@@ -49,7 +47,7 @@ type GetTemplateListResponse struct {
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
 func List(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
-	return templates(weapp.BaseURL+listAPI, offset, count, token)
+	return templates(BaseURL+apiGetTemplateMessageList, offset, count, token)
 }
 
 // Selves 获取帐号下已存在的模板列表
@@ -58,7 +56,7 @@ func List(offset uint, count uint, token string) (*GetTemplateListResponse, erro
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
 func Selves(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
-	return templates(weapp.BaseURL+selvesAPI, offset, count, token)
+	return templates(BaseURL+apiSelvesTemplateMessageList, offset, count, token)
 }
 
 // 获取模板列表
@@ -69,7 +67,7 @@ func Selves(offset uint, count uint, token string) (*GetTemplateListResponse, er
 // @token 微信 access_token
 func templates(api string, offset, count uint, token string) (*GetTemplateListResponse, error) {
 
-	api, err := weapp.TokenAPI(api, token)
+	api, err := TokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +78,7 @@ func templates(api string, offset, count uint, token string) (*GetTemplateListRe
 	}
 
 	res := new(GetTemplateListResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -92,7 +90,7 @@ func templates(api string, offset, count uint, token string) (*GetTemplateListRe
 // @id 模板ID
 // @token 微信 access_token
 func Get(id, token string) ([]KeywordItem, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+detailAPI, token)
+	api, err := TokenAPI(BaseURL+apiGetTempalteMessageDetail, token)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +100,7 @@ func Get(id, token string) ([]KeywordItem, error) {
 	}
 
 	res := new(Template)
-	if err = weapp.PostJSON(api, params, res); err != nil {
+	if err = PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -116,7 +114,7 @@ func Get(id, token string) ([]KeywordItem, error) {
 // @keywordIDList 关键词 ID 列表
 // 返回新建模板ID和错误信息
 func Add(id, token string, keywordIDList []uint) (string, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+addAPI, token)
+	api, err := TokenAPI(BaseURL+apiAddTemplateMessage, token)
 	if err != nil {
 		return "", err
 	}
@@ -132,7 +130,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	}
 
 	res := new(Template)
-	err = weapp.PostJSON(api, params, res)
+	err = PostJSON(api, params, res)
 	if err != nil {
 		return "", err
 	}
@@ -140,12 +138,12 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	return res.TemplateID, nil
 }
 
-// Delete 删除帐号下的某个模板
+// DeleteTempalteMessage 删除帐号下的某个模板
 //
 // @id 模板ID
 // @token 微信 aceess_token
-func Delete(id, token string) error {
-	api, err := weapp.TokenAPI(weapp.BaseURL+deleteAPI, token)
+func DeleteTempalteMessage(id, token string) error {
+	api, err := TokenAPI(BaseURL+apiDeleteTemplateMessage, token)
 	if err != nil {
 		return err
 	}
@@ -154,8 +152,8 @@ func Delete(id, token string) error {
 		"template_id": id,
 	}
 
-	res := new(weapp.BaseResponse)
-	err = weapp.PostJSON(api, params, res)
+	res := new(BaseResponse)
+	err = PostJSON(api, params, res)
 	if err != nil {
 		return err
 	}
@@ -166,7 +164,7 @@ func Delete(id, token string) error {
 // Message 模版消息体
 type Message map[string]interface{}
 
-// Send 发送模板消息
+// SendTemplateMessage 发送模板消息
 //
 // @openid 接收者（用户）的 openid
 // @template 所需下发的模板消息的id
@@ -174,8 +172,8 @@ type Message map[string]interface{}
 // @formID 表单提交场景下，为 submit 事件带上的 formId；支付场景下，为本次支付的 prepay_id
 // @data 模板内容，不填则下发空模板
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
-func Send(openid, template, page, formID string, data Message, emphasisKeyword, token string) error {
-	api, err := weapp.TokenAPI(weapp.BaseURL+sendAPI, token)
+func SendTemplateMessage(openid, template, page, formID string, data Message, emphasisKeyword, token string) error {
+	api, err := TokenAPI(BaseURL+apiSendTemplateMessage, token)
 	if err != nil {
 		return err
 	}
@@ -193,9 +191,66 @@ func Send(openid, template, page, formID string, data Message, emphasisKeyword, 
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	res := new(weapp.BaseResponse)
-	err = weapp.PostJSON(api, params, res)
+	res := new(BaseResponse)
+	err = PostJSON(api, params, res)
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// TemplateMsg 小程序模板消息
+type TemplateMsg struct {
+	TemplateID      string `json:"template_id"`
+	Page            string `json:"page"`
+	FormID          string `json:"form_id"`
+	Data            Data   `json:"data"`
+	EmphasisKeyword string `json:"emphasis_keyword,omitempty"`
+}
+
+// Data 模板消息内容
+type Data = map[string]Keyword
+
+// Keyword 关键字
+type Keyword struct {
+	Value string `json:"value"`
+	Color string `json:"color"`
+}
+
+// MPTemplateMsg 公众号模板消息
+type MPTemplateMsg struct {
+	AppID       string      `json:"appid"`
+	TemplateID  string      `json:"template_id"`
+	URL         string      `json:"url"`
+	Miniprogram Miniprogram `json:"miniprogram"`
+	Data        Data        `json:"data"`
+}
+
+// Miniprogram 小程序
+type Miniprogram struct {
+	AppID    string `json:"appid"`
+	Pagepath string `json:"pagepath"`
+}
+
+// UniformMsg 统一服务消息
+type UniformMsg struct {
+	ToUser           string        `json:"touser"` // 用户 openid
+	MPTemplateMsg    MPTemplateMsg `json:"mp_template_msg"`
+	WeappTemplateMsg TemplateMsg   `json:"weapp_template_msg"`
+}
+
+// Send 统一服务消息
+//
+// @token access_token
+func (msg UniformMsg) Send(token string) error {
+	api, err := TokenAPI(BaseURL+apiUniformSendTemplateMessage, token)
+	if err != nil {
+		return err
+	}
+
+	res := new(BaseResponse)
+	if err := PostJSON(api, msg, res); err != nil {
 		return err
 	}
 

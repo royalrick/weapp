@@ -88,6 +88,14 @@ type Card struct {
 	ThumbMediaID string `json:"ThumbMediaId,omitempty" xml:"ThumbMediaId,omitempty"` // 封面图片的临时素材id
 }
 
+// Link 图文链接消息
+type Link struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	URL         string `json:"url"`
+	ThumbURL    string `json:"thumb_url"`
+}
+
 // Server 微信通知服务处理器
 type Server struct {
 	appID    string // 小程序 ID

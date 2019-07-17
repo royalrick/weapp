@@ -1,51 +1,47 @@
-package updatable
-
-import (
-	"github.com/medivhzhan/weapp"
-)
+package weapp
 
 const (
 	apiCreateActivityID = "/cgi-bin/message/wxopen/activityid/create"
 	apiSetUpdatableMsg  = "/cgi-bin/message/wxopen/updatablemsg/send"
 )
 
-// Activity 动态消息
-type Activity struct {
-	weapp.BaseResponse
+// ActivityID 动态消息
+type ActivityID struct {
+	BaseResponse
 	ID             string `json:"activity_id"`     //	动态消息的 ID
 	ExpirationTime uint   `json:"expiration_time"` //	activity_id 的过期时间戳。默认24小时后过期。
 }
 
 // CreateActivityID 创建被分享动态消息的 activity_id。
 // @accessToken 接口调用凭证
-func CreateActivityID(accessToken string) (*Activity, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+apiCreateActivityID, accessToken)
+func CreateActivityID(accessToken string) (*ActivityID, error) {
+	api, err := TokenAPI(BaseURL+apiCreateActivityID, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(Activity)
-	if err := weapp.PostJSON(api, nil, res); err != nil {
+	res := new(ActivityID)
+	if err := PostJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// Message 动态消息
-type Message struct {
+// ActMsg 动态消息
+type ActMsg struct {
 	ID       string      `json:"activity_id"`   // 动态消息的 ID，通过 updatableMessage.createActivityId 接口获取
 	State    TargetState `json:"target_state"`  // 动态消息修改后的状态（具体含义见后文）
 	Template Template    `json:"template_info"` // 动态消息对应的模板信息
 }
 
-// Template 动态消息对应的模板信息
-type Template struct {
-	Params []Param `json:"parameter_list"` // 模板中需要修改的参数
+// ActMsgTemplate 动态消息对应的模板信息
+type ActMsgTemplate struct {
+	Params []ActMsgParam `json:"parameter_list"` // 模板中需要修改的参数
 }
 
-// Param 模板中需要修改的参数
-type Param struct {
+// ActMsgParam 模板中需要修改的参数
+type ActMsgParam struct {
 	// name 的合法值
 	// 	member_count	target_state = 0 时必填，文字内容模板中 member_count 的值
 	// room_limit	target_state = 0 时必填，文字内容模板中 room_limit 的值
@@ -68,14 +64,14 @@ const (
 
 // SetUpdatableMsg 修改被分享的动态消息。
 // @accessToken 接口调用凭证
-func (msg *Message) SetUpdatableMsg(accessToken string) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+apiSetUpdatableMsg, accessToken)
+func (msg *ActMsg) SetUpdatableMsg(accessToken string) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiSetUpdatableMsg, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, msg, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, msg, res); err != nil {
 		return nil, err
 	}
 

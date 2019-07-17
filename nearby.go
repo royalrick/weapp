@@ -109,10 +109,10 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 	return res, nil
 }
 
-// Delete 删除地点
+// DeleteNearbyPosition 删除地点
 // @accessToken  接口调用凭证
 // @id  附近地点 ID
-func Delete(accessToken, id string) (*BaseResponse, error) {
+func DeleteNearbyPosition(accessToken, id string) (*BaseResponse, error) {
 	api, err := TokenAPI(BaseURL+apiDeletePosition, accessToken)
 	if err != nil {
 		return nil, err
