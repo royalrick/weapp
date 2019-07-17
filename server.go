@@ -7,7 +7,6 @@ import (
 	"encoding/json"
 	"encoding/xml"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -66,7 +65,7 @@ type Mixture struct {
 	Text
 	Card
 	Image
-	RawData *map[string]interface{} `json:"-" xml:"-"` // 原始数据
+	RawData map[string]interface{} `json:"-" xml:"-"` // 原始数据
 }
 
 // Text 接收的文本消息
@@ -113,14 +112,10 @@ const (
 
 // NewServer 返回经过初始化的Server
 func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Server, error) {
-	ruleLen, keyLen := 43, len(aesKey)
-	if keyLen != ruleLen {
-		return nil, fmt.Errorf("the length of AES key should be %d, not %d", ruleLen, keyLen)
-	}
 
 	key, err := base64.RawStdEncoding.DecodeString(aesKey)
 	if err != nil {
-		return nil, errors.New("invalid aes key")
+		return nil, err
 	}
 
 	server := Server{
@@ -200,7 +195,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 
-		if err := unmarshal(raw, tp, mix.RawData); err != nil {
+		if err := unmarshal(raw, tp, &mix.RawData); err != nil {
 			return err
 		}
 
