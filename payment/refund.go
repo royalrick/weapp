@@ -69,13 +69,13 @@ func (r Refunder) prepare(key string) (refunder, error) {
 	}
 
 	switch {
-	case r.TransactionID == "" && r.OutRefundNo == "":
+	case r.TransactionID == "" && r.OutTradeNo == "":
 		return ref, errors.New("out_trade_no 和 transaction_id 必须填写一个")
-	case r.TransactionID != "" && r.OutRefundNo != "":
+	case r.TransactionID != "" && r.OutTradeNo != "":
 		return ref, errors.New("out_trade_no 和 transaction_id 只能填写一个")
 	case r.TransactionID != "":
 		signData["transaction_id"] = r.TransactionID
-	case r.OutRefundNo != "":
+	case r.OutTradeNo != "":
 		signData["out_trade_no"] = r.OutTradeNo
 	}
 
