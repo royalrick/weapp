@@ -14,7 +14,7 @@ type Retain struct {
 
 // RetainResponse 生物认证秘钥签名验证请求返回数据
 type RetainResponse struct {
-	BaseResponse
+	baseResponse
 	RefDate    string   `json:"ref_date"`     // 时间，月格式为 yyyymm | 周格式为 yyyymmdd-yyyymmdd | 天格式为 yyyymmdd
 	VisitUV    []Retain `json:"visit_uv"`     // 活跃用户留存
 	VisitUVNew []Retain `json:"visit_uv_new"` // 新增用户留存
@@ -25,7 +25,7 @@ type RetainResponse struct {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 func GetMonthlyRetain(accessToken, start, end string) (*RetainResponse, error) {
-	return getRetain(BaseURL+getMonthlyRetainAPI, accessToken, start, end)
+	return getRetain(baseURL+getMonthlyRetainAPI, accessToken, start, end)
 }
 
 // GetWeeklyRetain 获取用户访问小程序周留存
@@ -33,7 +33,7 @@ func GetMonthlyRetain(accessToken, start, end string) (*RetainResponse, error) {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 func GetWeeklyRetain(accessToken, start, end string) (*RetainResponse, error) {
-	return getRetain(BaseURL+getWeeklyRetainAPI, accessToken, start, end)
+	return getRetain(baseURL+getWeeklyRetainAPI, accessToken, start, end)
 }
 
 // GetDailyRetainAPI 获取用户访问小程序日留存
@@ -41,11 +41,11 @@ func GetWeeklyRetain(accessToken, start, end string) (*RetainResponse, error) {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetDailyRetainAPI(accessToken, start, end string) (*RetainResponse, error) {
-	return getRetain(BaseURL+getDailyRetainAPI, accessToken, start, end)
+	return getRetain(baseURL+getDailyRetainAPI, accessToken, start, end)
 }
 
 func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
-	api, err := TokenAPI(api, accessToken)
+	api, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +56,7 @@ func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
 	}
 
 	res := new(RetainResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

@@ -184,9 +184,9 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 				return err
 			}
 
-			nonce := GetQuery(r, "nonce")
-			signature := GetQuery(r, "msg_signature")
-			timestamp := GetQuery(r, "timestamp")
+			nonce := getQuery(r, "nonce")
+			signature := getQuery(r, "msg_signature")
+			timestamp := getQuery(r, "timestamp")
 
 			// 检验消息的真实性
 			if !validateSignature(signature, srv.token, timestamp, nonce, res.Encrypt) {
@@ -252,7 +252,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 
 		return nil
 	case "GET":
-		echostr := GetQuery(r, "echostr")
+		echostr := getQuery(r, "echostr")
 		if srv.validate {
 
 			// 请求来自微信验证成功后原样返回 echostr 参数内容
@@ -281,7 +281,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 
 // 判断消息是否加密
 func isEncrypted(req *http.Request) bool {
-	return GetQuery(req, "encrypt_type") == "aes"
+	return getQuery(req, "encrypt_type") == "aes"
 }
 
 // 验证消息的确来自微信服务器
@@ -289,9 +289,9 @@ func isEncrypted(req *http.Request) bool {
 // 2.将三个参数字符串拼接成一个字符串进行sha1加密
 // 3.开发者获得加密后的字符串可与signature对比，标识该请求来源于微信
 func (srv *Server) validateServer(req *http.Request) bool {
-	nonce := GetQuery(req, "nonce")
-	signature := GetQuery(req, "signature")
-	timestamp := GetQuery(req, "timestamp")
+	nonce := getQuery(req, "nonce")
+	signature := getQuery(req, "signature")
+	timestamp := getQuery(req, "timestamp")
 
 	return validateSignature(signature, nonce, timestamp, srv.token)
 }
@@ -302,7 +302,7 @@ func (srv *Server) encryptMsg(message, nonce string, timestamp int) (*EncryptedM
 	key := srv.aesKey
 
 	//获得16位随机字符串，填充到明文之前
-	random := RandomString(16)
+	random := randomString(16)
 	text := random + string(len(message)) + message + srv.appID
 	plaintext := pkcs7encode([]byte(text))
 

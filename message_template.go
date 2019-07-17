@@ -24,7 +24,7 @@ type KeywordItem struct {
 
 // Template 消息模板
 type Template struct {
-	BaseResponse
+	baseResponse
 	ID         string `json:"id,omitempty"`
 	TemplateID string `json:"template_id,omitempty"`
 	Title      string `json:"title"`
@@ -36,7 +36,7 @@ type Template struct {
 
 // GetTemplateListResponse 获取模板列表返回的数据
 type GetTemplateListResponse struct {
-	BaseResponse
+	baseResponse
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
 }
@@ -47,7 +47,7 @@ type GetTemplateListResponse struct {
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
 func List(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
-	return templates(BaseURL+apiGetTemplateMessageList, offset, count, token)
+	return templates(baseURL+apiGetTemplateMessageList, offset, count, token)
 }
 
 // Selves 获取帐号下已存在的模板列表
@@ -56,7 +56,7 @@ func List(offset uint, count uint, token string) (*GetTemplateListResponse, erro
 // @count 获取记录条数 最大为20
 // @token 微信 access_token
 func Selves(offset uint, count uint, token string) (*GetTemplateListResponse, error) {
-	return templates(BaseURL+apiSelvesTemplateMessageList, offset, count, token)
+	return templates(baseURL+apiSelvesTemplateMessageList, offset, count, token)
 }
 
 // 获取模板列表
@@ -67,7 +67,7 @@ func Selves(offset uint, count uint, token string) (*GetTemplateListResponse, er
 // @token 微信 access_token
 func templates(api string, offset, count uint, token string) (*GetTemplateListResponse, error) {
 
-	api, err := TokenAPI(api, token)
+	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +78,7 @@ func templates(api string, offset, count uint, token string) (*GetTemplateListRe
 	}
 
 	res := new(GetTemplateListResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -90,7 +90,7 @@ func templates(api string, offset, count uint, token string) (*GetTemplateListRe
 // @id 模板ID
 // @token 微信 access_token
 func Get(id, token string) ([]KeywordItem, error) {
-	api, err := TokenAPI(BaseURL+apiGetTempalteMessageDetail, token)
+	api, err := tokenAPI(baseURL+apiGetTempalteMessageDetail, token)
 	if err != nil {
 		return nil, err
 	}
@@ -100,7 +100,7 @@ func Get(id, token string) ([]KeywordItem, error) {
 	}
 
 	res := new(Template)
-	if err = PostJSON(api, params, res); err != nil {
+	if err = postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -114,7 +114,7 @@ func Get(id, token string) ([]KeywordItem, error) {
 // @keywordIDList 关键词 ID 列表
 // 返回新建模板ID和错误信息
 func Add(id, token string, keywordIDList []uint) (string, error) {
-	api, err := TokenAPI(BaseURL+apiAddTemplateMessage, token)
+	api, err := tokenAPI(baseURL+apiAddTemplateMessage, token)
 	if err != nil {
 		return "", err
 	}
@@ -130,7 +130,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 	}
 
 	res := new(Template)
-	err = PostJSON(api, params, res)
+	err = postJSON(api, params, res)
 	if err != nil {
 		return "", err
 	}
@@ -143,7 +143,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 // @id 模板ID
 // @token 微信 aceess_token
 func DeleteTempalteMessage(id, token string) error {
-	api, err := TokenAPI(BaseURL+apiDeleteTemplateMessage, token)
+	api, err := tokenAPI(baseURL+apiDeleteTemplateMessage, token)
 	if err != nil {
 		return err
 	}
@@ -152,8 +152,8 @@ func DeleteTempalteMessage(id, token string) error {
 		"template_id": id,
 	}
 
-	res := new(BaseResponse)
-	err = PostJSON(api, params, res)
+	res := new(baseResponse)
+	err = postJSON(api, params, res)
 	if err != nil {
 		return err
 	}
@@ -173,7 +173,7 @@ type Message map[string]interface{}
 // @data 模板内容，不填则下发空模板
 // @emphasisKeyword 模板需要放大的关键词，不填则默认无放大
 func SendTemplateMessage(openid, template, page, formID string, data Message, emphasisKeyword, token string) error {
-	api, err := TokenAPI(BaseURL+apiSendTemplateMessage, token)
+	api, err := tokenAPI(baseURL+apiSendTemplateMessage, token)
 	if err != nil {
 		return err
 	}
@@ -191,8 +191,8 @@ func SendTemplateMessage(openid, template, page, formID string, data Message, em
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	res := new(BaseResponse)
-	err = PostJSON(api, params, res)
+	res := new(baseResponse)
+	err = postJSON(api, params, res)
 	if err != nil {
 		return err
 	}
@@ -244,13 +244,13 @@ type UniformMsg struct {
 //
 // @token access_token
 func (msg UniformMsg) Send(token string) error {
-	api, err := TokenAPI(BaseURL+apiUniformSendTemplateMessage, token)
+	api, err := tokenAPI(baseURL+apiUniformSendTemplateMessage, token)
 	if err != nil {
 		return err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, msg, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, msg, res); err != nil {
 		return err
 	}
 

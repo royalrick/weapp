@@ -55,7 +55,7 @@ type KFInfo struct {
 
 // PositionResponse response of add position.
 type PositionResponse struct {
-	BaseResponse
+	baseResponse
 	Data struct {
 		AuditID           string `json:"audit_id"`           //	审核单 ID
 		PoiID             string `json:"poi_id"`             //	附近地点 ID
@@ -96,13 +96,13 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 		"poi_id":             p.PoiID,
 	}
 
-	api, err := TokenAPI(BaseURL+apiAddPosition, accessToken)
+	api, err := tokenAPI(baseURL+apiAddPosition, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PositionResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -112,8 +112,8 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 // DeleteNearbyPosition 删除地点
 // @accessToken  接口调用凭证
 // @id  附近地点 ID
-func DeleteNearbyPosition(accessToken, id string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiDeletePosition, accessToken)
+func DeleteNearbyPosition(accessToken, id string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiDeletePosition, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +122,8 @@ func DeleteNearbyPosition(accessToken, id string) (*BaseResponse, error) {
 		"poi_id": id,
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -132,7 +132,7 @@ func DeleteNearbyPosition(accessToken, id string) (*BaseResponse, error) {
 
 // PositionList 地点列表
 type PositionList struct {
-	BaseResponse
+	baseResponse
 	Data struct {
 		LeftApplyNum uint `json:"left_apply_num"` // 剩余可添加地点个数
 		MaxApplyNum  uint `json:"max_apply_num"`  // 最大可添加地点个数
@@ -154,7 +154,7 @@ type PositionList struct {
 // @page  起始页id（从1开始计数）
 // @pageRows  每页展示个数（最多1000个）
 func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
-	api, err := TokenAPI(BaseURL+apiGetPositionList, accessToken)
+	api, err := tokenAPI(baseURL+apiGetPositionList, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -165,7 +165,7 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 	}
 
 	res := new(PositionList)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -185,8 +185,8 @@ const (
 // @accessToken  接口调用凭证
 // @poiID  附近地点 ID
 // @status  是否展示
-func SetShowStatus(accessToken, poiID string, status ShowStatus) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiSetPostionShowStatus, accessToken)
+func SetShowStatus(accessToken, poiID string, status ShowStatus) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiSetPostionShowStatus, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -196,8 +196,8 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*BaseResponse,
 		"status": status,
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

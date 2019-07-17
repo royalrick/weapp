@@ -7,7 +7,7 @@ const (
 
 // ActivityID 动态消息
 type ActivityID struct {
-	BaseResponse
+	baseResponse
 	ID             string `json:"activity_id"`     //	动态消息的 ID
 	ExpirationTime uint   `json:"expiration_time"` //	activity_id 的过期时间戳。默认24小时后过期。
 }
@@ -15,13 +15,13 @@ type ActivityID struct {
 // CreateActivityID 创建被分享动态消息的 activity_id。
 // @accessToken 接口调用凭证
 func CreateActivityID(accessToken string) (*ActivityID, error) {
-	api, err := TokenAPI(BaseURL+apiCreateActivityID, accessToken)
+	api, err := tokenAPI(baseURL+apiCreateActivityID, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(ActivityID)
-	if err := PostJSON(api, nil, res); err != nil {
+	if err := postJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -64,14 +64,14 @@ const (
 
 // SetUpdatableMsg 修改被分享的动态消息。
 // @accessToken 接口调用凭证
-func (msg *ActMsg) SetUpdatableMsg(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiSetUpdatableMsg, accessToken)
+func (msg *ActMsg) SetUpdatableMsg(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiSetUpdatableMsg, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, msg, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, msg, res); err != nil {
 		return nil, err
 	}
 

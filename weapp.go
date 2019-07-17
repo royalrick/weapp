@@ -7,8 +7,8 @@ import (
 )
 
 const (
-	// BaseURL 微信请求基础URL
-	BaseURL = "https://api.weixin.qq.com"
+	// baseURL 微信请求基础URL
+	baseURL = "https://api.weixin.qq.com"
 
 	codeAPI = "/sns/jscode2session"
 )
@@ -18,20 +18,20 @@ type watermark struct {
 	Timestamp int64  `json:"timestamp"`
 }
 
-// BaseResponse 请求微信返回基础数据
-type BaseResponse struct {
+// baseResponse 请求微信返回基础数据
+type baseResponse struct {
 	ErrCode int    `json:"errcode"`
 	ErrMSG  string `json:"errmsg"`
 }
 
 // HasError 判断返回数据是否包含错误
-func (res *BaseResponse) HasError() bool {
+func (res *baseResponse) HasError() bool {
 	return res.ErrCode != 0
 }
 
 // LoginResponse 返回给用户的数据
 type LoginResponse struct {
-	BaseResponse
+	baseResponse
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	// 用户在开放平台的唯一标识符
@@ -161,7 +161,7 @@ func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserIn
 // 拼接 获取 session_key 的 URL
 func code2url(appID, secret, code string) (string, error) {
 
-	api := BaseURL + codeAPI
+	api := baseURL + codeAPI
 	params := map[string]string{
 		"appid":      appID,
 		"secret":     secret,
@@ -169,5 +169,5 @@ func code2url(appID, secret, code string) (string, error) {
 		"grant_type": "authorization_code",
 	}
 
-	return EncodeURL(api, params)
+	return encodeURL(api, params)
 }

@@ -18,7 +18,7 @@ type message struct {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Text) SendTo(openID, token string) (*BaseResponse, error) {
+func (msg Text) SendTo(openID, token string) (*baseResponse, error) {
 
 	params := message{
 		Receiver: openID,
@@ -33,7 +33,7 @@ func (msg Text) SendTo(openID, token string) (*BaseResponse, error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Image) SendTo(openID, token string) (*BaseResponse, error) {
+func (msg Image) SendTo(openID, token string) (*baseResponse, error) {
 
 	params := message{
 		Receiver: openID,
@@ -48,7 +48,7 @@ func (msg Image) SendTo(openID, token string) (*BaseResponse, error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Link) SendTo(openID, token string) (*BaseResponse, error) {
+func (msg Link) SendTo(openID, token string) (*baseResponse, error) {
 
 	params := message{
 		Receiver: openID,
@@ -63,7 +63,7 @@ func (msg Link) SendTo(openID, token string) (*BaseResponse, error) {
 //
 // @openID 用户openID
 // @token 微信 access_token
-func (msg Card) SendTo(openID, token string) (*BaseResponse, error) {
+func (msg Card) SendTo(openID, token string) (*baseResponse, error) {
 
 	params := message{
 		Receiver: openID,
@@ -77,14 +77,14 @@ func (msg Card) SendTo(openID, token string) (*BaseResponse, error) {
 // send 发送消息
 //
 // @token 微信 access_token
-func sendMessage(token string, params interface{}) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiSendMessage, token)
+func sendMessage(token string, params interface{}) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiSendMessage, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

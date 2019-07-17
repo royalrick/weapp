@@ -6,7 +6,7 @@ const (
 
 // VerifySignatureResponse 生物认证秘钥签名验证请求返回数据
 type VerifySignatureResponse struct {
-	BaseResponse
+	baseResponse
 	IsOk bool `json:"is_ok"`
 }
 
@@ -16,7 +16,7 @@ type VerifySignatureResponse struct {
 // @data 通过 wx.startSoterAuthentication 成功回调获得的 resultJSON 字段
 // @signature 通过 wx.startSoterAuthentication 成功回调获得的 resultJSONSignature 字段
 func VerifySignature(accessToken, openID, data, signature string) (*VerifySignatureResponse, error) {
-	api, err := TokenAPI(BaseURL+verifySignatureAPI, accessToken)
+	api, err := tokenAPI(baseURL+verifySignatureAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -28,7 +28,7 @@ func VerifySignature(accessToken, openID, data, signature string) (*VerifySignat
 	}
 
 	res := new(VerifySignatureResponse)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

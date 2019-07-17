@@ -20,7 +20,7 @@ type Trend struct {
 
 // VisitTrend 生物认证秘钥签名验证请求返回数据
 type VisitTrend struct {
-	BaseResponse
+	baseResponse
 	List []Trend `json:"list"`
 }
 
@@ -29,7 +29,7 @@ type VisitTrend struct {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 func GetMonthlyVisitTrend(accessToken, start, end string) (*VisitTrend, error) {
-	return getVisitTrend(BaseURL+getMonthlyVisitTrendAPI, accessToken, start, end)
+	return getVisitTrend(baseURL+getMonthlyVisitTrendAPI, accessToken, start, end)
 }
 
 // GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
@@ -37,7 +37,7 @@ func GetMonthlyVisitTrend(accessToken, start, end string) (*VisitTrend, error) {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 func GetWeeklyVisitTrend(accessToken, start, end string) (*VisitTrend, error) {
-	return getVisitTrend(BaseURL+getWeeklyVisitTrendAPI, accessToken, start, end)
+	return getVisitTrend(baseURL+getWeeklyVisitTrendAPI, accessToken, start, end)
 }
 
 // GetDailyVisitTrendAPI 获取用户访问小程序数据日趋势
@@ -45,11 +45,11 @@ func GetWeeklyVisitTrend(accessToken, start, end string) (*VisitTrend, error) {
 // @start 开始日期，为自然月第一天。格式为 yyyymmdd
 // @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetDailyVisitTrendAPI(accessToken, start, end string) (*VisitTrend, error) {
-	return getVisitTrend(BaseURL+getDailyVisitTrendAPI, accessToken, start, end)
+	return getVisitTrend(baseURL+getDailyVisitTrendAPI, accessToken, start, end)
 }
 
 func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
-	api, err := TokenAPI(api, accessToken)
+	api, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -60,7 +60,7 @@ func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
 	}
 
 	res := new(VisitTrend)
-	if err := PostJSON(api, params, res); err != nil {
+	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

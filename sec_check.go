@@ -22,7 +22,7 @@ const (
 //
 // @url 要检测的图片网络路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheckFromNet(url, token string) (*BaseResponse, error) {
+func IMGSecCheckFromNet(url, token string) (*baseResponse, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func IMGSecCheckFromNet(url, token string) (*BaseResponse, error) {
 //
 // @filename 要检测的图片本地路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheck(filename, token string) (*BaseResponse, error) {
+func IMGSecCheck(filename, token string) (*baseResponse, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -75,9 +75,9 @@ func IMGSecCheck(filename, token string) (*BaseResponse, error) {
 	return imgSecCheck(body, contentType, token)
 }
 
-func imgSecCheck(body io.Reader, contentType, token string) (*BaseResponse, error) {
+func imgSecCheck(body io.Reader, contentType, token string) (*baseResponse, error) {
 
-	api, err := TokenAPI(BaseURL+IMGSecCheckURL, token)
+	api, err := tokenAPI(baseURL+IMGSecCheckURL, token)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +88,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (*BaseResponse, erro
 	}
 	defer resp.Body.Close()
 
-	res := new(BaseResponse)
+	res := new(baseResponse)
 	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
 		return nil, err
 	}
@@ -101,8 +101,8 @@ func imgSecCheck(body io.Reader, contentType, token string) (*BaseResponse, erro
 //
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
-func MSGSecCheck(content, token string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+MSGSecCheckURL, token)
+func MSGSecCheck(content, token string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+MSGSecCheckURL, token)
 	if err != nil {
 		return nil, err
 	}
@@ -111,8 +111,8 @@ func MSGSecCheck(content, token string) (*BaseResponse, error) {
 		"content": content,
 	}
 
-	res := new(BaseResponse)
-	if err = PostJSON(api, params, res); err != nil {
+	res := new(baseResponse)
+	if err = postJSON(api, params, res); err != nil {
 		return nil, err
 	}
 

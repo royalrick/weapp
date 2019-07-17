@@ -41,8 +41,8 @@ type Color struct {
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // @token 微信access_token
-func (code Coder) GetAppCode(token string) (*http.Response, *BaseResponse, error) {
-	return fetchCode(BaseURL+apiGetAppCode, token, code)
+func (code Coder) GetAppCode(token string) (*http.Response, *baseResponse, error) {
+	return fetchCode(baseURL+apiGetAppCode, token, code)
 }
 
 // GetUnlimitedAppCode 获取小程序码
@@ -50,35 +50,35 @@ func (code Coder) GetAppCode(token string) (*http.Response, *BaseResponse, error
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
 //
 // @token 微信access_token
-func (code Coder) GetUnlimitedAppCode(token string) (*http.Response, *BaseResponse, error) {
-	return fetchCode(BaseURL+apiGetUnlimitedAppCode, token, code)
+func (code Coder) GetUnlimitedAppCode(token string) (*http.Response, *baseResponse, error) {
+	return fetchCode(baseURL+apiGetUnlimitedAppCode, token, code)
 }
 
 // CreateQRCode 获取小程序二维码，适用于需要的码数量较少的业务场景。
 // 通过该接口生成的小程序码，永久有效，有数量限制
 //
 // @token 微信access_token
-func (code Coder) CreateQRCode(token string) (*http.Response, *BaseResponse, error) {
-	return fetchCode(BaseURL+apiCreateQRCode, token, code)
+func (code Coder) CreateQRCode(token string) (*http.Response, *baseResponse, error) {
+	return fetchCode(baseURL+apiCreateQRCode, token, code)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func fetchCode(api, token string, params interface{}) (*http.Response, *BaseResponse, error) {
+func fetchCode(api, token string, params interface{}) (*http.Response, *baseResponse, error) {
 
-	api, err := TokenAPI(BaseURL+api, token)
+	api, err := tokenAPI(baseURL+api, token)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := PostJSONWithBody(api, params)
+	res, err := postJSONWithBody(api, params)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	switch header := res.Header.Get("Content-Type"); {
 	case strings.HasPrefix(header, "application/json"): // 返回错误信息
-		response := new(BaseResponse)
+		response := new(baseResponse)
 		if err := json.NewDecoder(res.Body).Decode(response); err != nil {
 			res.Body.Close()
 			return nil, nil, err

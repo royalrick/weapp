@@ -16,7 +16,7 @@ type ContactGetter struct {
 
 // GetContactResponse 获取面单联系人信息返回数据
 type GetContactResponse struct {
-	BaseResponse
+	baseResponse
 	WaybillID string        `json:"waybill_id"` // 运单 ID
 	Sender    []ContactUser `json:"sender"`     // 发件人信息
 	Receiver  []ContactUser `json:"receiver"`   // 收件人信息
@@ -33,13 +33,13 @@ type ContactUser struct {
 // Get 获取面单联系人信息
 // @accessToken 接口调用凭证
 func (cg *ContactGetter) Get(accessToken string) (*GetContactResponse, error) {
-	api, err := TokenAPI(BaseURL+apiGetContact, accessToken)
+	api, err := tokenAPI(baseURL+apiGetContact, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetContactResponse)
-	if err := PostJSON(api, cg, res); err != nil {
+	if err := postJSON(api, cg, res); err != nil {
 		return nil, err
 	}
 
@@ -57,7 +57,7 @@ type TemplateViewer struct {
 
 // PreviewTemplateResponse 预览面单模板返回数据
 type PreviewTemplateResponse struct {
-	BaseResponse
+	baseResponse
 	WaybillID               string `json:"waybill_id"`                // 运单 ID
 	RenderedWaybillTemplate string `json:"rendered_waybill_template"` // 渲染后的面单 HTML 文件（已经过 Base64 编码）
 }
@@ -65,13 +65,13 @@ type PreviewTemplateResponse struct {
 // Preview 预览面单模板。用于调试面单模板使用。
 // @accessToken 接口调用凭证
 func (tv *OrderCreator) Preview(accessToken string) (*PreviewTemplateResponse, error) {
-	api, err := TokenAPI(BaseURL+apiPreviewTemplate, accessToken)
+	api, err := tokenAPI(baseURL+apiPreviewTemplate, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PreviewTemplateResponse)
-	if err := PostJSON(api, tv, res); err != nil {
+	if err := postJSON(api, tv, res); err != nil {
 		return nil, err
 	}
 
@@ -97,14 +97,14 @@ type BusinnessUpdater struct {
 
 // Update 更新商户审核结果
 // @accessToken 接口调用凭证
-func (bu *BusinnessUpdater) Update(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiUpdateBusiness, accessToken)
+func (bu *BusinnessUpdater) Update(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiUpdateBusiness, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, bu, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, bu, res); err != nil {
 		return nil, err
 	}
 
@@ -122,14 +122,14 @@ type ExpressPathUpdater struct {
 
 // Update 更新运单轨迹
 // @accessToken 接口调用凭证
-func (pu *ExpressPathUpdater) Update(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiUpdatePath, accessToken)
+func (pu *ExpressPathUpdater) Update(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiUpdatePath, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, pu, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, pu, res); err != nil {
 		return nil, err
 	}
 

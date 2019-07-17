@@ -33,14 +33,14 @@ const (
 
 // Bind 绑定、解绑物流账号
 // @accessToken 接口调用凭证
-func (ac *ExpressAccount) Bind(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiBindAccount, accessToken)
+func (ac *ExpressAccount) Bind(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiBindAccount, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, ac, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, ac, res); err != nil {
 		return nil, err
 	}
 
@@ -49,7 +49,7 @@ func (ac *ExpressAccount) Bind(accessToken string) (*BaseResponse, error) {
 
 // AccountList 所有绑定的物流账号
 type AccountList struct {
-	BaseResponse
+	baseResponse
 	Count uint `json:"count"` // 账号数量
 	List  []struct {
 		BizID           string     `json:"biz_id"`            // 	快递公司客户编码
@@ -78,13 +78,13 @@ const (
 // GetAllAccount 获取所有绑定的物流账号
 // @accessToken 接口调用凭证
 func GetAllAccount(accessToken string) (*AccountList, error) {
-	api, err := TokenAPI(BaseURL+apiGetAllAccount, accessToken)
+	api, err := tokenAPI(baseURL+apiGetAllAccount, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AccountList)
-	if err := PostJSON(api, nil, res); err != nil {
+	if err := postJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -101,7 +101,7 @@ type ExpressPathGetter struct {
 
 // ExpressPath 运单轨迹
 type ExpressPath struct {
-	BaseResponse
+	baseResponse
 	OpenID       string            `json:"openid"`         // 用户openid
 	DeliveryID   string            `json:"delivery_id"`    // 快递公司 ID
 	WaybillID    string            `json:"waybill_id"`     // 运单 ID
@@ -119,13 +119,13 @@ type ExpressPathNode struct {
 // Get 查询运单轨迹
 // @accessToken 接口调用凭证
 func (pg *ExpressPathGetter) Get(accessToken string) (*ExpressPath, error) {
-	api, err := TokenAPI(BaseURL+apiGetPath, accessToken)
+	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(ExpressPath)
-	if err := PostJSON(api, pg, res); err != nil {
+	if err := postJSON(api, pg, res); err != nil {
 		return nil, err
 	}
 
@@ -240,7 +240,7 @@ const (
 
 // AddOrderResponse 创建订单返回数据
 type AddOrderResponse struct {
-	BaseResponse
+	baseResponse
 	OrderID     string `json:"order_id"`   //	订单ID，下单成功时返回
 	WaybillID   string `json:"waybill_id"` //	运单ID，下单成功时返回
 	WaybillData []struct {
@@ -254,13 +254,13 @@ type AddOrderResponse struct {
 // Add 生成运单
 // @accessToken 接口调用凭证
 func (oc *OrderCreator) Add(accessToken string) (*AddOrderResponse, error) {
-	api, err := TokenAPI(BaseURL+apiGetPath, accessToken)
+	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AddOrderResponse)
-	if err := PostJSON(api, oc, res); err != nil {
+	if err := postJSON(api, oc, res); err != nil {
 		return nil, err
 	}
 
@@ -278,7 +278,7 @@ type OrderCanceler struct {
 
 // CancelOrderResponse 取消订单返回数据
 type CancelOrderResponse struct {
-	BaseResponse
+	baseResponse
 	Count uint `json:"count"` //快递公司数量
 	Data  []struct {
 		DeliveryID   string `json:"delivery_id"`   // 快递公司 ID
@@ -289,14 +289,14 @@ type CancelOrderResponse struct {
 
 // Cancel 取消运单
 // @accessToken 接口调用凭证
-func (oc *OrderCanceler) Cancel(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiCancelOrder, accessToken)
+func (oc *OrderCanceler) Cancel(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiCancelOrder, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, oc, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, oc, res); err != nil {
 		return nil, err
 	}
 
@@ -305,7 +305,7 @@ func (oc *OrderCanceler) Cancel(accessToken string) (*BaseResponse, error) {
 
 // DeliveryList 支持的快递公司列表
 type DeliveryList struct {
-	BaseResponse
+	baseResponse
 	Count uint `json:"count"` // 快递公司数量
 	Data  []struct {
 		ID   string `json:"delivery_id"`   // 快递公司 ID
@@ -316,13 +316,13 @@ type DeliveryList struct {
 // GetAllDelivery 获取支持的快递公司列表
 // @accessToken 接口调用凭证
 func GetAllDelivery(accessToken string) (*DeliveryList, error) {
-	api, err := TokenAPI(BaseURL+apiGetAllDelivery, accessToken)
+	api, err := tokenAPI(baseURL+apiGetAllDelivery, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(DeliveryList)
-	if err := PostJSON(api, nil, res); err != nil {
+	if err := postJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -340,7 +340,7 @@ type OrderGetter struct {
 
 // GetOrderResponse 获取运单返回数据
 type GetOrderResponse struct {
-	BaseResponse
+	baseResponse
 	PrintHTML   string `json:"print_html"` // 运单 html 的 BASE64 结果
 	WaybillData []struct {
 		Key   string `json:"key"`   // 运单信息 key
@@ -352,13 +352,13 @@ type GetOrderResponse struct {
 // Get 获取运单数据
 // @accessToken 接口调用凭证
 func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
-	api, err := TokenAPI(BaseURL+apiGetOrder, accessToken)
+	api, err := tokenAPI(baseURL+apiGetOrder, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetOrderResponse)
-	if err := PostJSON(api, og, res); err != nil {
+	if err := postJSON(api, og, res); err != nil {
 		return nil, err
 	}
 
@@ -367,7 +367,7 @@ func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
 
 // GetPrinterResponse 获取打印员返回数据
 type GetPrinterResponse struct {
-	BaseResponse
+	baseResponse
 	Count  uint     `json:"count"`  // 已经绑定的打印员数量
 	OpenID []string `json:"openid"` // 打印员 openid 列表
 
@@ -376,13 +376,13 @@ type GetPrinterResponse struct {
 // GetPrinter 获取打印员。若需要使用微信打单 PC 软件，才需要调用。
 // @accessToken 接口调用凭证
 func GetPrinter(accessToken string) (*GetPrinterResponse, error) {
-	api, err := TokenAPI(BaseURL+apiGetPrinter, accessToken)
+	api, err := tokenAPI(baseURL+apiGetPrinter, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetPrinterResponse)
-	if err := PostJSON(api, nil, res); err != nil {
+	if err := postJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -398,19 +398,19 @@ type QuotaGetter struct {
 
 // Quota 电子面单余额
 type Quota struct {
-	BaseResponse
+	baseResponse
 	Number uint // 电子面单余额
 }
 
 // GetQuota 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。
 func (qg *QuotaGetter) GetQuota(accessToken string) (*Quota, error) {
-	api, err := TokenAPI(BaseURL+apiGetQuota, accessToken)
+	api, err := tokenAPI(baseURL+apiGetQuota, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(Quota)
-	if err := PostJSON(api, nil, res); err != nil {
+	if err := postJSON(api, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -424,14 +424,14 @@ type PrinterUpdater struct {
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (pu *PrinterUpdater) Update(accessToken string) (*BaseResponse, error) {
-	api, err := TokenAPI(BaseURL+apiUpdatePrinter, accessToken)
+func (pu *PrinterUpdater) Update(accessToken string) (*baseResponse, error) {
+	api, err := tokenAPI(baseURL+apiUpdatePrinter, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(BaseResponse)
-	if err := PostJSON(api, pu, res); err != nil {
+	res := new(baseResponse)
+	if err := postJSON(api, pu, res); err != nil {
 		return nil, err
 	}
 
