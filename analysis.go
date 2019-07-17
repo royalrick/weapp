@@ -1,8 +1,4 @@
-package analysis
-
-import (
-	"github.com/medivhzhan/weapp"
-)
+package weapp
 
 type dateRange struct {
 	StartDate string `json:"begin_date"`
@@ -18,7 +14,7 @@ const (
 
 // UserPortrait response data of get user portrait
 type UserPortrait struct {
-	weapp.BaseResponse
+	BaseResponse
 	RefDate    string     `json:"ref_date"`
 	VisitUV    []Portrait `json:"visit_uv"`     // 活跃用户画像
 	VisitUVNew []Portrait `json:"visit_uv_new"` // 新用户画像
@@ -48,7 +44,7 @@ type Attribute struct {
 // @start 开始日期。格式为 yyyymmdd
 // @end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getUserPortraitAPI, accessToken)
+	api, err := TokenAPI(BaseURL+getUserPortraitAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -59,7 +55,7 @@ func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
 	}
 
 	res := new(UserPortrait)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -68,7 +64,7 @@ func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
 
 // VisitDistribution 用户小程序访问分布数据
 type VisitDistribution struct {
-	weapp.BaseResponse
+	BaseResponse
 	RefDate string         `json:"ref_date"`
 	List    []Distribution `json:"list"`
 }
@@ -95,7 +91,7 @@ type DistributionItem struct {
 // @start 开始日期。格式为 yyyymmdd
 // @end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getVisitDistributionAPI, accessToken)
+	api, err := TokenAPI(BaseURL+getVisitDistributionAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +102,7 @@ func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, e
 	}
 
 	res := new(VisitDistribution)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -115,7 +111,7 @@ func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, e
 
 // VisitPage 页面访问数据
 type VisitPage struct {
-	weapp.BaseResponse
+	BaseResponse
 	RefDate string `json:"ref_date"`
 	List    []Page `json:"list"`
 }
@@ -138,7 +134,7 @@ type Page struct {
 // @start 开始日期。格式为 yyyymmdd
 // @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getVisitPageAPI, accessToken)
+	api, err := TokenAPI(BaseURL+getVisitPageAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -149,7 +145,7 @@ func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
 	}
 
 	res := new(VisitPage)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -158,7 +154,7 @@ func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
 
 // DailySummary 用户访问小程序数据概况
 type DailySummary struct {
-	weapp.BaseResponse
+	BaseResponse
 	List []Summary `json:"list"`
 }
 
@@ -174,7 +170,7 @@ type Summary struct {
 // @start 开始日期。格式为 yyyymmdd
 // @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func getDailySummary(accessToken, start, end string) (*DailySummary, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+getDailySummaryAPI, accessToken)
+	api, err := TokenAPI(BaseURL+getDailySummaryAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -185,7 +181,7 @@ func getDailySummary(accessToken, start, end string) (*DailySummary, error) {
 	}
 
 	res := new(DailySummary)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
