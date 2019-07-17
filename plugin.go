@@ -1,10 +1,8 @@
-package plugin
-
-import "github.com/medivhzhan/weapp"
+package weapp
 
 const (
-	api    = "/wxa/plugin"
-	apiDev = "/wxa/devplugin"
+	apiAddPlugin    = "/wxa/plugin"
+	apiGetPluginDev = "/wxa/devplugin"
 )
 
 // ApplyPlugin 向插件开发者发起使用插件的申请
@@ -12,8 +10,8 @@ const (
 // action	string		是	此接口下填写 "apply"
 // @appID	string		是	插件 appId
 // @reason	string		否	申请使用理由
-func ApplyPlugin(accessToken, appID, reason string) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+api, accessToken)
+func ApplyPlugin(accessToken, appID, reason string) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiAddPlugin, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -24,8 +22,8 @@ func ApplyPlugin(accessToken, appID, reason string) (*weapp.BaseResponse, error)
 		"plugin_appid": appID,
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -36,8 +34,8 @@ func ApplyPlugin(accessToken, appID, reason string) (*weapp.BaseResponse, error)
 // @accessToken 接口调用凭证
 // @page	number		是	要拉取第几页的数据
 // @num		是	每页的记录数
-func GetPluginDevApplyList(accessToken string, page, num uint) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+apiDev, accessToken)
+func GetPluginDevApplyList(accessToken string, page, num uint) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiGetPluginDev, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -48,8 +46,8 @@ func GetPluginDevApplyList(accessToken string, page, num uint) (*weapp.BaseRespo
 		"action": "dev_apply_list",
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -58,7 +56,7 @@ func GetPluginDevApplyList(accessToken string, page, num uint) (*weapp.BaseRespo
 
 // GetPluginListResponse 查询已添加的插件返回数据
 type GetPluginListResponse struct {
-	weapp.BaseResponse
+	BaseResponse
 	PluginList []struct {
 		AppID      string `json:"appid"`      // 插件 appId
 		Status     int8   `json:"status"`     // 插件状态
@@ -70,7 +68,7 @@ type GetPluginListResponse struct {
 // GetPluginList 查询已添加的插件
 // @accessToken 接口调用凭证
 func GetPluginList(accessToken string) (*GetPluginListResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+api, accessToken)
+	api, err := TokenAPI(BaseURL+apiAddPlugin, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +78,7 @@ func GetPluginList(accessToken string) (*GetPluginListResponse, error) {
 	}
 
 	res := new(GetPluginListResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -102,8 +100,8 @@ const (
 // @appID 使用者的 appid。同意申请时填写。
 // @reason 拒绝理由。拒绝申请时填写。
 // @action 修改操作
-func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+apiDev, accessToken)
+func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiGetPluginDev, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -114,8 +112,8 @@ func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction
 		"reason": reason,
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -125,8 +123,8 @@ func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction
 // UnbindPlugin 查询已添加的插件
 // @accessToken 接口调用凭证
 // @appID 插件 appId
-func UnbindPlugin(accessToken, appID string) (*weapp.BaseResponse, error) {
-	api, err := weapp.TokenAPI(weapp.BaseURL+api, accessToken)
+func UnbindPlugin(accessToken, appID string) (*BaseResponse, error) {
+	api, err := TokenAPI(BaseURL+apiAddPlugin, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -136,8 +134,8 @@ func UnbindPlugin(accessToken, appID string) (*weapp.BaseResponse, error) {
 		"plugin_appid": appID,
 	}
 
-	res := new(weapp.BaseResponse)
-	if err := weapp.PostJSON(api, params, res); err != nil {
+	res := new(BaseResponse)
+	if err := PostJSON(api, params, res); err != nil {
 		return nil, err
 	}
 
