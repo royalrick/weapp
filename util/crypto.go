@@ -20,7 +20,7 @@ import (
 // SignByMD5 多参数通过MD5签名
 func SignByMD5(data map[string]string, key string) (string, error) {
 
-	var query []string
+	query := make([]string, 0)
 	for k, v := range data {
 		query = append(query, k+"="+v)
 	}

@@ -10,17 +10,17 @@ const (
 	closeAPI = "/pay/closeorder"
 )
 
-// Close 关闭订单
-type Close struct {
+// Closer 关闭订单
+type Closer struct {
 	// 必填 ...
 	AppID      string `xml:"appid"`        // 小程序ID
 	MchID      string `xml:"mch_id"`       // 商户号
 	OutTradeNo string `xml:"out_trade_no"` // 商户订单号
 }
 
-type close struct {
+type closer struct {
 	XMLName xml.Name `xml:"xml"`
-	Close
+	Closer
 	Sign     string `xml:"sign"`                // 签名
 	NonceStr string `xml:"nonce_str"`           // 随机字符串
 	SignType string `xml:"sign_type,omitempty"` // 签名类型: 目前支持HMAC-SHA256和MD5，默认为MD5
@@ -39,9 +39,9 @@ type closeResponse struct {
 	CloseResponse
 }
 
-func (c *Close) prepare(key string) (close, error) {
-	clo := close{
-		Close:    *c,
+func (c *Closer) prepare(key string) (closer, error) {
+	clo := closer{
+		Closer:   *c,
 		SignType: "MD5",
 		NonceStr: util.RandomString(32),
 	}
@@ -64,7 +64,7 @@ func (c *Close) prepare(key string) (close, error) {
 }
 
 // Close 发起关闭支付请求
-func (c Close) Close(key string) (cres CloseResponse, err error) {
+func (c Closer) Close(key string) (cres CloseResponse, err error) {
 	data, err := c.prepare(key)
 	if err != nil {
 		return

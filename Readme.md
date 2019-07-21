@@ -472,19 +472,19 @@ err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(
 [官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3)
 
 ```go
-import "github.com/medivhzhan/weapp/close"
+import "github.com/medivhzhan/weapp/payment"
 
 // 新建关闭订单
-close := Close{
+closer := payment.Closer{
     AppID:      "APPID",
     MchID:      "商户号",
     OutTradeNo: "商户订单号",
 }
 
-res, err := close.Close("支付密钥")
+res, err := closer.Close("支付密钥")
 if err != nil {
     // handle error
-    return 
+    return
 }
 
 fmt.Printf("返回结果: %#v", res)
