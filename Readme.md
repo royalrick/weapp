@@ -22,6 +22,7 @@
 - [支付](#支付)
   - [付款](#付款)
   - [处理支付结果通知](#处理支付结果通知)
+  - [关闭订单](#关闭订单)
   - [退款](#退款)
   - [处理退款结果通知](#处理退款结果通知)
   - [转账(企业付款)](#转账(企业付款))
@@ -464,6 +465,29 @@ err := payment.HandlePaidNotify(w http.ResponseWriter, req *http.Request,  func(
     // 处理失败 return false, "失败原因..."
 })
 
+```
+
+### 关闭订单
+
+[官方文档](https://pay.weixin.qq.com/wiki/doc/api/wxa/wxa_api.php?chapter=9_3)
+
+```go
+import "github.com/medivhzhan/weapp/close"
+
+// 新建关闭订单
+close := Close{
+    AppID:      "APPID",
+    MchID:      "商户号",
+    OutTradeNo: "商户订单号",
+}
+
+res, err := close.Close("支付密钥")
+if err != nil {
+    // handle error
+    return 
+}
+
+fmt.Printf("返回结果: %#v", res)
 ```
 
 ### 退款
