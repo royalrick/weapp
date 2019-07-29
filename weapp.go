@@ -9,8 +9,6 @@ import (
 const (
 	// baseURL 微信请求基础URL
 	baseURL = "https://api.weixin.qq.com"
-
-	codeAPI = "/sns/jscode2session"
 )
 
 type watermark struct {
@@ -18,40 +16,6 @@ type watermark struct {
 	Timestamp int64  `json:"timestamp"`
 }
 
-// LoginResponse 返回给用户的数据
-type LoginResponse struct {
-	commonError
-	OpenID     string `json:"openid"`
-	SessionKey string `json:"session_key"`
-	// 用户在开放平台的唯一标识符
-	// 只在满足一定条件的情况下返回
-	UnionID string `json:"unionid"`
-}
-
-// Login 用户登录
-// @appID 小程序 appID
-// @secret 小程序的 app secret
-// @code 小程序登录时获取的 code
-func Login(appID, secret, code string) (*LoginResponse, error) {
-
-	api, err := code2url(appID, secret, code)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := http.Get(api)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	res := new(LoginResponse)
-	if err = json.NewDecoder(resp.Body).Decode(res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
 
 // Mobile 解密后的用户手机号码信息
 type Mobile struct {
@@ -145,18 +109,4 @@ func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserIn
 	}
 
 	return info, nil
-}
-
-// 拼接 获取 session_key 的 URL
-func code2url(appID, secret, code string) (string, error) {
-
-	api := baseURL + codeAPI
-	params := map[string]string{
-		"appid":      appID,
-		"secret":     secret,
-		"js_code":    code,
-		"grant_type": "authorization_code",
-	}
-
-	return encodeURL(api, params)
 }
