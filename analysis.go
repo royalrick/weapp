@@ -14,7 +14,7 @@ const (
 
 // UserPortrait response data of get user portrait
 type UserPortrait struct {
-	baseResponse
+	commonError
 	RefDate    string     `json:"ref_date"`
 	VisitUV    []Portrait `json:"visit_uv"`     // 活跃用户画像
 	VisitUVNew []Portrait `json:"visit_uv_new"` // 新用户画像
@@ -64,7 +64,7 @@ func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
 
 // VisitDistribution 用户小程序访问分布数据
 type VisitDistribution struct {
-	baseResponse
+	commonError
 	RefDate string         `json:"ref_date"`
 	List    []Distribution `json:"list"`
 }
@@ -111,7 +111,7 @@ func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, e
 
 // VisitPage 页面访问数据
 type VisitPage struct {
-	baseResponse
+	commonError
 	RefDate string `json:"ref_date"`
 	List    []Page `json:"list"`
 }
@@ -154,7 +154,7 @@ func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
 
 // DailySummary 用户访问小程序数据概况
 type DailySummary struct {
-	baseResponse
+	commonError
 	List []Summary `json:"list"`
 }
 

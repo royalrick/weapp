@@ -18,20 +18,9 @@ type watermark struct {
 	Timestamp int64  `json:"timestamp"`
 }
 
-// baseResponse 请求微信返回基础数据
-type baseResponse struct {
-	ErrCode int    `json:"errcode"`
-	ErrMSG  string `json:"errmsg"`
-}
-
-// HasError 判断返回数据是否包含错误
-func (res *baseResponse) HasError() bool {
-	return res.ErrCode != 0
-}
-
 // LoginResponse 返回给用户的数据
 type LoginResponse struct {
-	baseResponse
+	commonError
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	// 用户在开放平台的唯一标识符

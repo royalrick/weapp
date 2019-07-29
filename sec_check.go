@@ -22,7 +22,7 @@ const (
 //
 // @url 要检测的图片网络路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheckFromNet(url, token string) (*baseResponse, error) {
+func IMGSecCheckFromNet(url, token string) (*commonError, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
@@ -52,7 +52,7 @@ func IMGSecCheckFromNet(url, token string) (*baseResponse, error) {
 //
 // @filename 要检测的图片本地路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheck(filename, token string) (*baseResponse, error) {
+func IMGSecCheck(filename, token string) (*commonError, error) {
 	file, err := os.Open(filename)
 	if err != nil {
 		return nil, err
@@ -75,7 +75,7 @@ func IMGSecCheck(filename, token string) (*baseResponse, error) {
 	return imgSecCheck(body, contentType, token)
 }
 
-func imgSecCheck(body io.Reader, contentType, token string) (*baseResponse, error) {
+func imgSecCheck(body io.Reader, contentType, token string) (*commonError, error) {
 
 	api, err := tokenAPI(baseURL+IMGSecCheckURL, token)
 	if err != nil {
@@ -88,7 +88,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (*baseResponse, erro
 	}
 	defer resp.Body.Close()
 
-	res := new(baseResponse)
+	res := new(commonError)
 	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
 		return nil, err
 	}
@@ -101,7 +101,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (*baseResponse, erro
 //
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
-func MSGSecCheck(content, token string) (*baseResponse, error) {
+func MSGSecCheck(content, token string) (*commonError, error) {
 	api, err := tokenAPI(baseURL+MSGSecCheckURL, token)
 	if err != nil {
 		return nil, err
@@ -111,7 +111,7 @@ func MSGSecCheck(content, token string) (*baseResponse, error) {
 		"content": content,
 	}
 
-	res := new(baseResponse)
+	res := new(commonError)
 	if err = postJSON(api, params, res); err != nil {
 		return nil, err
 	}

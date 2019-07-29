@@ -55,7 +55,7 @@ type KFInfo struct {
 
 // PositionResponse response of add position.
 type PositionResponse struct {
-	baseResponse
+	commonError
 	Data struct {
 		AuditID           string `json:"audit_id"`           //	审核单 ID
 		PoiID             string `json:"poi_id"`             //	附近地点 ID
@@ -112,7 +112,7 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 // DeleteNearbyPosition 删除地点
 // @accessToken  接口调用凭证
 // @id  附近地点 ID
-func DeleteNearbyPosition(accessToken, id string) (*baseResponse, error) {
+func DeleteNearbyPosition(accessToken, id string) (*commonError, error) {
 	api, err := tokenAPI(baseURL+apiDeletePosition, accessToken)
 	if err != nil {
 		return nil, err
@@ -122,7 +122,7 @@ func DeleteNearbyPosition(accessToken, id string) (*baseResponse, error) {
 		"poi_id": id,
 	}
 
-	res := new(baseResponse)
+	res := new(commonError)
 	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
@@ -132,7 +132,7 @@ func DeleteNearbyPosition(accessToken, id string) (*baseResponse, error) {
 
 // PositionList 地点列表
 type PositionList struct {
-	baseResponse
+	commonError
 	Data struct {
 		LeftApplyNum uint `json:"left_apply_num"` // 剩余可添加地点个数
 		MaxApplyNum  uint `json:"max_apply_num"`  // 最大可添加地点个数
@@ -185,7 +185,7 @@ const (
 // @accessToken  接口调用凭证
 // @poiID  附近地点 ID
 // @status  是否展示
-func SetShowStatus(accessToken, poiID string, status ShowStatus) (*baseResponse, error) {
+func SetShowStatus(accessToken, poiID string, status ShowStatus) (*commonError, error) {
 	api, err := tokenAPI(baseURL+apiSetPostionShowStatus, accessToken)
 	if err != nil {
 		return nil, err
@@ -196,7 +196,7 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*baseResponse,
 		"status": status,
 	}
 
-	res := new(baseResponse)
+	res := new(commonError)
 	if err := postJSON(api, params, res); err != nil {
 		return nil, err
 	}
