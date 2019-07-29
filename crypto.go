@@ -83,11 +83,7 @@ func cbcEncrypt(key, plaintext, iv []byte) ([]byte, error) {
 	return ciphertext, nil
 }
 
-// CBCDecrypt CBC解密数据
-//
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @ciphertext 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
+// CBC解密数据
 func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 	block, err := aes.NewCipher(key)
 	if err != nil {
@@ -112,12 +108,8 @@ func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 	return pkcs7decode(ciphertext), nil
 }
 
-// decryptShareData CBC解密数据
-//
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @ciphertext 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
-func decryptShareData(ssk, ciphertext, iv string) ([]byte, error) {
+// decryptUserData 解密用户数据
+func decryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
 	key, err := base64.StdEncoding.DecodeString(ssk)
 	if err != nil {
 		return nil, err

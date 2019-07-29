@@ -67,7 +67,7 @@ type Mobile struct {
 // @data 小程序通过 api 得到的加密数据(encryptedData)
 // @iv 小程序通过 api 得到的初始向量(iv)
 func DecryptPhoneNumber(ssk, data, iv string) (*Mobile, error) {
-	raw, err := decryptShareData(ssk, data, iv)
+	raw, err := decryptUserData(ssk, data, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +94,7 @@ type ShareInfo struct {
 // @gid 小程序唯一群号
 func DecryptShareInfo(ssk, data, iv string) (*ShareInfo, error) {
 
-	raw, err := decryptShareData(ssk, data, iv)
+	raw, err := decryptUserData(ssk, data, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -134,7 +134,7 @@ func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserIn
 		return nil, errors.New("failed to validate signature")
 	}
 
-	raw, err := decryptShareData(ssk, encryptedData, iv)
+	raw, err := decryptUserData(ssk, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
