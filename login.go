@@ -11,7 +11,7 @@ const (
 
 // LoginResponse 返回给用户的数据
 type LoginResponse struct {
-	commonError
+	CommonError
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	// 用户在开放平台的唯一标识符

@@ -20,7 +20,7 @@ type Trend struct {
 
 // VisitTrend 生物认证秘钥签名验证请求返回数据
 type VisitTrend struct {
-	commonError
+	CommonError
 	List []Trend `json:"list"`
 }
 

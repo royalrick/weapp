@@ -9,7 +9,7 @@ const apiGetAccessToken = "/cgi-bin/token"
 
 // TokenResponse 获取 access_token 成功返回数据
 type TokenResponse struct {
-	commonError
+	CommonError
 	AccessToken string `json:"access_token"` // 获取到的凭证
 	ExpiresIn   uint   `json:"expires_in"`   // 凭证有效时间，单位：秒。目前是7200秒之内的值。
 }

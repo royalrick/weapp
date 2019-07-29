@@ -24,7 +24,7 @@ type KeywordItem struct {
 
 // Template 消息模板
 type Template struct {
-	commonError
+	CommonError
 	ID         string `json:"id,omitempty"`
 	TemplateID string `json:"template_id,omitempty"`
 	Title      string `json:"title"`
@@ -36,7 +36,7 @@ type Template struct {
 
 // GetTemplateListResponse 获取模板列表返回的数据
 type GetTemplateListResponse struct {
-	commonError
+	CommonError
 	List       []Template `json:"list"`
 	TotalCount uint       `json:"total_count"`
 }
@@ -152,7 +152,7 @@ func DeleteTempalteMessage(id, token string) error {
 		"template_id": id,
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	err = postJSON(api, params, res)
 	if err != nil {
 		return err
@@ -191,7 +191,7 @@ func SendTemplateMessage(openid, template, page, formID string, data Message, em
 		"emphasis_keyword": emphasisKeyword,
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	err = postJSON(api, params, res)
 	if err != nil {
 		return err
@@ -249,7 +249,7 @@ func (msg UniformMsg) Send(token string) error {
 		return err
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	if err := postJSON(api, msg, res); err != nil {
 		return err
 	}

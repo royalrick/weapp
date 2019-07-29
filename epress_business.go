@@ -33,13 +33,13 @@ const (
 
 // Bind 绑定、解绑物流账号
 // @accessToken 接口调用凭证
-func (ac *ExpressAccount) Bind(accessToken string) (*commonError, error) {
+func (ac *ExpressAccount) Bind(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiBindAccount, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	if err := postJSON(api, ac, res); err != nil {
 		return nil, err
 	}
@@ -49,7 +49,7 @@ func (ac *ExpressAccount) Bind(accessToken string) (*commonError, error) {
 
 // AccountList 所有绑定的物流账号
 type AccountList struct {
-	commonError
+	CommonError
 	Count uint `json:"count"` // 账号数量
 	List  []struct {
 		BizID           string     `json:"biz_id"`            // 	快递公司客户编码
@@ -101,7 +101,7 @@ type ExpressPathGetter struct {
 
 // ExpressPath 运单轨迹
 type ExpressPath struct {
-	commonError
+	CommonError
 	OpenID       string            `json:"openid"`         // 用户openid
 	DeliveryID   string            `json:"delivery_id"`    // 快递公司 ID
 	WaybillID    string            `json:"waybill_id"`     // 运单 ID
@@ -240,7 +240,7 @@ const (
 
 // AddOrderResponse 创建订单返回数据
 type AddOrderResponse struct {
-	commonError
+	CommonError
 	OrderID     string `json:"order_id"`   //	订单ID，下单成功时返回
 	WaybillID   string `json:"waybill_id"` //	运单ID，下单成功时返回
 	WaybillData []struct {
@@ -278,7 +278,7 @@ type OrderCanceler struct {
 
 // CancelOrderResponse 取消订单返回数据
 type CancelOrderResponse struct {
-	commonError
+	CommonError
 	Count uint `json:"count"` //快递公司数量
 	Data  []struct {
 		DeliveryID   string `json:"delivery_id"`   // 快递公司 ID
@@ -289,13 +289,13 @@ type CancelOrderResponse struct {
 
 // Cancel 取消运单
 // @accessToken 接口调用凭证
-func (oc *OrderCanceler) Cancel(accessToken string) (*commonError, error) {
+func (oc *OrderCanceler) Cancel(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiCancelOrder, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	if err := postJSON(api, oc, res); err != nil {
 		return nil, err
 	}
@@ -305,7 +305,7 @@ func (oc *OrderCanceler) Cancel(accessToken string) (*commonError, error) {
 
 // DeliveryList 支持的快递公司列表
 type DeliveryList struct {
-	commonError
+	CommonError
 	Count uint `json:"count"` // 快递公司数量
 	Data  []struct {
 		ID   string `json:"delivery_id"`   // 快递公司 ID
@@ -340,7 +340,7 @@ type OrderGetter struct {
 
 // GetOrderResponse 获取运单返回数据
 type GetOrderResponse struct {
-	commonError
+	CommonError
 	PrintHTML   string `json:"print_html"` // 运单 html 的 BASE64 结果
 	WaybillData []struct {
 		Key   string `json:"key"`   // 运单信息 key
@@ -367,7 +367,7 @@ func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
 
 // GetPrinterResponse 获取打印员返回数据
 type GetPrinterResponse struct {
-	commonError
+	CommonError
 	Count  uint     `json:"count"`  // 已经绑定的打印员数量
 	OpenID []string `json:"openid"` // 打印员 openid 列表
 
@@ -398,7 +398,7 @@ type QuotaGetter struct {
 
 // Quota 电子面单余额
 type Quota struct {
-	commonError
+	CommonError
 	Number uint // 电子面单余额
 }
 
@@ -424,13 +424,13 @@ type PrinterUpdater struct {
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (pu *PrinterUpdater) Update(accessToken string) (*commonError, error) {
+func (pu *PrinterUpdater) Update(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiUpdatePrinter, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(commonError)
+	res := new(CommonError)
 	if err := postJSON(api, pu, res); err != nil {
 		return nil, err
 	}
