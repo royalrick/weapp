@@ -71,9 +71,9 @@ go get -u github.com/medivhzhan/weapp
 
 import "github.com/medivhzhan/weapp"
 
-// @appID 小程序 appID
-// @secret 小程序的 app secret
-// @code 小程序登录时获取的 code
+// appID 小程序 appID
+// secret 小程序的 app secret
+// code 小程序登录时获取的 code
 res, err := weapp.Login(appID, secret, code)
 if err != nil {
     // handle error
@@ -152,9 +152,9 @@ import "github.com/medivhzhan/weapp/analysis"
 ```go
 
 // GetMonthlyRetain 获取用户访问小程序月留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetMonthlyRetain("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -172,9 +172,9 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetWeeklyRetain 获取用户访问小程序周留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetWeeklyRetain("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -192,9 +192,9 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetDailyRetainAPI 获取用户访问小程序日留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetDailyRetainAPI("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -214,9 +214,9 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetMonthlyVisitTrend 获取用户访问小程序数据月趋势
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetMonthlyVisitTrend("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -234,9 +234,9 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetWeeklyVisitTrend("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -254,9 +254,9 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetDailyVisitTrendAPI 获取用户访问小程序数据日趋势
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 res, err := analysis.GetDailyVisitTrendAPI("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -276,8 +276,8 @@ fmt.Printf("返回结果: %#v", res)
 // GetUserPortrait 获取小程序新增或活跃用户的画像分布数据。
 // 时间范围支持昨天、最近7天、最近30天。
 // 其中，新增用户数为时间范围内首次访问小程序的去重用户数，活跃用户数为时间范围内访问过小程序的去重用户数。
-// @start 开始日期。格式为 yyyymmdd
-// @end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+// start 开始日期。格式为 yyyymmdd
+// end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 res, err := analysis.GetUserPortrait("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -295,8 +295,8 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // GetVisitDistribution 获取用户小程序访问分布数据
-// @start 开始日期。格式为 yyyymmdd
-// @end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+// start 开始日期。格式为 yyyymmdd
+// end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 res, err := analysis.GetVisitDistribution("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -315,8 +315,8 @@ fmt.Printf("返回结果: %#v", res)
 
 // GetVisitPage 访问页面。
 // 目前只提供按 page_visit_pv 排序的 top200。
-// @start 开始日期。格式为 yyyymmdd
-// @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+// start 开始日期。格式为 yyyymmdd
+// end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 res, err := analysis.GetVisitPage("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -334,8 +334,8 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 
 // getDailySummary 获取用户访问小程序数据概况
-// @start 开始日期。格式为 yyyymmdd
-// @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+// start 开始日期。格式为 yyyymmdd
+// end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 res, err := analysis.getDailySummary("access-token", "start-date-string", "end-date-string")
 if err != nil {
     // handle error
@@ -604,7 +604,7 @@ err := msg.Send(token)
 // 引入子包
 import "github.com/medivhzhan/weapp/message/updatable"
 
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 res, err :=  CreateActivityID("access-token")
 if err != nil {
     // handle error
@@ -636,7 +636,7 @@ msg := updatable.Message{
         },
     },
 }
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 res, err := msg.SetUpdatableMsg("access-token")
 if err != nil {
     // handle error
@@ -699,7 +699,7 @@ point := nearby.Position{
     PoiID:             "poi-id",             // 如果创建新的门店，poi_id字段为空 如果更新门店，poi_id参数则填对应门店的poi_id 选填
 }
 
-// @accessToken  接口调用凭证
+// accessToken  接口调用凭证
 res, err := point.Add("access-token")
 if err != nil {
     // handle error
@@ -719,8 +719,8 @@ fmt.Printf("返回结果: %#v", res)
 // 引入子包
 import "github.com/medivhzhan/weapp/message/nearby"
 
-// @accessToken  接口调用凭证
-// @id  附近地点 ID
+// accessToken  接口调用凭证
+// id  附近地点 ID
 res, err := point.Delete("access-token", "poi-id")
 if err != nil {
     // handle error
@@ -740,9 +740,9 @@ fmt.Printf("返回结果: %#v", res)
 // 引入子包
 import "github.com/medivhzhan/weapp/message/nearby"
 
-// @accessToken  接口调用凭证
-// @page  起始页id（从1开始计数）
-// @pageRows  每页展示个数（最多1000个）
+// accessToken  接口调用凭证
+// page  起始页id（从1开始计数）
+// pageRows  每页展示个数（最多1000个）
 res, err := point.GetList("access-token", 1, 10)
 if err != nil {
     // handle error
@@ -762,9 +762,9 @@ fmt.Printf("返回结果: %#v", res)
 // 引入子包
 import "github.com/medivhzhan/weapp/message/nearby"
 
-// @accessToken  接口调用凭证
-// @poiID  附近地点 ID
-// @status  是否展示
+// accessToken  接口调用凭证
+// poiID  附近地点 ID
+// status  是否展示
 res, err := point.SetShowStatus("access-token", "poi-id", nearby.Show)
 if err != nil {
     // handle error
@@ -871,8 +871,8 @@ import "github.com/medivhzhan/weapp"
 
 // 本地图片检测
 //
-// @filename 要检测的图片本地路径
-// @token 接口调用凭证(access_token)
+// filename 要检测的图片本地路径
+// token 接口调用凭证(access_token)
 res, err := IMGSecCheck(filename, token string)
 if err != nil {
     return
@@ -882,8 +882,8 @@ fmt.Printf("返回结果: %#v", res)
 
 // 网络图片检测
 //
-// @url 要检测的图片网络路径
-// @token 接口调用凭证(access_token)
+// url 要检测的图片网络路径
+// token 接口调用凭证(access_token)
 res, err := IMGSecCheckFromNet(url, token string)
 if err != nil {
     return
@@ -903,8 +903,8 @@ import "github.com/medivhzhan/weapp"
 
 // 文本检测
 //
-// @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
-// @token 接口调用凭证(access_token)
+// content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
+// token 接口调用凭证(access_token)
 res, err := MSGSecCheck(content, token string)
 if err != nil {
     return
@@ -956,9 +956,9 @@ import "github.com/medivhzhan/weapp"
 
 // 解密手机号码
 //
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @data 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
+// ssk 通过 Login 向微信服务端请求得到的 session_key
+// data 小程序通过 api 得到的加密数据(encryptedData)
+// iv 小程序通过 api 得到的初始向量(iv)
 phone , err := weapp.DecryptPhoneNumber(ssk, data, iv string)
 
 fmt.Printf("手机数据: %#v", phone)
@@ -973,11 +973,11 @@ import "github.com/medivhzhan/weapp"
 
 // 解密转发信息的加密数据
 //
-// @ssk 通过 Login 向微信服务端请求得到的 session_key
-// @data 小程序通过 api 得到的加密数据(encryptedData)
-// @iv 小程序通过 api 得到的初始向量(iv)
+// ssk 通过 Login 向微信服务端请求得到的 session_key
+// data 小程序通过 api 得到的加密数据(encryptedData)
+// iv 小程序通过 api 得到的初始向量(iv)
 //
-// @gid 小程序唯一群号
+// gid 小程序唯一群号
 openGid , err := weapp.DecryptShareInfo(ssk, data, iv string)
 
 ```
@@ -990,11 +990,11 @@ import "github.com/medivhzhan/weapp"
 
 // 解密用户信息
 //
-// @rawData 不包括敏感信息的原始数据字符串, 用于计算签名。
-// @encryptedData 包括敏感数据在内的完整用户信息的加密数据
-// @signature 使用 sha1( rawData + session_key ) 得到字符串, 用于校验用户信息
-// @iv 加密算法的初始向量
-// @ssk 微信 session_key
+// rawData 不包括敏感信息的原始数据字符串, 用于计算签名。
+// encryptedData 包括敏感数据在内的完整用户信息的加密数据
+// signature 使用 sha1( rawData + session_key ) 得到字符串, 用于校验用户信息
+// iv 加密算法的初始向量
+// ssk 微信 session_key
 ui, err := weapp.DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string)
 if err != nil {
     return

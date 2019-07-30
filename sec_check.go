@@ -21,8 +21,8 @@ const (
 // IMGSecCheckByURL 网络图片检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
 //
-// @url 要检测的图片网络路径
-// @token 接口调用凭证(access_token)
+// url 要检测的图片网络路径
+// token 接口调用凭证(access_token)
 func IMGSecCheckByURL(url, token string) (*CommonError, error) {
 	resp, err := http.Get(url)
 	if err != nil {
@@ -51,8 +51,8 @@ func IMGSecCheckByURL(url, token string) (*CommonError, error) {
 // IMGSecCheck 本地图片检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
 //
-// @filename 要检测的图片本地路径
-// @token 接口调用凭证(access_token)
+// filename 要检测的图片本地路径
+// token 接口调用凭证(access_token)
 func IMGSecCheck(filename, token string) (*CommonError, error) {
 	file, err := os.Open(filename)
 	if err != nil {
@@ -100,8 +100,8 @@ func imgSecCheck(body io.Reader, contentType, token string) (*CommonError, error
 // MSGSecCheck 文本检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/msgSecCheck.html
 //
-// @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
-// @token 接口调用凭证(access_token)
+// content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
+// token 接口调用凭证(access_token)
 func MSGSecCheck(content, token string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiCheckMsg, token)
 	if err != nil {
@@ -138,8 +138,8 @@ type CheckMediaResponse struct {
 
 // MediaCheckAsync 异步校验图片/音频是否含有违法违规内容。
 //
-// @mediaURL 要检测的多媒体url
-// @mediaType 接口调用凭证(access_token)
+// mediaURL 要检测的多媒体url
+// mediaType 接口调用凭证(access_token)
 func MediaCheckAsync(mediaURL string, mediaType MediaType, token string) (*CheckMediaResponse, error) {
 	api, err := tokenAPI(baseURL+apiCheckMedia, token)
 	if err != nil {

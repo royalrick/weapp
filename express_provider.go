@@ -31,7 +31,7 @@ type ContactUser struct {
 }
 
 // Get 获取面单联系人信息
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (cg *ContactGetter) Get(accessToken string) (*GetContactResponse, error) {
 	api, err := tokenAPI(baseURL+apiGetContact, accessToken)
 	if err != nil {
@@ -63,7 +63,7 @@ type PreviewTemplateResponse struct {
 }
 
 // Preview 预览面单模板。用于调试面单模板使用。
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (tv *OrderCreator) Preview(accessToken string) (*PreviewTemplateResponse, error) {
 	api, err := tokenAPI(baseURL+apiPreviewTemplate, accessToken)
 	if err != nil {
@@ -96,7 +96,7 @@ type BusinnessUpdater struct {
 }
 
 // Update 更新商户审核结果
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (bu *BusinnessUpdater) Update(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiUpdateBusiness, accessToken)
 	if err != nil {
@@ -121,7 +121,7 @@ type ExpressPathUpdater struct {
 }
 
 // Update 更新运单轨迹
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (pu *ExpressPathUpdater) Update(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiUpdatePath, accessToken)
 	if err != nil {

@@ -21,9 +21,9 @@ type LoginResponse struct {
 
 // Login 登录凭证校验。通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。
 //
-// @appID 小程序 appID
-// @secret 小程序的 app secret
-// @code 小程序登录时获取的 code
+// appID 小程序 appID
+// secret 小程序的 app secret
+// code 小程序登录时获取的 code
 func Login(appID, secret, code string) (*LoginResponse, error) {
 	params := requestQueries{
 		"appid":      appID,

@@ -32,7 +32,7 @@ const (
 )
 
 // Bind 绑定、解绑物流账号
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (ac *ExpressAccount) Bind(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiBindAccount, accessToken)
 	if err != nil {
@@ -76,7 +76,7 @@ const (
 )
 
 // GetAllAccount 获取所有绑定的物流账号
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func GetAllAccount(accessToken string) (*AccountList, error) {
 	api, err := tokenAPI(baseURL+apiGetAllAccount, accessToken)
 	if err != nil {
@@ -117,7 +117,7 @@ type ExpressPathNode struct {
 }
 
 // Get 查询运单轨迹
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (pg *ExpressPathGetter) Get(accessToken string) (*ExpressPath, error) {
 	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
 	if err != nil {
@@ -252,7 +252,7 @@ type AddOrderResponse struct {
 }
 
 // Add 生成运单
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (oc *OrderCreator) Add(accessToken string) (*AddOrderResponse, error) {
 	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
 	if err != nil {
@@ -288,7 +288,7 @@ type CancelOrderResponse struct {
 }
 
 // Cancel 取消运单
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (oc *OrderCanceler) Cancel(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiCancelOrder, accessToken)
 	if err != nil {
@@ -314,7 +314,7 @@ type DeliveryList struct {
 }
 
 // GetAllDelivery 获取支持的快递公司列表
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func GetAllDelivery(accessToken string) (*DeliveryList, error) {
 	api, err := tokenAPI(baseURL+apiGetAllDelivery, accessToken)
 	if err != nil {
@@ -350,7 +350,7 @@ type GetOrderResponse struct {
 }
 
 // Get 获取运单数据
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
 	api, err := tokenAPI(baseURL+apiGetOrder, accessToken)
 	if err != nil {
@@ -374,7 +374,7 @@ type GetPrinterResponse struct {
 }
 
 // GetPrinter 获取打印员。若需要使用微信打单 PC 软件，才需要调用。
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func GetPrinter(accessToken string) (*GetPrinterResponse, error) {
 	api, err := tokenAPI(baseURL+apiGetPrinter, accessToken)
 	if err != nil {

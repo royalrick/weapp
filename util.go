@@ -47,7 +47,7 @@ func getQuery(req *http.Request, key string) string {
 
 // randomString random string generator
 //
-// @ln length of return string
+// ln length of return string
 func randomString(ln int) string {
 	letters := []rune("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 	b := make([]rune, ln)

@@ -17,7 +17,7 @@ import (
 const pkcs7blocksize = 32
 
 // pkcs7encode 对需要加密的明文进行填充补位
-// @plaintext 需要进行填充补位操作的明文
+// plaintext 需要进行填充补位操作的明文
 // 返回补齐明文字符串
 func pkcs7encode(plaintext []byte) []byte {
 	//计算需要填充的位数
@@ -33,7 +33,7 @@ func pkcs7encode(plaintext []byte) []byte {
 }
 
 // pkcs7decode 对解密后的明文进行补位删除
-// @plaintext 解密后的明文
+// plaintext 解密后的明文
 // 返回删除填充补位后的明文和
 func pkcs7decode(plaintext []byte) []byte {
 	ln := len(plaintext)

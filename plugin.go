@@ -6,10 +6,10 @@ const (
 )
 
 // ApplyPlugin 向插件开发者发起使用插件的申请
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 // action	string		是	此接口下填写 "apply"
-// @appID	string		是	插件 appId
-// @reason	string		否	申请使用理由
+// appID	string		是	插件 appId
+// reason	string		否	申请使用理由
 func ApplyPlugin(accessToken, appID, reason string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiAddPlugin, accessToken)
 	if err != nil {
@@ -31,9 +31,9 @@ func ApplyPlugin(accessToken, appID, reason string) (*CommonError, error) {
 }
 
 // GetPluginDevApplyList 获取当前所有插件使用方
-// @accessToken 接口调用凭证
-// @page	number		是	要拉取第几页的数据
-// @num		是	每页的记录数
+// accessToken 接口调用凭证
+// page	number		是	要拉取第几页的数据
+// num		是	每页的记录数
 func GetPluginDevApplyList(accessToken string, page, num uint) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiGetPluginDev, accessToken)
 	if err != nil {
@@ -66,7 +66,7 @@ type GetPluginListResponse struct {
 }
 
 // GetPluginList 查询已添加的插件
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func GetPluginList(accessToken string) (*GetPluginListResponse, error) {
 	api, err := tokenAPI(baseURL+apiAddPlugin, accessToken)
 	if err != nil {
@@ -96,10 +96,10 @@ const (
 )
 
 // SetDevPluginApplyStatus 修改插件使用申请的状态
-// @accessToken 接口调用凭证
-// @appID 使用者的 appid。同意申请时填写。
-// @reason 拒绝理由。拒绝申请时填写。
-// @action 修改操作
+// accessToken 接口调用凭证
+// appID 使用者的 appid。同意申请时填写。
+// reason 拒绝理由。拒绝申请时填写。
+// action 修改操作
 func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiGetPluginDev, accessToken)
 	if err != nil {
@@ -121,8 +121,8 @@ func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction
 }
 
 // UnbindPlugin 查询已添加的插件
-// @accessToken 接口调用凭证
-// @appID 插件 appId
+// accessToken 接口调用凭证
+// appID 插件 appId
 func UnbindPlugin(accessToken, appID string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiAddPlugin, accessToken)
 	if err != nil {

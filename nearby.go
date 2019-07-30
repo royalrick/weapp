@@ -64,7 +64,7 @@ type PositionResponse struct {
 }
 
 // Add 添加地点
-// @accessToken  接口调用凭证
+// accessToken  接口调用凭证
 func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 
 	pisList, err := json.Marshal(p.PicList)
@@ -110,8 +110,8 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 }
 
 // DeleteNearbyPosition 删除地点
-// @accessToken  接口调用凭证
-// @id  附近地点 ID
+// accessToken  接口调用凭证
+// id  附近地点 ID
 func DeleteNearbyPosition(accessToken, id string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiDeletePosition, accessToken)
 	if err != nil {
@@ -150,9 +150,9 @@ type PositionList struct {
 }
 
 // GetList 查看地点列表
-// @accessToken  接口调用凭证
-// @page  起始页id（从1开始计数）
-// @pageRows  每页展示个数（最多1000个）
+// accessToken  接口调用凭证
+// page  起始页id（从1开始计数）
+// pageRows  每页展示个数（最多1000个）
 func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 	api, err := tokenAPI(baseURL+apiGetPositionList, accessToken)
 	if err != nil {
@@ -182,9 +182,9 @@ const (
 )
 
 // SetShowStatus 展示/取消展示附近小程序
-// @accessToken  接口调用凭证
-// @poiID  附近地点 ID
-// @status  是否展示
+// accessToken  接口调用凭证
+// poiID  附近地点 ID
+// status  是否展示
 func SetShowStatus(accessToken, poiID string, status ShowStatus) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiSetPostionShowStatus, accessToken)
 	if err != nil {

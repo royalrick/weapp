@@ -21,25 +21,25 @@ type RetainResponse struct {
 }
 
 // GetMonthlyRetain 获取用户访问小程序月留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 func GetMonthlyRetain(accessToken, start, end string) (*RetainResponse, error) {
 	return getRetain(baseURL+getMonthlyRetainAPI, accessToken, start, end)
 }
 
 // GetWeeklyRetain 获取用户访问小程序周留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 func GetWeeklyRetain(accessToken, start, end string) (*RetainResponse, error) {
 	return getRetain(baseURL+getWeeklyRetainAPI, accessToken, start, end)
 }
 
 // GetDailyRetainAPI 获取用户访问小程序日留存
-// @accessToken 接口调用凭证
-// @start 开始日期，为自然月第一天。格式为 yyyymmdd
-// @end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
+// accessToken 接口调用凭证
+// start 开始日期，为自然月第一天。格式为 yyyymmdd
+// end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetDailyRetainAPI(accessToken, start, end string) (*RetainResponse, error) {
 	return getRetain(baseURL+getDailyRetainAPI, accessToken, start, end)
 }

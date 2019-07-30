@@ -11,10 +11,10 @@ type VerifySignatureResponse struct {
 }
 
 // VerifySignature 生物认证秘钥签名验证
-// @accessToken 接口调用凭证
-// @openID 用户 openid
-// @data 通过 wx.startSoterAuthentication 成功回调获得的 resultJSON 字段
-// @signature 通过 wx.startSoterAuthentication 成功回调获得的 resultJSONSignature 字段
+// accessToken 接口调用凭证
+// openID 用户 openid
+// data 通过 wx.startSoterAuthentication 成功回调获得的 resultJSON 字段
+// signature 通过 wx.startSoterAuthentication 成功回调获得的 resultJSONSignature 字段
 func VerifySignature(accessToken, openID, data, signature string) (*VerifySignatureResponse, error) {
 	api, err := tokenAPI(baseURL+verifySignatureAPI, accessToken)
 	if err != nil {

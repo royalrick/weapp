@@ -13,7 +13,7 @@ type ActivityID struct {
 }
 
 // CreateActivityID 创建被分享动态消息的 activity_id。
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func CreateActivityID(accessToken string) (*ActivityID, error) {
 	api, err := tokenAPI(baseURL+apiCreateActivityID, accessToken)
 	if err != nil {
@@ -63,7 +63,7 @@ const (
 )
 
 // SetUpdatableMsg 修改被分享的动态消息。
-// @accessToken 接口调用凭证
+// accessToken 接口调用凭证
 func (msg *ActMsg) SetUpdatableMsg(accessToken string) (*CommonError, error) {
 	api, err := tokenAPI(baseURL+apiSetUpdatableMsg, accessToken)
 	if err != nil {
