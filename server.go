@@ -1,4 +1,3 @@
-// Package weapp 接收并处理微信通知
 package weapp
 
 import (
@@ -32,8 +31,9 @@ type EventType = string
 
 // 所有事件类型
 const (
-	EventUserEntry EventType = "user_enter_tempsession" // 用户进入临时会话状态
-	EventGetQuota            = "get_quota"              // 查询商户余额
+	EventUserEntry       EventType = "user_enter_tempsession" // 用户进入临时会话状态
+	EventGetQuota                  = "get_quota"              // 查询商户余额
+	EventAsyncMediaCheck           = "wxa_media_check"        // 异步校验图片/音频
 )
 
 // EncryptedMsgResponse 接收的的加密消息格式
@@ -56,15 +56,17 @@ type EncryptedMsgRequest struct {
 type Mixture struct {
 	XMLName      xml.Name  `xml:"xml" json:"-"`
 	ID           int       `json:"MsgId" xml:"MsgId"`                     // 消息 ID
-	Type         MsgType   `json:"MsgType" xml:"MsgType"`                 // 消息类型
+	MsgType      MsgType   `json:"MsgType" xml:"MsgType"`                 // 消息类型
 	Event        EventType `json:"event,omitempty" xml:"event,omitempty"` // 事件类型
-	FromUserName string    `json:"FromUserName" xml:"FromUserName"`       // 发送者的 openID
+	FromUserName string    `json:"FromUserName" xml:"FromUserName"`       // 发送者的 openID | 平台推送服务UserName
 	ToUserName   string    `json:"ToUserName" xml:"ToUserName"`           // 小程序的原始ID
 	CreateTime   int64     `json:"CreateTime" xml:"CreateTime"`           // 消息创建时间(整型）
 
 	Text
 	Card
 	Image
+	AsyncMedia
+
 	RawData map[string]interface{} `json:"-" xml:"-"` // 原始数据
 }
 
@@ -94,6 +96,15 @@ type Link struct {
 	Description string `json:"description"`
 	URL         string `json:"url"`
 	ThumbURL    string `json:"thumb_url"`
+}
+
+// AsyncMedia 异步校验的图片/音频
+type AsyncMedia struct {
+	IsRisky       uint8  `json:"isrisky"`         // 检测结果，0：暂未检测到风险，1：风险
+	ExtraInfoJSON string `json:"extra_info_json"` // 附加信息，默认为空
+	AppID         string `json:"appid"`           // 小程序的appid
+	TraceID       string `json:"trace_id"`        // 任务id
+	StatusCode    int    `json:"status_code"`     // 默认为：0，4294966288(-1008)为链接无法下载
 }
 
 // Server 微信通知服务处理器
@@ -208,7 +219,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 		}
 
 		ok := false // 是否已经收到消息
-		switch mix.Type {
+		switch mix.MsgType {
 
 		case MsgText: // 文本消息
 			if srv.TextMessageHandler != nil {
@@ -240,7 +251,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 			}
 
 		default:
-			return errors.New("invalid message type: " + mix.Type)
+			return errors.New("invalid message type: " + mix.MsgType)
 		}
 
 		if ok {

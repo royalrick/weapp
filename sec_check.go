@@ -13,8 +13,9 @@ import (
 
 // 检测地址
 const (
-	IMGSecCheckURL = "/wxa/img_sec_check"
-	MSGSecCheckURL = "/wxa/msg_sec_check"
+	apiCheckImg   = "/wxa/img_sec_check"
+	apiCheckMsg   = "/wxa/msg_sec_check"
+	apiCheckMedia = "/wxa/media_check_async"
 )
 
 // IMGSecCheckFromNet 网络图片检测
@@ -77,7 +78,7 @@ func IMGSecCheck(filename, token string) (*CommonError, error) {
 
 func imgSecCheck(body io.Reader, contentType, token string) (*CommonError, error) {
 
-	api, err := tokenAPI(baseURL+IMGSecCheckURL, token)
+	api, err := tokenAPI(baseURL+apiCheckImg, token)
 	if err != nil {
 		return nil, err
 	}
@@ -102,7 +103,7 @@ func imgSecCheck(body io.Reader, contentType, token string) (*CommonError, error
 // @content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // @token 接口调用凭证(access_token)
 func MSGSecCheck(content, token string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+MSGSecCheckURL, token)
+	api, err := tokenAPI(baseURL+apiCheckMsg, token)
 	if err != nil {
 		return nil, err
 	}
@@ -112,6 +113,45 @@ func MSGSecCheck(content, token string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
+	if err = postJSON(api, params, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// MediaType 检测内容类型
+type MediaType = uint8
+
+// 所有检测内容类型
+const (
+	_              MediaType = iota
+	MediaTypeAudio           // 音频
+	MediaTypeImage           // 图片
+)
+
+// CheckMediaResponse 异步校验图片/音频返回数据
+type CheckMediaResponse struct {
+	CommonError
+	TranceID string `json:"trace_id"`
+}
+
+// MediaCheckAsync 异步校验图片/音频是否含有违法违规内容。
+//
+// @mediaURL 要检测的多媒体url
+// @mediaType 接口调用凭证(access_token)
+func MediaCheckAsync(mediaURL string, mediaType MediaType, token string) (*CheckMediaResponse, error) {
+	api, err := tokenAPI(baseURL+apiCheckMedia, token)
+	if err != nil {
+		return nil, err
+	}
+
+	params := map[string]interface{}{
+		"media_url":  mediaURL,
+		"media_type": mediaType,
+	}
+
+	res := new(CheckMediaResponse)
 	if err = postJSON(api, params, res); err != nil {
 		return nil, err
 	}
