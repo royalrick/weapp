@@ -150,12 +150,12 @@ type UploadTempMediaResponse struct {
 	CreatedAt uint   `json:"created_at"` // 媒体文件上传时间戳
 }
 
-// uploadTempMedia 把媒体文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
+// UploadTempMedia 把媒体文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
 //
 // token 接口调用凭证
 // mediaType 文件类型
 // media form-data 中媒体文件标识，有filename、filelength、content-type等信息
-func uploadTempMedia(token string, mediaType TempMediaType, media interface{}) (*UploadTempMediaResponse, error) {
+func UploadTempMedia(token string, mediaType TempMediaType, media string) (*UploadTempMediaResponse, error) {
 	api, err := tokenAPI(baseURL+apiUploadTemplateMedia, token)
 	if err != nil {
 		return nil, err
