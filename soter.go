@@ -21,7 +21,7 @@ func VerifySignature(accessToken, openID, data, signature string) (*VerifySignat
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"openid":         openID,
 		"json_string":    data,
 		"json_signature": signature,

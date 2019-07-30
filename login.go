@@ -25,7 +25,7 @@ type LoginResponse struct {
 // @secret 小程序的 app secret
 // @code 小程序登录时获取的 code
 func Login(appID, secret, code string) (*LoginResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"appid":      appID,
 		"secret":     secret,
 		"js_code":    code,

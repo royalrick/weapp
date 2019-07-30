@@ -121,7 +121,7 @@ func SetTyping(token, openID string, cmd SetTypingCommand) (*CommonError, error)
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"touser":  openID,
 		"command": cmd,
 	}
@@ -161,7 +161,7 @@ func UploadTempMedia(token string, mediaType TempMediaType, media string) (*Uplo
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"type":  mediaType,
 		"media": media,
 	}
@@ -179,7 +179,7 @@ func UploadTempMedia(token string, mediaType TempMediaType, media string) (*Uplo
 // token 接口调用凭证
 // mediaID 媒体文件 ID
 func GetTempMedia(token, mediaID string) (*http.Response, *CommonError, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"media_id":     mediaID,
 	}

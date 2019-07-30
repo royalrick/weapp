@@ -18,7 +18,7 @@ type TokenResponse struct {
 // 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
 func GetAccessToken(appID, secret string) (*TokenResponse, error) {
 
-	params := map[string]string{
+	params := requestQueries{
 		"appid":      appID,
 		"secret":     secret,
 		"grant_type": "client_credential",

@@ -11,7 +11,7 @@ import (
 
 // tokenAPI 获取带 token 的 API 地址
 func tokenAPI(api, token string) (string, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 	}
 
@@ -19,7 +19,7 @@ func tokenAPI(api, token string) (string, error) {
 }
 
 // encodeURL add and encode parameters.
-func encodeURL(api string, params map[string]string) (string, error) {
+func encodeURL(api string, params requestQueries) (string, error) {
 	url, err := url.Parse(api)
 	if err != nil {
 		return "", err

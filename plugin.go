@@ -16,7 +16,7 @@ func ApplyPlugin(accessToken, appID, reason string) (*CommonError, error) {
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"action":       "apply",
 		"reason":       reason,
 		"plugin_appid": appID,
@@ -40,7 +40,7 @@ func GetPluginDevApplyList(accessToken string, page, num uint) (*CommonError, er
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"num":    num,
 		"page":   page,
 		"action": "dev_apply_list",
@@ -73,7 +73,7 @@ func GetPluginList(accessToken string) (*GetPluginListResponse, error) {
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"action": "list",
 	}
 
@@ -106,7 +106,7 @@ func SetDevPluginApplyStatus(accessToken, appID, reason string, action DevAction
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"action": action,
 		"appid":  appID,
 		"reason": reason,
@@ -129,7 +129,7 @@ func UnbindPlugin(accessToken, appID string) (*CommonError, error) {
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"action":       "unbind",
 		"plugin_appid": appID,
 	}

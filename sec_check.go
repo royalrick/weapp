@@ -108,7 +108,7 @@ func MSGSecCheck(content, token string) (*CommonError, error) {
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"content": content,
 	}
 
@@ -146,7 +146,7 @@ func MediaCheckAsync(mediaURL string, mediaType MediaType, token string) (*Check
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"media_url":  mediaURL,
 		"media_type": mediaType,
 	}

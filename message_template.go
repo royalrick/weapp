@@ -72,7 +72,7 @@ func templates(api string, offset, count uint, token string) (*GetTemplateListRe
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"offset": offset,
 		"count":  count,
 	}
@@ -95,7 +95,7 @@ func Get(id, token string) ([]KeywordItem, error) {
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"id": id,
 	}
 
@@ -124,7 +124,7 @@ func Add(id, token string, keywordIDList []uint) (string, error) {
 		list = append(list, strconv.Itoa(int(v)))
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"id":              id,
 		"keyword_id_list": "[" + strings.Join(list, ",") + "]",
 	}
@@ -148,7 +148,7 @@ func DeleteTempalteMessage(id, token string) error {
 		return err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"template_id": id,
 	}
 
@@ -182,7 +182,7 @@ func SendTemplateMessage(openid, template, page, formID string, data Message, em
 		data[key] = Message{"value": data[key]}
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"touser":           openid,
 		"template_id":      template,
 		"page":             page,

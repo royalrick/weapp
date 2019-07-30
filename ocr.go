@@ -28,7 +28,7 @@ type BankCardResponse struct {
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func BankCardByURL(token, url string, mode RecognizeMode) (*BankCardResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img_url":      url,
@@ -54,7 +54,7 @@ func BankCardByURL(token, url string, mode RecognizeMode) (*BankCardResponse, er
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func BankCardByFile(token, img string, mode RecognizeMode) (*BankCardResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img":          img,
@@ -99,7 +99,7 @@ type DrivingLicenseResponse = CardResponse
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func DrivingLicenseByURL(token, url string, mode RecognizeMode) (*DrivingLicenseResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img_url":      url,
@@ -125,7 +125,7 @@ func DrivingLicenseByURL(token, url string, mode RecognizeMode) (*DrivingLicense
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func DrivingLicenseByFile(token, img string, mode RecognizeMode) (*DrivingLicenseResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img":          img,
@@ -154,7 +154,7 @@ type IDCardResponse = CardResponse
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func IDCardByURL(token, url string, mode RecognizeMode) (*IDCardResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img_url":      url,
@@ -180,7 +180,7 @@ func IDCardByURL(token, url string, mode RecognizeMode) (*IDCardResponse, error)
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func IDCardByFile(token, img string, mode RecognizeMode) (*IDCardResponse, error) {
-	params := map[string]string{
+	params := requestQueries{
 		"access_token": token,
 		"type":         mode,
 		"img":          img,

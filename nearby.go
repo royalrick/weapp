@@ -82,7 +82,12 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 		return nil, fmt.Errorf("failed to marshal customer service staff info list to json: %v", err)
 	}
 
-	params := map[string]string{
+	api, err := tokenAPI(baseURL+apiAddPosition, accessToken)
+	if err != nil {
+		return nil, err
+	}
+
+	params := requestParams{
 		"is_comm_nearby":     "1",
 		"pic_list":           string(pisList),
 		"service_infos":      string(serviceInfos),
@@ -94,11 +99,6 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 		"qualification_list": p.QualificationList,
 		"kf_info":            string(kfInfo),
 		"poi_id":             p.PoiID,
-	}
-
-	api, err := tokenAPI(baseURL+apiAddPosition, accessToken)
-	if err != nil {
-		return nil, err
 	}
 
 	res := new(PositionResponse)
@@ -118,7 +118,7 @@ func DeleteNearbyPosition(accessToken, id string) (*CommonError, error) {
 		return nil, err
 	}
 
-	params := map[string]string{
+	params := requestParams{
 		"poi_id": id,
 	}
 
@@ -159,7 +159,7 @@ func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"page":      page,
 		"page_rows": pageRows,
 	}
@@ -191,7 +191,7 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*CommonError, 
 		return nil, err
 	}
 
-	params := map[string]interface{}{
+	params := requestParams{
 		"poi_id": poiID,
 		"status": status,
 	}
