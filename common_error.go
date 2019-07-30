@@ -13,7 +13,7 @@ func (err *CommonError) HasError() bool {
 	return err.ErrCode != 0
 }
 
-// HasError 获取错误信息
+// GetError 获取错误信息
 func (err *CommonError) GetError() error {
 	return errors.New(err.ErrMSG)
 }
