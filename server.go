@@ -39,7 +39,7 @@ const (
 // EncryptedMsgResponse 接收的的加密消息格式
 type EncryptedMsgResponse struct {
 	XMLName    xml.Name `xml:"xml" json:"-"`
-	ToUserName string   `json:"ToUserName" xml:"ToUserName"` // 接收者 为公众号的原始ID
+	ToUserName string   `json:"ToUserName" xml:"ToUserName"` // 接收者 为小程序 AppID
 	Encrypt    string   `json:"Encrypt" xml:"Encrypt"`       // 加密消息
 }
 
@@ -307,7 +307,7 @@ func (srv *Server) validateServer(req *http.Request) bool {
 	return validateSignature(signature, nonce, timestamp, srv.token)
 }
 
-// 将公众号回复用户的消息加密打包
+// 加密消息
 func (srv *Server) encryptMsg(message, nonce string, timestamp int) (*EncryptedMsgRequest, error) {
 
 	key := srv.aesKey
