@@ -18,12 +18,12 @@ const (
 	apiCheckMedia = "/wxa/media_check_async"
 )
 
-// IMGSecCheckFromNet 网络图片检测
+// IMGSecCheckByURL 网络图片检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
 //
 // @url 要检测的图片网络路径
 // @token 接口调用凭证(access_token)
-func IMGSecCheckFromNet(url, token string) (*CommonError, error) {
+func IMGSecCheckByURL(url, token string) (*CommonError, error) {
 	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
