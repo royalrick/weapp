@@ -1,7 +1,7 @@
 package weapp
 
 type dateRange struct {
-	StartDate string `json:"begin_date"`
+	BeginDate string `json:"begin_date"`
 	EndDate   string `json:"end_date"`
 }
 
@@ -50,7 +50,7 @@ func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 
@@ -97,7 +97,7 @@ func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, e
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 
@@ -140,7 +140,7 @@ func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 
@@ -176,7 +176,7 @@ func getDailySummary(accessToken, start, end string) (*DailySummary, error) {
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 

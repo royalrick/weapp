@@ -51,7 +51,7 @@ func getRetain(api, accessToken, start, end string) (*RetainResponse, error) {
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 

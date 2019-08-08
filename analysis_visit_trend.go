@@ -55,7 +55,7 @@ func getVisitTrend(api, accessToken, start, end string) (*VisitTrend, error) {
 	}
 
 	params := dateRange{
-		StartDate: start,
+		BeginDate: start,
 		EndDate:   end,
 	}
 
