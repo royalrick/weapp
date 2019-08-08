@@ -1,7 +1,6 @@
 package weapp
 
 import (
-	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -10,18 +9,14 @@ import (
 func TestLogin(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		data := map[string]interface{}{
+		raw := `{
 			"openid":      "mock-openid",
 			"session_key": "mock-session_key",
 			"unionid":     "mock-unionid",
 			"errcode":     0,
-			"errmsg":      "mock-errmsg",
-		}
-		bts, err := json.Marshal(data)
-		if err != nil {
-			t.Fatal(err)
-		}
-		w.Write(bts)
+			"errmsg":      "mock-errmsg"
+			}`
+		w.Write([]byte(raw))
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
 		}
@@ -52,17 +47,10 @@ func TestLogin(t *testing.T) {
 func TestGetAccessToken(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		data := map[string]interface{}{
-			"access_token": "mock-access-token",
-			"expires_in":   1000,
-			"errcode":      0,
-			"errmsg":       "mock-errmsg",
-		}
-		bts, err := json.Marshal(data)
-		if err != nil {
-			t.Fatal(err)
-		}
-		w.Write(bts)
+
+		raw := `{"access_token":"ACCESS_TOKEN","expires_in":7200}`
+		w.Write([]byte(raw))
+
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
 		}
@@ -100,16 +88,14 @@ func TestGetAccessToken(t *testing.T) {
 func TestGetPaidUnionID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		data := map[string]interface{}{
-			"unionid": "mock-unionid",
+
+		raw := `{
+			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
 			"errcode": 0,
-			"errmsg":  "mock-errmsg",
-		}
-		bts, err := json.Marshal(data)
-		if err != nil {
-			t.Fatal(err)
-		}
-		w.Write(bts)
+			"errmsg": "ok"
+		  }`
+		w.Write([]byte(raw))
+
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
 		}
@@ -143,16 +129,14 @@ func TestGetPaidUnionID(t *testing.T) {
 func TestGetPaidUnionIDWithMCH(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
-		data := map[string]interface{}{
-			"unionid": "mock-unionid",
+
+		raw := `{
+			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
 			"errcode": 0,
-			"errmsg":  "mock-errmsg",
-		}
-		bts, err := json.Marshal(data)
-		if err != nil {
-			t.Fatal(err)
-		}
-		w.Write(bts)
+			"errmsg": "ok"
+		  }`
+		w.Write([]byte(raw))
+
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
 		}

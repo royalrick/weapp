@@ -11,34 +11,98 @@ func TestGetUserPortrait(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
-		attr := map[string]interface{}{
-			"id":                     1,
-			"name":                   "mock-name",
-			"access_source_visit_uv": 100,
-		}
+		raw := `{
+			"refDate": "20170611",
+			"visitUvNew": {
+			  "province": [
+				{
+				  "id": 31,
+				  "name": "广东省",
+				  "value": 215
+				}
+			  ],
+			  "city": [
+				{
+				  "id": 3102,
+				  "name": "广州",
+				  "value": 78
+				}
+			  ],
+			  "genders": [
+				{
+				  "id": 1,
+				  "name": "男",
+				  "value": 2146
+				}
+			  ],
+			  "platforms": [
+				{
+				  "id": 1,
+				  "name": "iPhone",
+				  "value": 27642
+				}
+			  ],
+			  "devices": [
+				{
+				  "name": "OPPO R9",
+				  "value": 61
+				}
+			  ],
+			  "ages": [
+				{
+				  "id": 1,
+				  "name": "17岁以下",
+				  "value": 151
+				}
+			  ]
+			},
+			"visitUv": {
+			  "province": [
+				{
+				  "id": 31,
+				  "name": "广东省",
+				  "value": 1341
+				}
+			  ],
+			  "city": [
+				{
+				  "id": 3102,
+				  "name": "广州",
+				  "value": 234
+				}
+			  ],
+			  "genders": [
+				{
+				  "id": 1,
+				  "name": "男",
+				  "value": 14534
+				}
+			  ],
+			  "platforms": [
+				{
+				  "id": 1,
+				  "name": "iPhone",
+				  "value": 21750
+				}
+			  ],
+			  "devices": [
+				{
+				  "name": "OPPO R9",
+				  "value": 617
+				}
+			  ],
+			  "ages": [
+				{
+				  "id": 1,
+				  "name": "17岁以下",
+				  "value": 3156
+				}
+			  ]
+			},
+			"errMsg": "openapi.analysis.getUserPortrait:ok"
+		  }`
+		w.Write([]byte(raw))
 
-		uv := map[string]interface{}{
-			"index":     1,
-			"province":  []interface{}{attr},
-			"city":      []interface{}{attr},
-			"genders":   []interface{}{attr},
-			"platforms": []interface{}{attr},
-			"devices":   []interface{}{attr},
-			"ages":      []interface{}{attr},
-		}
-
-		data := map[string]interface{}{
-			"ref_date":     "mock-ref-date",
-			"visit_uv":     uv,
-			"visit_uv_new": uv,
-			"errcode":      0,
-			"errmsg":       "mock-errmsg",
-		}
-		bts, err := json.Marshal(data)
-		if err != nil {
-			t.Fatal(err)
-		}
-		w.Write(bts)
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
 		}
