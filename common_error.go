@@ -8,12 +8,11 @@ type CommonError struct {
 	ErrMSG  string `json:"errmsg"`
 }
 
-// HasError 判断是否包含错误
-func (err *CommonError) HasError() bool {
-	return err.ErrCode != 0
-}
+// GetResponseError 获取微信服务器错返回误信息
+func (err *CommonError) GetResponseError() error {
+	if err.ErrCode == 0 {
+		return nil
+	}
 
-// GetError 获取错误信息
-func (err *CommonError) GetError() error {
 	return errors.New(err.ErrMSG)
 }
