@@ -15,9 +15,9 @@ const (
 // UserPortrait response data of get user portrait
 type UserPortrait struct {
 	CommonError
-	RefDate    string     `json:"ref_date"`
-	VisitUV    []Portrait `json:"visit_uv"`     // 活跃用户画像
-	VisitUVNew []Portrait `json:"visit_uv_new"` // 新用户画像
+	RefDate    string   `json:"ref_date"`
+	VisitUV    Portrait `json:"visit_uv"`     // 活跃用户画像
+	VisitUVNew Portrait `json:"visit_uv_new"` // 新用户画像
 }
 
 // Portrait 肖像
@@ -44,7 +44,12 @@ type Attribute struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetUserPortrait(accessToken, begin, end string) (*UserPortrait, error) {
-	api, err := tokenAPI(baseURL+getUserPortraitAPI, accessToken)
+	api := baseURL + getUserPortraitAPI
+	return getUserPortrait(accessToken, begin, end, api)
+}
+
+func getUserPortrait(accessToken, begin, end, api string) (*UserPortrait, error) {
+	api, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
