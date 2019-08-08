@@ -25,14 +25,20 @@ type LoginResponse struct {
 // secret 小程序的 app secret
 // code 小程序登录时获取的 code
 func Login(appID, secret, code string) (*LoginResponse, error) {
-	params := requestQueries{
+	api := baseURL + apiLogin
+
+	return login(appID, secret, code, api)
+}
+
+func login(appID, secret, code, api string) (*LoginResponse, error) {
+	queries := requestQueries{
 		"appid":      appID,
 		"secret":     secret,
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
 
-	api, err := encodeURL(baseURL+apiLogin, params)
+	api, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
