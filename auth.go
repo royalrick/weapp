@@ -8,6 +8,7 @@ import (
 const (
 	apiLogin          = "/sns/jscode2session"
 	apiGetAccessToken = "/cgi-bin/token"
+	apiGetPaidUnionID = "/wxa/getpaidunionid"
 )
 
 // LoginResponse 返回给用户的数据
@@ -88,6 +89,57 @@ func GetAccessToken(appID, secret string) (*TokenResponse, error) {
 
 	res := new(TokenResponse)
 	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// GetPaidUnionIDResponse response data
+type GetPaidUnionIDResponse struct {
+	CommonError
+	UnionID string `json:"unionid"`
+}
+
+// GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
+func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDResponse, error) {
+	api := baseURL + apiGetPaidUnionID
+	queries :=  requestQueries{
+		"openid":         openID,
+		"access_token":   accessToken,
+		"transaction_id": transactionID,
+	}
+
+	return getPaidUnionIDRequest(api, queries)
+}
+
+// GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
+func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
+	api := baseURL + apiGetPaidUnionID
+	queries :=	 requestQueries{
+		"openid":       openID,
+		"mch_id":       mchID,
+		"out_trade_no": outTradeNo,
+		"access_token": accessToken,
+	}
+
+	return getPaidUnionIDRequest(api, queries)
+}
+
+func getPaidUnionIDRequest(api string,queries requestQueries) (*GetPaidUnionIDResponse, error) {
+	url, err := encodeURL(api, queries)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+	
+	res := new(GetPaidUnionIDResponse)
+	if err = json.NewDecoder(resp.Body).Decode(res); err != nil {
 		return nil, err
 	}
 
