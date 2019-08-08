@@ -420,13 +420,13 @@ func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDR
 // GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
 func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
 	api := weapp.BaseURL + getPaidUnionIDAPI
+
 	url, err := util.EncodeURL(api, map[string]string{
 		"openid":       openID,
 		"mch_id":       mchID,
 		"out_trade_no": outTradeNo,
 		"access_token": accessToken,
 	})
-
 	if err != nil {
 		return nil, err
 	}
@@ -435,10 +435,11 @@ func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetP
 }
 
 func getPaidUnionIDRequest(url string) (*GetPaidUnionIDResponse, error) {
-	res, err := http.Post(url, "application/json", nil)
+	res, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
+	defer res.Body.Close()
 
 	response := new(GetPaidUnionIDResponse)
 	if err = json.NewDecoder(res.Body).Decode(response); err != nil {
