@@ -41,16 +41,16 @@ type Attribute struct {
 // GetUserPortrait 获取小程序新增或活跃用户的画像分布数据。
 // 时间范围支持昨天、最近7天、最近30天。
 // 其中，新增用户数为时间范围内首次访问小程序的去重用户数，活跃用户数为时间范围内访问过小程序的去重用户数。
-// start 开始日期。格式为 yyyymmdd
+// begin 开始日期。格式为 yyyymmdd
 // end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetUserPortrait(accessToken, start, end string) (*UserPortrait, error) {
+func GetUserPortrait(accessToken, begin, end string) (*UserPortrait, error) {
 	api, err := tokenAPI(baseURL+getUserPortraitAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	params := dateRange{
-		BeginDate: start,
+		BeginDate: begin,
 		EndDate:   end,
 	}
 
@@ -88,16 +88,16 @@ type DistributionItem struct {
 }
 
 // GetVisitDistribution 获取用户小程序访问分布数据
-// start 开始日期。格式为 yyyymmdd
+// begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetVisitDistribution(accessToken, start, end string) (*VisitDistribution, error) {
+func GetVisitDistribution(accessToken, begin, end string) (*VisitDistribution, error) {
 	api, err := tokenAPI(baseURL+getVisitDistributionAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	params := dateRange{
-		BeginDate: start,
+		BeginDate: begin,
 		EndDate:   end,
 	}
 
@@ -131,16 +131,16 @@ type Page struct {
 
 // GetVisitPage 访问页面。
 // 目前只提供按 page_visit_pv 排序的 top200。
-// start 开始日期。格式为 yyyymmdd
+// begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetVisitPage(accessToken, start, end string) (*VisitPage, error) {
+func GetVisitPage(accessToken, begin, end string) (*VisitPage, error) {
 	api, err := tokenAPI(baseURL+getVisitPageAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	params := dateRange{
-		BeginDate: start,
+		BeginDate: begin,
 		EndDate:   end,
 	}
 
@@ -167,16 +167,16 @@ type Summary struct {
 }
 
 // getDailySummary 获取用户访问小程序数据概况
-// start 开始日期。格式为 yyyymmdd
+// begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func getDailySummary(accessToken, start, end string) (*DailySummary, error) {
+func getDailySummary(accessToken, begin, end string) (*DailySummary, error) {
 	api, err := tokenAPI(baseURL+getDailySummaryAPI, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
 	params := dateRange{
-		BeginDate: start,
+		BeginDate: begin,
 		EndDate:   end,
 	}
 
