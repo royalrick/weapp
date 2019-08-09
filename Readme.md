@@ -28,6 +28,10 @@ go get -u github.com/medivhzhan/weapp
     - [getMonthlyRetain](#getMonthlyRetain)
     - [getWeeklyRetain](#getWeeklyRetain)
     - [getDailyRetain](#getDailyRetain)
+  - [访问趋势](#访问趋势)
+    - [getMonthlyVisitTrend](#getMonthlyVisitTrend)
+    - [getWeeklyVisitTrend](#getWeeklyVisitTrend)
+    - [getDailyVisitTrend](#getDailyVisitTrend)
   - [getUserPortrait](#getUserPortrait)
   - [getVisitDistribution](#getVisitDistribution)
   - [getVisitPage](#getVisitPage)
@@ -180,6 +184,77 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp"
 
 res, err := weapp.GetDailyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 访问趋势
+
+#### getMonthlyVisitTrend
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getMonthlyVisitTrend.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetMonthlyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### getWeeklyVisitTrend
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getWeeklyVisitTrend.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetWeeklyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### getDailyVisitTrend
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getDailyVisitTrend.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetDailyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return
