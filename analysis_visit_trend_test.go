@@ -35,7 +35,10 @@ func TestGetMonthlyVisitTrend(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetMonthlyVisitTrend, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -92,7 +95,10 @@ func TestGetWeeklyVisitTrend(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetWeeklyVisitTrend, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -149,7 +155,10 @@ func TestGetDailyVisitTrend(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetDailyVisitTrend, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}

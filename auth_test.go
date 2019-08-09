@@ -26,7 +26,10 @@ func TestLogin(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiLogin, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		queries := []string{"appid", "secret", "js_code", "grant_type"}
 		for _, v := range queries {
 			content := r.Form.Get(v)

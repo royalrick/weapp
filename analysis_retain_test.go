@@ -37,7 +37,10 @@ func TestGetMonthlyRetain(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetMonthlyRetain, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -104,7 +107,10 @@ func TestGetWeeklyRetain(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetWeeklyRetain, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -163,7 +169,10 @@ func TestGetDailyRetainAPI(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetDailyRetain, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}

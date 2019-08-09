@@ -113,7 +113,10 @@ func TestGetUserPortrait(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetUserPortrait, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -265,7 +268,10 @@ func TestGetVisitDistribution(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitDistribution, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -364,7 +370,10 @@ func TestGetVisitPage(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitPage, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
@@ -418,7 +427,10 @@ func TestGetDailySummary(t *testing.T) {
 			t.Fatalf("Except to path '%s',got '%s'", apiGetDailySummary, path)
 		}
 
-		r.ParseForm()
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
 		if r.Form.Get("access_token") == "" {
 			t.Fatalf("access_token can not be empty")
 		}
