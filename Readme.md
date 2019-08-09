@@ -20,6 +20,11 @@ go get -u github.com/medivhzhan/weapp
 - [用户登录](#用户登录)
 - [用户信息](#用户信息)
 - [接口调用凭证](#接口调用凭证)
+- [数据分析](#数据分析)
+    1. [getUserPortrait](#getUserPortrait)
+    1. [getVisitDistribution](#getVisitDistribution)
+    1. [getVisitPage](#getVisitPage)
+    1. [getDailySummary](#getDailySummary)
 
 ---
 
@@ -78,6 +83,8 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 接口调用凭证
 
+> 调用次数有限制 请注意缓存
+
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html)
 
 ```go
@@ -85,6 +92,102 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp"
 
 res, err := weapp.GetAccessToken("mock-appid", "mock-secret")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 数据分析
+
+### getUserPortrait
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getUserPortrait.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetUserPortrait("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getVisitDistribution
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getVisitDistribution.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetVisitDistribution("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getVisitPage
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getVisitPage.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetVisitPage("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getDailySummary
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getDailySummary.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetDailySummary("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return

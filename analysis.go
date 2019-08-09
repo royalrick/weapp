@@ -81,7 +81,7 @@ type Distribution struct {
 	// access_source_session_cnt	访问来源分布
 	// access_staytime_info	访问时长分布
 	// access_depth_info	访问深度的分布
-	Index    uint               `json:"index"`
+	Index    string             `json:"index"`
 	ItemList []DistributionItem `json:"item_list"` // 分布数据列表
 }
 
@@ -96,7 +96,12 @@ type DistributionItem struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitDistribution(accessToken, begin, end string) (*VisitDistribution, error) {
-	api, err := tokenAPI(baseURL+apiGetVisitDistribution, accessToken)
+	api := baseURL + apiGetVisitDistribution
+	return getVisitDistribution(accessToken, begin, end, api)
+}
+
+func getVisitDistribution(accessToken, begin, end, api string) (*VisitDistribution, error) {
+	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +112,7 @@ func GetVisitDistribution(accessToken, begin, end string) (*VisitDistribution, e
 	}
 
 	res := new(VisitDistribution)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -123,14 +128,14 @@ type VisitPage struct {
 
 // Page 页面
 type Page struct {
-	PagePath       string `json:"Page_path"`        // 页面路径
-	PageVisitPV    uint   `json:"Page_visit_pv"`    // 访问次数
-	PageVisitUV    uint   `json:"Page_visit_uv"`    // 访问人数
-	PageStaytimePV uint   `json:"page_staytime_pv"` // 次均停留时长
-	EntrypagePV    uint   `json:"entrypage_pv"`     // 进入页次数
-	ExitpagePV     uint   `json:"exitpage_pv"`      // 退出页次数
-	PageSharePV    uint   `json:"page_share_pv"`    // 转发次数
-	PageShareUV    uint   `json:"page_share_uv"`    // 转发人数
+	PagePath       string  `json:"Page_path"`        // 页面路径
+	PageVisitPV    uint    `json:"Page_visit_pv"`    // 访问次数
+	PageVisitUV    uint    `json:"Page_visit_uv"`    // 访问人数
+	PageStaytimePV float64 `json:"page_staytime_pv"` // 次均停留时长
+	EntrypagePV    uint    `json:"entrypage_pv"`     // 进入页次数
+	ExitpagePV     uint    `json:"exitpage_pv"`      // 退出页次数
+	PageSharePV    uint    `json:"page_share_pv"`    // 转发次数
+	PageShareUV    uint    `json:"page_share_uv"`    // 转发人数
 
 }
 
@@ -139,7 +144,12 @@ type Page struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitPage(accessToken, begin, end string) (*VisitPage, error) {
-	api, err := tokenAPI(baseURL+apiGetVisitPage, accessToken)
+	api := baseURL + apiGetVisitPage
+	return getVisitPage(accessToken, begin, end, api)
+}
+
+func getVisitPage(accessToken, begin, end, api string) (*VisitPage, error) {
+	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +160,7 @@ func GetVisitPage(accessToken, begin, end string) (*VisitPage, error) {
 	}
 
 	res := new(VisitPage)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -171,11 +181,15 @@ type Summary struct {
 	ShareUV    uint   `json:"share_uv"`    //	转发人数
 }
 
-// getDailySummary 获取用户访问小程序数据概况
+// GetDailySummary 获取用户访问小程序数据概况
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func getDailySummary(accessToken, begin, end string) (*DailySummary, error) {
-	api, err := tokenAPI(baseURL+apiGetDailySummary, accessToken)
+func GetDailySummary(accessToken, begin, end string) (*DailySummary, error) {
+	api := baseURL + apiGetDailySummary
+	return getDailySummary(accessToken, begin, end, api)
+}
+func getDailySummary(accessToken, begin, end, api string) (*DailySummary, error) {
+	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -186,7 +200,7 @@ func getDailySummary(accessToken, begin, end string) (*DailySummary, error) {
 	}
 
 	res := new(DailySummary)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
