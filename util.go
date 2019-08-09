@@ -11,11 +11,11 @@ import (
 
 // tokenAPI 获取带 token 的 API 地址
 func tokenAPI(api, token string) (string, error) {
-	params := requestQueries{
+	queries := requestQueries{
 		"access_token": token,
 	}
 
-	return encodeURL(api, params)
+	return encodeURL(api, queries)
 }
 
 // encodeURL add and encode parameters.

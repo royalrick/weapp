@@ -116,7 +116,12 @@ const (
 // openID 用户的 OpenID
 // cmd 命令
 func SetTyping(token, openID string, cmd SetTypingCommand) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiSetTyping, token)
+	api := baseURL + apiSetTyping
+	return setTyping(token, openID, cmd, api)
+}
+
+func setTyping(token, openID string, cmd SetTypingCommand, api string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -127,7 +132,7 @@ func SetTyping(token, openID string, cmd SetTypingCommand) (*CommonError, error)
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -179,12 +184,12 @@ func UploadTempMedia(token string, mediaType TempMediaType, media string) (*Uplo
 // token 接口调用凭证
 // mediaID 媒体文件 ID
 func GetTempMedia(token, mediaID string) (*http.Response, *CommonError, error) {
-	params := requestQueries{
+	queries := requestQueries{
 		"access_token": token,
 		"media_id":     mediaID,
 	}
 
-	url, err := encodeURL(baseURL+apiGetTemplateMedia, params)
+	url, err := encodeURL(baseURL+apiGetTemplateMedia, queries)
 	if err != nil {
 		return nil, nil, err
 	}
