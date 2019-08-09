@@ -8,15 +8,7 @@ import (
 
 func TestLogin(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-		raw := `{
-			"openid":      "mock-openid",
-			"session_key": "mock-session_key",
-			"unionid":     "mock-unionid",
-			"errcode":     0,
-			"errmsg":      "mock-errmsg"
-			}`
-		w.Write([]byte(raw))
+
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
 		}
@@ -38,6 +30,19 @@ func TestLogin(t *testing.T) {
 			}
 
 		}
+
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"openid":      "mock-openid",
+			"session_key": "mock-session_key",
+			"unionid":     "mock-unionid",
+			"errcode":     0,
+			"errmsg":      "mock-errmsg"
+			}`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -49,10 +54,6 @@ func TestLogin(t *testing.T) {
 
 func TestGetAccessToken(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{"access_token":"ACCESS_TOKEN","expires_in":7200}`
-		w.Write([]byte(raw))
 
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
@@ -79,6 +80,13 @@ func TestGetAccessToken(t *testing.T) {
 			}
 
 		}
+
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{"access_token":"ACCESS_TOKEN","expires_in":7200}`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -90,14 +98,6 @@ func TestGetAccessToken(t *testing.T) {
 
 func TestGetPaidUnionID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
-			"errcode": 0,
-			"errmsg": "ok"
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
@@ -120,6 +120,17 @@ func TestGetPaidUnionID(t *testing.T) {
 			}
 
 		}
+
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
+			"errcode": 0,
+			"errmsg": "ok"
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -131,14 +142,6 @@ func TestGetPaidUnionID(t *testing.T) {
 
 func TestGetPaidUnionIDWithMCH(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
-			"errcode": 0,
-			"errmsg": "ok"
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "GET" {
 			t.Fatalf("Except 'GET' got '%s'", r.Method)
@@ -160,6 +163,17 @@ func TestGetPaidUnionIDWithMCH(t *testing.T) {
 				t.Fatalf("%v can not be empty", v)
 			}
 
+		}
+
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"unionid": "oTmHYjg-tElZ68xxxxxxxxhy1Rgk",
+			"errcode": 0,
+			"errmsg": "ok"
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
 		}
 	}))
 	defer ts.Close()

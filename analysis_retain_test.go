@@ -9,24 +9,6 @@ import (
 
 func TestGetMonthlyRetain(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"ref_date": "201702",
-			"visit_uv_new": [
-			  {
-				"key": 0,
-				"value": 346249
-			  }
-			],
-			"visit_uv": [
-			  {
-				"key": 0,
-				"value": 346249
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -60,6 +42,26 @@ func TestGetMonthlyRetain(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"ref_date": "201702",
+			"visit_uv_new": [
+			  {
+				"key": 0,
+				"value": 346249
+			  }
+			],
+			"visit_uv": [
+			  {
+				"key": 0,
+				"value": 346249
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -71,32 +73,6 @@ func TestGetMonthlyRetain(t *testing.T) {
 
 func TestGetWeeklyRetain(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"ref_date": "20170306-20170312",
-			"visit_uv_new": [
-			  {
-				"key": 0,
-				"value": 0
-			  },
-			  {
-				"key": 1,
-				"value": 16853
-			  }
-			],
-			"visit_uv": [
-			  {
-				"key": 0,
-				"value": 0
-			  },
-			  {
-				"key": 1,
-				"value": 99310
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -130,6 +106,34 @@ func TestGetWeeklyRetain(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"ref_date": "20170306-20170312",
+			"visit_uv_new": [
+			  {
+				"key": 0,
+				"value": 0
+			  },
+			  {
+				"key": 1,
+				"value": 16853
+			  }
+			],
+			"visit_uv": [
+			  {
+				"key": 0,
+				"value": 0
+			  },
+			  {
+				"key": 1,
+				"value": 99310
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -141,24 +145,6 @@ func TestGetWeeklyRetain(t *testing.T) {
 
 func TestGetDailyRetainAPI(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"ref_date": "20170313",
-			"visit_uv_new": [
-			  {
-				"key": 0,
-				"value": 5464
-			  }
-			],
-			"visit_uv": [
-			  {
-				"key": 0,
-				"value": 55500
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -192,6 +178,26 @@ func TestGetDailyRetainAPI(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"ref_date": "20170313",
+			"visit_uv_new": [
+			  {
+				"key": 0,
+				"value": 5464
+			  }
+			],
+			"visit_uv": [
+			  {
+				"key": 0,
+				"value": 55500
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 

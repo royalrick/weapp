@@ -9,6 +9,39 @@ import (
 
 func TestGetUserPortrait(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		if r.Method != "POST" {
+			t.Fatalf("Except 'POST' got '%s'", r.Method)
+		}
+
+		path := r.URL.EscapedPath()
+		if path != apiGetUserPortrait {
+			t.Fatalf("Except to path '%s',got '%s'", apiGetUserPortrait, path)
+		}
+
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
+		if r.Form.Get("access_token") == "" {
+			t.Fatalf("access_token can not be empty")
+		}
+
+		params := make(map[string]interface{})
+		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
+			t.Fatal(err)
+		}
+		param, ok := params["begin_date"]
+		if !ok || param == "" {
+			t.Log("param begin_date can not be empty")
+			t.Fail()
+		}
+		param, ok = params["end_date"]
+		if !ok || param == "" {
+			t.Log("param end_date can not be empty")
+			t.Fail()
+		}
+
 		w.WriteHeader(http.StatusOK)
 
 		raw := `{
@@ -99,18 +132,29 @@ func TestGetUserPortrait(t *testing.T) {
 				}
 			  ]
 			}
-		  }
-		  
-		  `
-		w.Write([]byte(raw))
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
+	}))
+	defer ts.Close()
+
+	_, err := getUserPortrait("mock-access-token", "mock-begin-date", "mock-end-date", ts.URL+apiGetUserPortrait)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetVisitDistribution(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiGetUserPortrait {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetUserPortrait, path)
+		if path != apiGetVisitDistribution {
+			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitDistribution, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -136,17 +180,6 @@ func TestGetUserPortrait(t *testing.T) {
 			t.Fail()
 		}
 
-	}))
-	defer ts.Close()
-
-	_, err := getUserPortrait("mock-access-token", "mock-begin-date", "mock-end-date", ts.URL+apiGetUserPortrait)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestGetVisitDistribution(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		raw := `{
@@ -257,15 +290,28 @@ func TestGetVisitDistribution(t *testing.T) {
 			  }
 			]
 		  }`
-		w.Write([]byte(raw))
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
+	}))
+	defer ts.Close()
+
+	_, err := getVisitDistribution("mock-access-token", "mock-begin-date", "mock-end-date", ts.URL+apiGetVisitDistribution)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestGetVisitPage(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiGetVisitDistribution {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitDistribution, path)
+		if path != apiGetVisitPage {
+			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitPage, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -291,17 +337,6 @@ func TestGetVisitDistribution(t *testing.T) {
 			t.Fail()
 		}
 
-	}))
-	defer ts.Close()
-
-	_, err := getVisitDistribution("mock-access-token", "mock-begin-date", "mock-end-date", ts.URL+apiGetVisitDistribution)
-	if err != nil {
-		t.Fatal(err)
-	}
-}
-
-func TestGetVisitPage(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 
 		raw := `{
@@ -359,40 +394,9 @@ func TestGetVisitPage(t *testing.T) {
 			  }
 			]
 		  }`
-		w.Write([]byte(raw))
-
-		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
-		}
-
-		path := r.URL.EscapedPath()
-		if path != apiGetVisitPage {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitPage, path)
-		}
-
-		if err := r.ParseForm(); err != nil {
+		if _, err := w.Write([]byte(raw)); err != nil {
 			t.Fatal(err)
 		}
-
-		if r.Form.Get("access_token") == "" {
-			t.Fatalf("access_token can not be empty")
-		}
-
-		params := make(map[string]interface{})
-		if err := json.NewDecoder(r.Body).Decode(&params); err != nil {
-			t.Fatal(err)
-		}
-		param, ok := params["begin_date"]
-		if !ok || param == "" {
-			t.Log("param begin_date can not be empty")
-			t.Fail()
-		}
-		param, ok = params["end_date"]
-		if !ok || param == "" {
-			t.Log("param end_date can not be empty")
-			t.Fail()
-		}
-
 	}))
 	defer ts.Close()
 
@@ -404,19 +408,6 @@ func TestGetVisitPage(t *testing.T) {
 
 func TestGetDailySummary(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"list": [
-			  {
-				"ref_date": "20170313",
-				"visit_total": 391,
-				"share_pv": 572,
-				"share_uv": 383
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -450,6 +441,21 @@ func TestGetDailySummary(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"list": [
+			  {
+				"ref_date": "20170313",
+				"visit_total": 391,
+				"share_pv": 572,
+				"share_uv": 383
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 

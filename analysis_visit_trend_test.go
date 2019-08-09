@@ -9,22 +9,6 @@ import (
 
 func TestGetMonthlyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"list": [
-			  {
-				"ref_date": "201703",
-				"session_cnt": 126513,
-				"visit_pv": 426113,
-				"visit_uv": 48659,
-				"visit_uv_new": 6726,
-				"stay_time_session": 56.4112,
-				"visit_depth": 2.0189
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -58,6 +42,24 @@ func TestGetMonthlyVisitTrend(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"list": [
+			  {
+				"ref_date": "201703",
+				"session_cnt": 126513,
+				"visit_pv": 426113,
+				"visit_uv": 48659,
+				"visit_uv_new": 6726,
+				"stay_time_session": 56.4112,
+				"visit_depth": 2.0189
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -69,22 +71,6 @@ func TestGetMonthlyVisitTrend(t *testing.T) {
 
 func TestGetWeeklyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"list": [
-			  {
-				"ref_date": "20170306-20170312",
-				"session_cnt": 986780,
-				"visit_pv": 3251840,
-				"visit_uv": 189405,
-				"visit_uv_new": 45592,
-				"stay_time_session": 54.5346,
-				"visit_depth": 1.9735
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -118,6 +104,24 @@ func TestGetWeeklyVisitTrend(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"list": [
+			  {
+				"ref_date": "20170306-20170312",
+				"session_cnt": 986780,
+				"visit_pv": 3251840,
+				"visit_uv": 189405,
+				"visit_uv_new": 45592,
+				"stay_time_session": 54.5346,
+				"visit_depth": 1.9735
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
@@ -129,22 +133,6 @@ func TestGetWeeklyVisitTrend(t *testing.T) {
 
 func TestGetDailyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusOK)
-
-		raw := `{
-			"list": [
-			  {
-				"ref_date": "20170313",
-				"session_cnt": 142549,
-				"visit_pv": 472351,
-				"visit_uv": 55500,
-				"visit_uv_new": 5464,
-				"stay_time_session": 0,
-				"visit_depth": 1.9838
-			  }
-			]
-		  }`
-		w.Write([]byte(raw))
 
 		if r.Method != "POST" {
 			t.Fatalf("Except 'POST' got '%s'", r.Method)
@@ -178,6 +166,24 @@ func TestGetDailyVisitTrend(t *testing.T) {
 			t.Fail()
 		}
 
+		w.WriteHeader(http.StatusOK)
+
+		raw := `{
+			"list": [
+			  {
+				"ref_date": "20170313",
+				"session_cnt": 142549,
+				"visit_pv": 472351,
+				"visit_uv": 55500,
+				"visit_uv_new": 5464,
+				"stay_time_session": 0,
+				"visit_depth": 1.9838
+			  }
+			]
+		  }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
 	}))
 	defer ts.Close()
 
