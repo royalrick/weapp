@@ -1,9 +1,9 @@
 package weapp
 
 const (
-	getMonthlyVisitTrendAPI = "/datacube/getweanalysisappidmonthlyvisittrend"
-	getWeeklyVisitTrendAPI  = "/datacube/getweanalysisappidweeklyvisittrend"
-	getDailyVisitTrendAPI   = "/datacube/getweanalysisappiddailyvisittrend"
+	apiGetMonthlyVisitTrend = "/datacube/getweanalysisappidmonthlyvisittrend"
+	apiGetWeeklyVisitTrend  = "/datacube/getweanalysisappidweeklyvisittrend"
+	apiGetDailyVisitTrend   = "/datacube/getweanalysisappiddailyvisittrend"
 )
 
 // Trend 用户趋势
@@ -29,7 +29,7 @@ type VisitTrend struct {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 func GetMonthlyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
-	return getVisitTrend(baseURL+getMonthlyVisitTrendAPI, accessToken, begin, end)
+	return getVisitTrend(baseURL+apiGetMonthlyVisitTrend, accessToken, begin, end)
 }
 
 // GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
@@ -37,7 +37,7 @@ func GetMonthlyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 func GetWeeklyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
-	return getVisitTrend(baseURL+getWeeklyVisitTrendAPI, accessToken, begin, end)
+	return getVisitTrend(baseURL+apiGetWeeklyVisitTrend, accessToken, begin, end)
 }
 
 // GetDailyVisitTrendAPI 获取用户访问小程序数据日趋势
@@ -45,7 +45,7 @@ func GetWeeklyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetDailyVisitTrendAPI(accessToken, begin, end string) (*VisitTrend, error) {
-	return getVisitTrend(baseURL+getDailyVisitTrendAPI, accessToken, begin, end)
+	return getVisitTrend(baseURL+apiGetDailyVisitTrend, accessToken, begin, end)
 }
 
 func getVisitTrend(api, accessToken, begin, end string) (*VisitTrend, error) {

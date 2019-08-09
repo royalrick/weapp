@@ -1,9 +1,9 @@
 package weapp
 
 const (
-	getMonthlyRetainAPI = "/datacube/getweanalysisappidmonthlyretaininfo"
-	getWeeklyRetainAPI  = "/datacube/getweanalysisappidweeklyretaininfo"
-	getDailyRetainAPI   = "/datacube/getweanalysisappiddailyretaininfo"
+	apiGetMonthlyRetain = "/datacube/getweanalysisappidmonthlyretaininfo"
+	apiGetWeeklyRetain  = "/datacube/getweanalysisappidweeklyretaininfo"
+	apiGetDailyRetain   = "/datacube/getweanalysisappiddailyretaininfo"
 )
 
 // Retain 用户留存
@@ -25,7 +25,7 @@ type RetainResponse struct {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
 func GetMonthlyRetain(accessToken, begin, end string) (*RetainResponse, error) {
-	return getRetain(baseURL+getMonthlyRetainAPI, accessToken, begin, end)
+	return getRetain(baseURL+apiGetMonthlyRetain, accessToken, begin, end)
 }
 
 // GetWeeklyRetain 获取用户访问小程序周留存
@@ -33,7 +33,7 @@ func GetMonthlyRetain(accessToken, begin, end string) (*RetainResponse, error) {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
 func GetWeeklyRetain(accessToken, begin, end string) (*RetainResponse, error) {
-	return getRetain(baseURL+getWeeklyRetainAPI, accessToken, begin, end)
+	return getRetain(baseURL+apiGetWeeklyRetain, accessToken, begin, end)
 }
 
 // GetDailyRetainAPI 获取用户访问小程序日留存
@@ -41,7 +41,7 @@ func GetWeeklyRetain(accessToken, begin, end string) (*RetainResponse, error) {
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetDailyRetainAPI(accessToken, begin, end string) (*RetainResponse, error) {
-	return getRetain(baseURL+getDailyRetainAPI, accessToken, begin, end)
+	return getRetain(baseURL+apiGetDailyRetain, accessToken, begin, end)
 }
 
 func getRetain(api, accessToken, begin, end string) (*RetainResponse, error) {

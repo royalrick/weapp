@@ -6,10 +6,10 @@ type dateRange struct {
 }
 
 const (
-	getUserPortraitAPI      = "/datacube/getweanalysisappiduserportrait"
-	getVisitDistributionAPI = "/datacube/getweanalysisappidvisitdistribution"
-	getVisitPageAPI         = "/datacube/getweanalysisappidvisitpage"
-	getDailySummaryAPI      = "/datacube/getweanalysisappiddailysummarytrend"
+	apiGetUserPortrait      = "/datacube/getweanalysisappiduserportrait"
+	apiGetVisitDistribution = "/datacube/getweanalysisappidvisitdistribution"
+	apiGetVisitPage         = "/datacube/getweanalysisappidvisitpage"
+	apiGetDailySummary      = "/datacube/getweanalysisappiddailysummarytrend"
 )
 
 // UserPortrait response data of get user portrait
@@ -44,7 +44,7 @@ type Attribute struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetUserPortrait(accessToken, begin, end string) (*UserPortrait, error) {
-	api := baseURL + getUserPortraitAPI
+	api := baseURL + apiGetUserPortrait
 	return getUserPortrait(accessToken, begin, end, api)
 }
 
@@ -96,7 +96,7 @@ type DistributionItem struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitDistribution(accessToken, begin, end string) (*VisitDistribution, error) {
-	api, err := tokenAPI(baseURL+getVisitDistributionAPI, accessToken)
+	api, err := tokenAPI(baseURL+apiGetVisitDistribution, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -139,7 +139,7 @@ type Page struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func GetVisitPage(accessToken, begin, end string) (*VisitPage, error) {
-	api, err := tokenAPI(baseURL+getVisitPageAPI, accessToken)
+	api, err := tokenAPI(baseURL+apiGetVisitPage, accessToken)
 	if err != nil {
 		return nil, err
 	}
@@ -175,7 +175,7 @@ type Summary struct {
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
 func getDailySummary(accessToken, begin, end string) (*DailySummary, error) {
-	api, err := tokenAPI(baseURL+getDailySummaryAPI, accessToken)
+	api, err := tokenAPI(baseURL+apiGetDailySummary, accessToken)
 	if err != nil {
 		return nil, err
 	}
