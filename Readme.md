@@ -21,10 +21,14 @@ go get -u github.com/medivhzhan/weapp
 - [用户信息](#用户信息)
 - [接口调用凭证](#接口调用凭证)
 - [数据分析](#数据分析)
-    1. [getUserPortrait](#getUserPortrait)
-    1. [getVisitDistribution](#getVisitDistribution)
-    1. [getVisitPage](#getVisitPage)
-    1. [getDailySummary](#getDailySummary)
+  1. [访问留存](#访问留存)
+     1. [getMonthlyRetain](#getMonthlyRetain)
+     1. [getWeeklyRetain](#getWeeklyRetain)
+     1. [getDailyRetain](#getDailyRetain)
+  1. [getUserPortrait](#getUserPortrait)
+  1. [getVisitDistribution](#getVisitDistribution)
+  1. [getVisitPage](#getVisitPage)
+  1. [getDailySummary](#getDailySummary)
 
 ---
 
@@ -109,6 +113,77 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 数据分析
+
+### 访问留存
+
+#### getMonthlyRetain
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getMonthlyRetain.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetMonthlyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### getWeeklyRetain
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getWeeklyRetain.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetWeeklyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+#### getDailyRetain
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getDailyRetain.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetDailyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 ### getUserPortrait
 
