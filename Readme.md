@@ -18,21 +18,26 @@ go get -u github.com/medivhzhan/weapp
 ## `目录`
 
 - [用户登录](#用户登录)
+  - [code2Session](#code2Session)
 - [用户信息](#用户信息)
+  - [getPaidUnionId](#getPaidUnionId)
 - [接口调用凭证](#接口调用凭证)
+  - [getAccessToken](#getAccessToken)
 - [数据分析](#数据分析)
-  1. [访问留存](#访问留存)
-     1. [getMonthlyRetain](#getMonthlyRetain)
-     1. [getWeeklyRetain](#getWeeklyRetain)
-     1. [getDailyRetain](#getDailyRetain)
-  1. [getUserPortrait](#getUserPortrait)
-  1. [getVisitDistribution](#getVisitDistribution)
-  1. [getVisitPage](#getVisitPage)
-  1. [getDailySummary](#getDailySummary)
+  - [访问留存](#访问留存)
+    - [getMonthlyRetain](#getMonthlyRetain)
+    - [getWeeklyRetain](#getWeeklyRetain)
+    - [getDailyRetain](#getDailyRetain)
+  - [getUserPortrait](#getUserPortrait)
+  - [getVisitDistribution](#getVisitDistribution)
+  - [getVisitPage](#getVisitPage)
+  - [getDailySummary](#getDailySummary)
 
 ---
 
 ## 用户登录
+
+### code2Session
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/login/auth.code2Session.html)
 
@@ -58,6 +63,8 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 用户信息
+
+### getPaidUnionId
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
 
@@ -86,6 +93,8 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 接口调用凭证
+
+### getAccessToken
 
 > 调用次数有限制 请注意缓存
 
