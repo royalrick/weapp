@@ -11,6 +11,12 @@ type Image struct {
 	MediaID string `json:"MediaId,omitempty" xml:"MediaId,omitempty"`
 }
 
+// SessionEvent 会话事件
+type SessionEvent struct {
+	Event       SessionEventType `json:"Event,omitempty" xml:"Event,omitempty"`
+	SessionFrom string           `json:"SessionFrom,omitempty" xml:"SessionFrom,omitempty"`
+}
+
 // Card 接收的卡片消息
 type Card struct {
 	Title        string `json:"Title,omitempty" xml:"Title,omitempty"`               // 标题
@@ -18,14 +24,6 @@ type Card struct {
 	PagePath     string `json:"PagePath,omitempty" xml:"PagePath,omitempty"`         // 小程序页面路径
 	ThumbURL     string `json:"ThumbUrl,omitempty" xml:"ThumbUrl,omitempty"`         // 封面图片的临时cdn链接
 	ThumbMediaID string `json:"ThumbMediaId,omitempty" xml:"ThumbMediaId,omitempty"` // 封面图片的临时素材id
-}
-
-// Link 图文链接消息
-type Link struct {
-	Title       string `json:"title"`
-	Description string `json:"description"`
-	URL         string `json:"url"`
-	ThumbURL    string `json:"thumb_url"`
 }
 
 // AsyncMedia 异步校验的图片/音频

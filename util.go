@@ -3,9 +3,12 @@ package weapp
 import (
 	"bytes"
 	"encoding/json"
+	"io"
 	"math/rand"
+	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 )
 
@@ -83,4 +86,51 @@ func postJSONWithBody(api string, params interface{}) (*http.Response, error) {
 	}
 
 	return http.Post(api, "application/json; charset=utf-8", reader)
+}
+
+func postFormByFile(url, field, filename string, response interface{}) error {
+	// Add your media file
+	file, err := os.Open(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	return postForm(url, field, filename, file, response)
+}
+
+func postForm(url, field, filename string, reader io.Reader, response interface{}) error {
+	// Prepare a form that you will submit to that URL.
+	buf := new(bytes.Buffer)
+	w := multipart.NewWriter(buf)
+	fw, err := w.CreateFormFile(field, filename)
+	if err != nil {
+		return err
+	}
+
+	if _, err = io.Copy(fw, reader); err != nil {
+		return err
+	}
+
+	// Don't forget to close the multipart writer.
+	// If you don't close it, your request will be missing the terminating boundary.
+	w.Close()
+
+	// Now that you have a form, you can submit it to your handler.
+	req, err := http.NewRequest("POST", url, buf)
+	if err != nil {
+		return err
+	}
+	// Don't forget to set the content type, this will contain the boundary.
+	req.Header.Set("Content-Type", w.FormDataContentType())
+
+	// Submit the request
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	return json.NewDecoder(resp.Body).Decode(response)
 }

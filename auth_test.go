@@ -28,7 +28,6 @@ func TestLogin(t *testing.T) {
 			if content == "" {
 				t.Fatalf("%v can not be empty", v)
 			}
-
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -78,7 +77,6 @@ func TestGetAccessToken(t *testing.T) {
 			if content == "" {
 				t.Fatalf("%v can not be empty", v)
 			}
-
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -118,7 +116,6 @@ func TestGetPaidUnionID(t *testing.T) {
 			if content == "" {
 				t.Fatalf("%v can not be empty", v)
 			}
-
 		}
 
 		w.WriteHeader(http.StatusOK)
@@ -162,7 +159,6 @@ func TestGetPaidUnionIDWithMCH(t *testing.T) {
 			if content == "" {
 				t.Fatalf("%v can not be empty", v)
 			}
-
 		}
 
 		w.WriteHeader(http.StatusOK)

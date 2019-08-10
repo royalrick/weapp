@@ -30,7 +30,7 @@ type MPTemplateMsg struct {
 // Miniprogram 小程序
 type Miniprogram struct {
 	AppID    string `json:"appid"`
-	Pagepath string `json:"pagepath"`
+	PagePath string `json:"pagepath"`
 }
 
 // UniformMsg 统一服务消息

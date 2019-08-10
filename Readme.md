@@ -36,6 +36,11 @@ go get -u github.com/medivhzhan/weapp
   - [getVisitDistribution](#getVisitDistribution)
   - [getVisitPage](#getVisitPage)
   - [getDailySummary](#getDailySummary)
+- [客服消息](#客服消息)
+  - [setTyping](#setTyping)
+  - [uploadTempMedia](#uploadTempMedia)
+  - [getTempMedia](#getTempMedia)
+  - [send](#customerServiceMessage.send)
 
 ---
 
@@ -347,6 +352,130 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp"
 
 res, err := weapp.GetDailySummary("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 客服消息
+
+### setTyping
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.SetTyping("mock-access-token", "mock-open-id", "mock-command")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### uploadTempMedia
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.uploadTempMedia.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.UploadTempMedia("mock-access-token", "mock-media-type", "mock-media-filename")
+// 或者
+res, err := weapp.uploadTempMediaByURL("mock-access-token", "mock-media-type", "mock-media-url") // 通过 URL 上传
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getTempMedia
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.getTempMedia.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetTempMedia("mock-access-token", "mock-media-id")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### customerServiceMessage.send
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.send.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+
+// 文本消息
+msg := CSMsgText{
+    Content: "mock-content",
+},
+// 或者
+// 图片消息
+msg := CSMsgImage{
+    MediaID: "mock-media-id",
+},
+// 或者
+// 链接消息
+msg := CSMsgLink{
+    Title:       "mock-title",
+    Description: "mock-description",
+    URL:         "mock-url",
+    ThumbURL:    "mock-thumb-url",
+},
+// 或者
+// 小程序卡片消息
+msg := CSMsgMPCard{
+    Title:        "mock-title",
+    PagePath:     "mock-page-path",
+    ThumbMediaID: "mock-thumb-media-id",
+},
+
+res, err := msg.SendTo("mock-open-id", "mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return

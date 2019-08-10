@@ -1,14 +1,7 @@
 package weapp
 
 import (
-	"bytes"
-	"encoding/json"
-	"io"
-	"io/ioutil"
-	"mime/multipart"
 	"net/http"
-	"os"
-	"strings"
 )
 
 // 检测地址
@@ -21,31 +14,31 @@ const (
 // IMGSecCheckByURL 网络图片检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
 //
-// url 要检测的图片网络路径
+// imgURL 要检测的图片网络路径
 // token 接口调用凭证(access_token)
-func IMGSecCheckByURL(url, token string) (*CommonError, error) {
-	resp, err := http.Get(url)
+func IMGSecCheckByURL(imgURL, token string) (*CommonError, error) {
+	api := baseURL + apiCheckImg
+	return imgSecCheckByURL(imgURL, token, api)
+}
+
+func imgSecCheckByURL(imgURL, token, api string) (*CommonError, error) {
+	resp, err := http.Get(imgURL)
 	if err != nil {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	bts, err := ioutil.ReadAll(resp.Body)
 
-	body := &bytes.Buffer{}
-	writer := multipart.NewWriter(body)
-	defer writer.Close()
-	str := strings.Split(url, "/")
-	fileWriter, err := writer.CreateFormFile("media", str[len(str)-1])
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
-	_, err = fileWriter.Write(bts)
-	if err != nil {
+
+	res := new(CommonError)
+	if err := postForm(url, "media", "filename", resp.Body, res); err != nil {
 		return nil, err
 	}
-	contentType := writer.FormDataContentType()
 
-	return imgSecCheck(body, contentType, token)
+	return res, nil
 }
 
 // IMGSecCheck 本地图片检测
@@ -54,43 +47,19 @@ func IMGSecCheckByURL(url, token string) (*CommonError, error) {
 // filename 要检测的图片本地路径
 // token 接口调用凭证(access_token)
 func IMGSecCheck(filename, token string) (*CommonError, error) {
-	file, err := os.Open(filename)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	body := &bytes.Buffer{} // TODO: 优化
-	writer := multipart.NewWriter(body)
-	defer writer.Close()
-	fileWriter, err := writer.CreateFormFile("media", filename)
-	if err != nil {
-		return nil, err
-	}
-	_, err = io.Copy(fileWriter, file)
-	if err != nil {
-		return nil, err
-	}
-	contentType := writer.FormDataContentType()
-
-	return imgSecCheck(body, contentType, token)
+	api := baseURL + apiCheckImg
+	return imgSecCheck(filename, token, api)
 }
 
-func imgSecCheck(body io.Reader, contentType, token string) (*CommonError, error) {
+func imgSecCheck(filename, token, api string) (*CommonError, error) {
 
-	api, err := tokenAPI(baseURL+apiCheckImg, token)
+	url, err := tokenAPI(baseURL+apiCheckImg, token)
 	if err != nil {
 		return nil, err
 	}
-
-	resp, err := http.Post(api, contentType, body)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
 
 	res := new(CommonError)
-	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
+	if err := postFormByFile(url, "media", filename, res); err != nil {
 		return nil, err
 	}
 

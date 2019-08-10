@@ -26,14 +26,14 @@ const (
 	MsgEvent         = "event"           // 事件类型
 )
 
-// EventType 事件类型
-type EventType = string
+// SessionEventType 事件类型
+type SessionEventType = string
 
 // 所有事件类型
 const (
-	EventUserEntry       EventType = "user_enter_tempsession" // 用户进入临时会话状态
-	EventGetQuota                  = "get_quota"              // 查询商户余额
-	EventAsyncMediaCheck           = "wxa_media_check"        // 异步校验图片/音频
+	EventUserEntry       SessionEventType = "user_enter_tempsession" // 用户进入临时会话状态
+	EventGetQuota                         = "get_quota"              // 查询商户余额
+	EventAsyncMediaCheck                  = "wxa_media_check"        // 异步校验图片/音频
 )
 
 // EncryptedMsgResponse 接收的的加密消息格式
@@ -54,13 +54,14 @@ type EncryptedMsgRequest struct {
 
 // Mixture 混合消息体
 type Mixture struct {
-	XMLName      xml.Name  `xml:"xml" json:"-"`
-	ID           int       `json:"MsgId" xml:"MsgId"`                     // 消息 ID
-	MsgType      MsgType   `json:"MsgType" xml:"MsgType"`                 // 消息类型
-	Event        EventType `json:"event,omitempty" xml:"event,omitempty"` // 事件类型
-	FromUserName string    `json:"FromUserName" xml:"FromUserName"`       // 发送者的 openID | 平台推送服务UserName
-	ToUserName   string    `json:"ToUserName" xml:"ToUserName"`           // 小程序的原始ID
-	CreateTime   int64     `json:"CreateTime" xml:"CreateTime"`           // 消息创建时间(整型）
+	XMLName      xml.Name `xml:"xml" json:"-"`
+	MsgID        int      `json:"MsgId" xml:"MsgId"`               // 消息 ID
+	ToUserName   string   `json:"ToUserName" xml:"ToUserName"`     // 小程序的原始ID
+	FromUserName string   `json:"FromUserName" xml:"FromUserName"` // 发送者的 openID | 平台推送服务UserName
+	CreateTime   uint64   `json:"CreateTime" xml:"CreateTime"`     // 消息创建时间(整型）
+	MsgType      MsgType  `json:"MsgType" xml:"MsgType"`           // 消息类型
+
+	Event SessionEvent `json:"event,omitempty" xml:"event,omitempty"` // 事件类型
 
 	Text
 	Card

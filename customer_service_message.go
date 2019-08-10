@@ -14,71 +14,107 @@ const (
 	apiGetTemplateMedia    = "/cgi-bin/media/get"
 )
 
-// 消息体
-type message struct {
-	Receiver string  `json:"touser"`  // user openID
-	Type     MsgType `json:"msgtype"` // text | image | link | miniprogrampage
-	Text     Text    `json:"text,omitempty"`
-	Image    Image   `json:"image,omitempty"`
-	Link     Link    `json:"link,omitempty"`
-	Card     Card    `json:"miniprogrampage,omitempty"`
+// csMsgType 消息类型
+type csMsgType string
+
+// 所有消息类型
+const (
+	csMsgTypeText   csMsgType = "text"            // 文本消息类型
+	csMsgTypeLink             = "link"            // 图文链接消息类型
+	csMsgTypeImage            = "image"           // 图片消息类型
+	csMsgTypeMPCard           = "miniprogrampage" // 小程序卡片消息类型
+)
+
+// csMessage 消息体
+type csMessage struct {
+	Receiver string      `json:"touser"`  // user openID
+	Type     csMsgType   `json:"msgtype"` // text | image | link | miniprogrampage
+	Text     CSMsgText   `json:"text,omitempty"`
+	Image    CSMsgImage  `json:"image,omitempty"`
+	Link     CSMsgLink   `json:"link,omitempty"`
+	MPCard   CSMsgMPCard `json:"miniprogrampage,omitempty"`
+}
+
+// CSMsgText 接收的文本消息
+type CSMsgText struct {
+	Content string `json:"content"`
 }
 
 // SendTo 发送文本消息
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg Text) SendTo(openID, token string) (*CommonError, error) {
+func (msg CSMsgText) SendTo(openID, token string) (*CommonError, error) {
 
-	params := message{
+	params := csMessage{
 		Receiver: openID,
-		Type:     "text",
+		Type:     csMsgTypeText,
 		Text:     msg,
 	}
 
 	return sendMessage(token, params)
 }
 
+// CSMsgImage 客服图片消息
+type CSMsgImage struct {
+	MediaID string `json:"media_id"` // 发送的图片的媒体ID，通过 新增素材接口 上传图片文件获得。
+}
+
 // SendTo 发送图片消息
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg Image) SendTo(openID, token string) (*CommonError, error) {
+func (msg CSMsgImage) SendTo(openID, token string) (*CommonError, error) {
 
-	params := message{
+	params := csMessage{
 		Receiver: openID,
-		Type:     "image",
+		Type:     csMsgTypeImage,
 		Image:    msg,
 	}
 
 	return sendMessage(token, params)
 }
 
+// CSMsgLink 图文链接消息
+type CSMsgLink struct {
+	Title       string `json:"title"`
+	Description string `json:"description"`
+	URL         string `json:"url"`
+	ThumbURL    string `json:"thumb_url"`
+}
+
 // SendTo 发送图文链接消息
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg Link) SendTo(openID, token string) (*CommonError, error) {
+func (msg CSMsgLink) SendTo(openID, token string) (*CommonError, error) {
 
-	params := message{
+	params := csMessage{
 		Receiver: openID,
-		Type:     "link",
+		Type:     csMsgTypeLink,
 		Link:     msg,
 	}
 
 	return sendMessage(token, params)
 }
 
+// CSMsgMPCard 接收的卡片消息
+type CSMsgMPCard struct {
+	Title        string `json:"title"`          // 标题
+	PagePath     string `json:"pagepath"`       // 小程序页面路径
+	ThumbMediaID string `json:"thumb_media_id"` // 小程序消息卡片的封面， image 类型的 media_id，通过 新增素材接口 上传图片文件获得，建议大小为 520*416
+}
+
 // SendTo 发送卡片消息
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg Card) SendTo(openID, token string) (*CommonError, error) {
+func (msg CSMsgMPCard) SendTo(openID, token string) (*CommonError, error) {
 
-	params := message{
+	params := csMessage{
 		Receiver: openID,
 		Type:     "miniprogrampage",
-		Card:     msg,
+		MPCard:   msg,
 	}
 
 	return sendMessage(token, params)
@@ -88,13 +124,18 @@ func (msg Card) SendTo(openID, token string) (*CommonError, error) {
 //
 // token 微信 access_token
 func sendMessage(token string, params interface{}) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiSendMessage, token)
+	api := baseURL + apiSendMessage
+	return doSendMessage(token, params, api)
+}
+
+func doSendMessage(token string, params interface{}, api string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -159,20 +200,61 @@ type UploadTempMediaResponse struct {
 //
 // token 接口调用凭证
 // mediaType 文件类型
-// media form-data 中媒体文件标识，有filename、filelength、content-type等信息
-func UploadTempMedia(token string, mediaType TempMediaType, media string) (*UploadTempMediaResponse, error) {
-	api, err := tokenAPI(baseURL+apiUploadTemplateMedia, token)
+// medianame 媒体文件名
+func UploadTempMedia(token string, mediaType TempMediaType, medianame string) (*UploadTempMediaResponse, error) {
+	api := baseURL + apiUploadTemplateMedia
+	return uploadTempMedia(token, mediaType, medianame, api)
+}
+
+// UploadTempMediaByURL 把网络文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
+//
+// token 接口调用凭证
+// mediaType 文件类型
+// medianame 媒体文件名
+func UploadTempMediaByURL(token string, mediaType TempMediaType, mediaurl string) (*UploadTempMediaResponse, error) {
+	api := baseURL + apiUploadTemplateMedia
+	return uploadTempMediaByURL(token, mediaType, mediaurl, api)
+}
+
+func uploadTempMediaByURL(token string, mediaType TempMediaType, mediaurl, api string) (*UploadTempMediaResponse, error) {
+
+	resp, err := http.Get(mediaurl)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	queries := requestQueries{
+		"type":         mediaType,
+		"access_token": token,
+	}
+
+	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
 
-	params := requestParams{
-		"type":  mediaType,
-		"media": media,
+	res := new(UploadTempMediaResponse)
+	if err := postForm(url, "media", "filename", resp.Body, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func uploadTempMedia(token string, mediaType TempMediaType, medianame, api string) (*UploadTempMediaResponse, error) {
+	queries := requestQueries{
+		"type":         mediaType,
+		"access_token": token,
+	}
+
+	url, err := encodeURL(api, queries)
+	if err != nil {
+		return nil, err
 	}
 
 	res := new(UploadTempMediaResponse)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postFormByFile(url, "media", medianame, res); err != nil {
 		return nil, err
 	}
 
@@ -184,12 +266,17 @@ func UploadTempMedia(token string, mediaType TempMediaType, media string) (*Uplo
 // token 接口调用凭证
 // mediaID 媒体文件 ID
 func GetTempMedia(token, mediaID string) (*http.Response, *CommonError, error) {
+	api := baseURL + apiGetTemplateMedia
+	return getTempMedia(token, mediaID, api)
+}
+
+func getTempMedia(token, mediaID, api string) (*http.Response, *CommonError, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"media_id":     mediaID,
 	}
 
-	url, err := encodeURL(baseURL+apiGetTemplateMedia, queries)
+	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -207,7 +294,7 @@ func GetTempMedia(token, mediaID string) (*http.Response, *CommonError, error) {
 		}
 		return res, response, nil
 
-	case header == "image/jpeg": // 返回文件 TODO: 应该确认一下
+	case strings.HasPrefix(header, "image"): // 返回文件 TODO: 应该确认一下
 		return res, response, nil
 
 	default:
