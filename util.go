@@ -63,8 +63,8 @@ func randomString(ln int) string {
 }
 
 // postJSON perform a HTTP/POST request with json body
-func postJSON(api string, params interface{}, response interface{}) error {
-	resp, err := postJSONWithBody(api, params)
+func postJSON(url string, params interface{}, response interface{}) error {
+	resp, err := postJSONWithBody(url, params)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func postJSON(api string, params interface{}, response interface{}) error {
 }
 
 // postJSONWithBody return with http body.
-func postJSONWithBody(api string, params interface{}) (*http.Response, error) {
+func postJSONWithBody(url string, params interface{}) (*http.Response, error) {
 	var reader *bytes.Reader
 	if params != nil {
 		raw, err := json.Marshal(params)
@@ -85,7 +85,7 @@ func postJSONWithBody(api string, params interface{}) (*http.Response, error) {
 		reader = bytes.NewReader(raw)
 	}
 
-	return http.Post(api, "application/json; charset=utf-8", reader)
+	return http.Post(url, "application/json; charset=utf-8", reader)
 }
 
 func postFormByFile(url, field, filename string, response interface{}) error {
