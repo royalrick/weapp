@@ -1,5 +1,9 @@
 package weapp
 
+const (
+	apiSendUniformMessage = "/cgi-bin/message/wxopen/template/uniform_send"
+)
+
 // TemplateMsg 小程序模板消息
 type TemplateMsg struct {
 	TemplateID      string `json:"template_id"`
@@ -44,7 +48,7 @@ type UniformMsg struct {
 //
 // token access_token
 func (msg UniformMsg) Send(token string) error {
-	api, err := tokenAPI(baseURL+apiUniformSendTemplateMessage, token)
+	api, err := tokenAPI(baseURL+apiSendUniformMessage, token)
 	if err != nil {
 		return err
 	}

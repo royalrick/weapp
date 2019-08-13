@@ -40,7 +40,14 @@ go get -u github.com/medivhzhan/weapp
   - [setTyping](#setTyping)
   - [uploadTempMedia](#uploadTempMedia)
   - [getTempMedia](#getTempMedia)
-  - [send](#customerServiceMessage.send)
+  - [customerServiceMessage.send](#customerServiceMessage.send)
+- [模板消息](#模板消息)
+  - [addTemplate](#addTemplate)
+  - [deleteTemplate](#deleteTemplate)
+  - [getTemplateLibraryById](#getTemplateLibraryById)
+  - [getTemplateLibraryList](#getTemplateLibraryList)
+  - [getTemplateList](#getTemplateList)
+  - [templateMessage.send](#templateMessage.send)
 
 ---
 
@@ -476,6 +483,160 @@ msg := CSMsgMPCard{
 },
 
 res, err := msg.SendTo("mock-open-id", "mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 模板消息
+
+### addTemplate
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.addTemplate.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.AddTemplate("mock-template-id", "mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### deleteTemplate
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.deleteTemplate.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.DeleteTemplate("mock-template-id", "mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getTemplateLibraryById
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.getTemplateLibraryById.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetTemplateLibraryByID("mock-template-id", "mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getTemplateLibraryList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.getTemplateLibraryList.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetTemplateLibraryList("mock-template-token", 0, 10)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getTemplateList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.getTemplateList.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetTemplateList("mock-template-token", 0, 10)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### send
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.send.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+sender := TempMsgSender{
+    ToUser:     "mock-open-id",
+    TemplateID: "mock-template-id",
+    Page:       "mock/page?foo=bar",
+    FormID:     "mock-form-id",
+    Data: TempMsgData{
+        "mock-key-word1": TempMsgKeyword{"mock-template-value1"},
+        "mock-key-word2": TempMsgKeyword{"mock-template-value2"},
+    },
+    EmphasisKeyword: "mock-open-id",
+}
+
+res, err := sender.Send("mock-template-token")
 if err != nil {
     // 处理一般错误信息
     return
