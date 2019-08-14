@@ -32,7 +32,18 @@ func CreateActivityID(accessToken string) (*ActivityID, error) {
 type ActMsg struct {
 	ID       string      `json:"activity_id"`   // 动态消息的 ID，通过 updatableMessage.createActivityId 接口获取
 	State    TargetState `json:"target_state"`  // 动态消息修改后的状态（具体含义见后文）
-	Template TemplateMsg `json:"template_info"` // 动态消息对应的模板信息
+	Template ActTempInfo `json:"template_info"` // 动态消息对应的模板信息
+}
+
+// ActTempInfo 动态消息对应的模板信息
+type ActTempInfo struct {
+	ParameterList []string `json:"parameter_list"` // 模板中需要修改的参数列表
+}
+
+// ActParameter //模板中需要修改的参数
+type ActParameter struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }
 
 // ActMsgTemplate 动态消息对应的模板信息

@@ -4,31 +4,37 @@ const (
 	apiSendUniformMessage = "/cgi-bin/message/wxopen/template/uniform_send"
 )
 
-// TemplateMsg 小程序模板消息
-type TemplateMsg struct {
-	TemplateID      string `json:"template_id"`
-	Page            string `json:"page"`
-	FormID          string `json:"form_id"`
-	Data            Data   `json:"data"`
-	EmphasisKeyword string `json:"emphasis_keyword,omitempty"`
-}
+// UniformMsgData 模板消息内容
+type UniformMsgData map[string]UniformMsgKeyword
 
-// Data 模板消息内容
-type Data = map[string]Keyword
-
-// Keyword 关键字
-type Keyword struct {
+// UniformMsgKeyword 关键字
+type UniformMsgKeyword struct {
 	Value string `json:"value"`
-	Color string `json:"color"`
+	Color string `json:"color,omitempty"`
 }
 
-// MPTemplateMsg 公众号模板消息
-type MPTemplateMsg struct {
-	AppID       string      `json:"appid"`
-	TemplateID  string      `json:"template_id"`
-	URL         string      `json:"url"`
-	Miniprogram Miniprogram `json:"miniprogram"`
-	Data        Data        `json:"data"`
+// UniformMPMsg 小程序模板消息
+type UniformMPMsg struct {
+	TemplateID      string         `json:"template_id"`
+	Page            string         `json:"page"`
+	FormID          string         `json:"form_id"`
+	Data            UniformMsgData `json:"data"`
+	EmphasisKeyword string         `json:"emphasis_keyword,omitempty"`
+}
+
+// UniformMsgMiniprogram 小程序
+type UniformMsgMiniprogram struct {
+	AppID    string `json:"appid"`
+	PagePath string `json:"pagepath"`
+}
+
+// UniformOAMsg 公众号模板消息
+type UniformOAMsg struct {
+	AppID       string                `json:"appid"`
+	TemplateID  string                `json:"template_id"`
+	URL         string                `json:"url"`
+	Miniprogram UniformMsgMiniprogram `json:"miniprogram"`
+	Data        UniformMsgData        `json:"data"`
 }
 
 // Miniprogram 小程序
@@ -37,26 +43,31 @@ type Miniprogram struct {
 	PagePath string `json:"pagepath"`
 }
 
-// UniformMsg 统一服务消息
-type UniformMsg struct {
-	ToUser           string        `json:"touser"` // 用户 openid
-	MPTemplateMsg    MPTemplateMsg `json:"mp_template_msg"`
-	WeappTemplateMsg TemplateMsg   `json:"weapp_template_msg"`
+// UniformMsgSender 统一服务消息
+type UniformMsgSender struct {
+	ToUser       string       `json:"touser"` // 用户 openid
+	UniformMPMsg UniformMPMsg `json:"weapp_template_msg,omitempty"`
+	UniformOAMsg UniformOAMsg `json:"mp_template_msg,omitempty"`
 }
 
 // Send 统一服务消息
 //
 // token access_token
-func (msg UniformMsg) Send(token string) error {
-	api, err := tokenAPI(baseURL+apiSendUniformMessage, token)
+func (msg *UniformMsgSender) Send(token string) (*CommonError, error) {
+	api := baseURL + apiSendUniformMessage
+	return msg.send(api, token)
+}
+
+func (msg *UniformMsgSender) send(api, token string) (*CommonError, error) {
+	api, err := tokenAPI(api, token)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	res := new(CommonError)
 	if err := postJSON(api, msg, res); err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return res, nil
 }

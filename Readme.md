@@ -48,6 +48,8 @@ go get -u github.com/medivhzhan/weapp
   - [getTemplateLibraryList](#getTemplateLibraryList)
   - [getTemplateList](#getTemplateList)
   - [templateMessage.send](#templateMessage.send)
+- [统一服务消息](#统一服务消息)
+  - [uniformMessage.send](#uniformMessage.send)
 
 ---
 
@@ -637,6 +639,55 @@ sender := TempMsgSender{
 }
 
 res, err := sender.Send("mock-template-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 统一服务消息
+
+### uniformMessage.send
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/uniform-message/uniformMessage.send.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+sender := UniformMsgSender{
+    ToUser: "mock-open-id",
+    UniformMPMsg: UniformMPMsg{
+        TemplateID: "mock-template-id",
+        Page:       "mock-page",
+        FormID:     "mock-form-id",
+        Data: UniformMsgData{
+            "mock-keyword": UniformMsgKeyword{Value: "mock-value"},
+        },
+        EmphasisKeyword: "mock-keyword.DATA",
+    },
+    UniformOAMsg: UniformOAMsg{
+        AppID:       "mock-app-id",
+        TemplateID:  "mock-template-id",
+        URL:         "mock-url",
+        Miniprogram: UniformMsgMiniprogram{"mock-miniprogram-app-id", "mock-page-path"},
+        Data: UniformMsgData{
+            "mock-keyword": UniformMsgKeyword{"mock-value", "mock-color"},
+        },
+    },
+}
+
+_, err := sender.Send("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return
