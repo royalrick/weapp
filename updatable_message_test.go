@@ -110,14 +110,14 @@ func TestSetUpdatableMsg(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	// {  "template_info": {"parameter_list": [{"name": "member_count", "value": "2"}, {"name":"room_limit", "value": "5"} ] } }'
+
 	setter := UpdatableMsgSetter{
-		"966_NGiqxxxxxxxxx...xxxxxxxxE33BlwX",
+		"mock-activity-id",
 		UpdatableMsgUnstarted,
 		UpdatableMsgTempInfo{
 			[]UpdatableMsgParameter{
-				{UpdatableMsgParamMemberCount, "2"},
-				{UpdatableMsgParamRoomLimit, "5"},
+				{UpdatableMsgParamMemberCount, "mock-parameter-value-number"},
+				{UpdatableMsgParamRoomLimit, "mock-parameter-value-number"},
 			},
 		},
 	}
