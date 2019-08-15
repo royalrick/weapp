@@ -10,12 +10,12 @@ import (
 func TestAddTemplate(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiAddTemplate {
-			t.Fatalf("Except to path '%s',got '%s'", apiAddTemplate, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiAddTemplate, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -68,12 +68,12 @@ func TestAddTemplate(t *testing.T) {
 func TestDeleteTemplate(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiDeleteTemplate {
-			t.Fatalf("Except to path '%s',got '%s'", apiDeleteTemplate, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiDeleteTemplate, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -116,12 +116,12 @@ func TestDeleteTemplate(t *testing.T) {
 func TestGetTemplateLibraryByID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetTemplateLibraryByID {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetTemplateLibraryByID, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetTemplateLibraryByID, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -208,12 +208,12 @@ func TestGetTemplateLibraryList(t *testing.T) {
 	const offset, count = 5, 10
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetTemplateLibraryList {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetTemplateLibraryList, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetTemplateLibraryList, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -270,12 +270,12 @@ func TestGetTemplateList(t *testing.T) {
 	const offset, count = 5, 10
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetTemplateList {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetTemplateList, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetTemplateList, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -331,12 +331,12 @@ func TestGetTemplateList(t *testing.T) {
 func TestSendTemplateMessage(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiSendTemplateMessage {
-			t.Fatalf("Except to path '%s',got '%s'", apiSendTemplateMessage, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiSendTemplateMessage, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

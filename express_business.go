@@ -84,7 +84,7 @@ func GetAllAccount(accessToken string) (*AccountList, error) {
 	}
 
 	res := new(AccountList)
-	if err := postJSON(api, nil, res); err != nil {
+	if err := postJSON(api, requestParams{}, res); err != nil {
 		return nil, err
 	}
 
@@ -322,7 +322,7 @@ func GetAllDelivery(accessToken string) (*DeliveryList, error) {
 	}
 
 	res := new(DeliveryList)
-	if err := postJSON(api, nil, res); err != nil {
+	if err := postJSON(api, requestParams{}, res); err != nil {
 		return nil, err
 	}
 
@@ -382,7 +382,7 @@ func GetPrinter(accessToken string) (*GetPrinterResponse, error) {
 	}
 
 	res := new(GetPrinterResponse)
-	if err := postJSON(api, nil, res); err != nil {
+	if err := postJSON(api, requestParams{}, res); err != nil {
 		return nil, err
 	}
 
@@ -410,7 +410,7 @@ func (qg *QuotaGetter) GetQuota(accessToken string) (*Quota, error) {
 	}
 
 	res := new(Quota)
-	if err := postJSON(api, nil, res); err != nil {
+	if err := postJSON(api, requestParams{}, res); err != nil {
 		return nil, err
 	}
 

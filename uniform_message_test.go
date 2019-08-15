@@ -11,12 +11,12 @@ func TestSendUniformMessage(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiSendUniformMessage {
-			t.Fatalf("Except to path '%s',got '%s'", apiSendUniformMessage, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiSendUniformMessage, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

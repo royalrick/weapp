@@ -11,12 +11,12 @@ func TestGetUserPortrait(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetUserPortrait {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetUserPortrait, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetUserPortrait, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -149,12 +149,12 @@ func TestGetVisitDistribution(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetVisitDistribution {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitDistribution, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetVisitDistribution, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -306,12 +306,12 @@ func TestGetVisitPage(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetVisitPage {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetVisitPage, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetVisitPage, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -410,12 +410,12 @@ func TestGetDailySummary(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetDailySummary {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetDailySummary, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetDailySummary, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

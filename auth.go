@@ -1,10 +1,5 @@
 package weapp
 
-import (
-	"encoding/json"
-	"net/http"
-)
-
 const (
 	apiLogin          = "/sns/jscode2session"
 	apiGetAccessToken = "/cgi-bin/token"
@@ -40,19 +35,13 @@ func login(appID, secret, code, api string) (*LoginResponse, error) {
 		"grant_type": "authorization_code",
 	}
 
-	api, err := encodeURL(api, queries)
+	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
-
-	resp, err := http.Get(api)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
 
 	res := new(LoginResponse)
-	if err = json.NewDecoder(resp.Body).Decode(res); err != nil {
+	if err := getJSON(url, res); err != nil {
 		return nil, err
 	}
 
@@ -86,14 +75,8 @@ func getAccessToken(appID, secret, api string) (*TokenResponse, error) {
 		return nil, err
 	}
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
 	res := new(TokenResponse)
-	if err := json.NewDecoder(resp.Body).Decode(res); err != nil {
+	if err := getJSON(url, res); err != nil {
 		return nil, err
 	}
 
@@ -145,14 +128,8 @@ func getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDR
 		return nil, err
 	}
 
-	resp, err := http.Get(url)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
 	res := new(GetPaidUnionIDResponse)
-	if err = json.NewDecoder(resp.Body).Decode(res); err != nil {
+	if err := getJSON(url, res); err != nil {
 		return nil, err
 	}
 

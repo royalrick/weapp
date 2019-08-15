@@ -15,12 +15,12 @@ import (
 func TestSetTyping(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiSetTyping {
-			t.Fatalf("Except to path '%s',got '%s'", apiSetTyping, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiSetTyping, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -66,12 +66,12 @@ func TestUploadTempMedia(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiUploadTemplateMedia {
-			t.Fatalf("Except to path '%s',got '%s'", apiUploadTemplateMedia, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiUploadTemplateMedia, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -116,12 +116,12 @@ func TestUploadTempMediaByURL(t *testing.T) {
 	server := http.NewServeMux()
 	server.HandleFunc(apiUploadTemplateMedia, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiUploadTemplateMedia {
-			t.Fatalf("Except to path '%s',got '%s'", apiUploadTemplateMedia, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiUploadTemplateMedia, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -185,12 +185,12 @@ func TestUploadTempMediaByURL(t *testing.T) {
 func TestGetTempMedia(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "GET" {
-			t.Fatalf("Except 'GET' got '%s'", r.Method)
+			t.Fatalf("Expect 'GET' get '%s'", r.Method)
 		}
 
 		ePath := r.URL.EscapedPath()
 		if ePath != apiGetTemplateMedia {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetTemplateMedia, ePath)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetTemplateMedia, ePath)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -235,12 +235,12 @@ func TestSendCustomerServiceMessage(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiSendMessage {
-			t.Fatalf("Except to path '%s',got '%s'", apiSendMessage, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiSendMessage, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

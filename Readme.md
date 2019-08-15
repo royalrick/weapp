@@ -50,6 +50,9 @@ go get -u github.com/medivhzhan/weapp
   - [sendTemplateMessage](#sendTemplateMessage)
 - [统一服务消息](#统一服务消息)
   - [sendUniformMessage](#sendUniformMessage)
+- [动态消息](#动态消息)
+  - [createActivityId](#createActivityId)
+  - [setUpdatableMsg](#setUpdatableMsg)
 
 ---
 
@@ -580,7 +583,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetTemplateLibraryList("mock-template-token", 0, 10)
+res, err := weapp.GetTemplateLibraryList("mock-access-token", 0, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -603,7 +606,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetTemplateList("mock-template-token", 0, 10)
+res, err := weapp.GetTemplateList("mock-access-token", 0, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -638,7 +641,7 @@ sender := TempMsgSender{
     EmphasisKeyword: "mock-open-id",
 }
 
-res, err := sender.Send("mock-template-token")
+res, err := sender.Send("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -688,6 +691,68 @@ sender := UniformMsgSender{
 }
 
 _, err := sender.Send("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 动态消息
+
+### createActivityId
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.CreateActivityId("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### setUpdatableMsg
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.setUpdatableMsg.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+
+setter := UpdatableMsgSetter{
+    "966_NGiqxxxxxxxxx...xxxxxxxxE33BlwX",
+    UpdatableMsgUnstarted,
+    UpdatableMsgTempInfo{
+        []UpdatableMsgParameter{
+            {UpdatableMsgParamMemberCount, "2"},
+            {UpdatableMsgParamRoomLimit, "5"},
+        },
+    },
+}
+
+res, err := setter.Set("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return

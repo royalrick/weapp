@@ -11,12 +11,12 @@ func TestGetMonthlyRetain(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetMonthlyRetain {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetMonthlyRetain, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetMonthlyRetain, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -75,12 +75,12 @@ func TestGetWeeklyRetain(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetWeeklyRetain {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetWeeklyRetain, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetWeeklyRetain, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -147,12 +147,12 @@ func TestGetDailyRetainAPI(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetDailyRetain {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetDailyRetain, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetDailyRetain, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

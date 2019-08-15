@@ -10,12 +10,12 @@ func TestLogin(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "GET" {
-			t.Fatalf("Except 'GET' got '%s'", r.Method)
+			t.Fatalf("Expect 'GET' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiLogin {
-			t.Fatalf("Except to path '%s',got '%s'", apiLogin, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiLogin, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -55,12 +55,12 @@ func TestGetAccessToken(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "GET" {
-			t.Fatalf("Except 'GET' got '%s'", r.Method)
+			t.Fatalf("Expect 'GET' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetAccessToken {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetAccessToken, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetAccessToken, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -98,12 +98,12 @@ func TestGetPaidUnionID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "GET" {
-			t.Fatalf("Except 'GET' got '%s'", r.Method)
+			t.Fatalf("Expect 'GET' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetPaidUnionID {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetPaidUnionID, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetPaidUnionID, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -141,12 +141,12 @@ func TestGetPaidUnionIDWithMCH(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "GET" {
-			t.Fatalf("Except 'GET' got '%s'", r.Method)
+			t.Fatalf("Expect 'GET' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetPaidUnionID {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetPaidUnionID, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetPaidUnionID, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

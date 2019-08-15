@@ -11,12 +11,12 @@ func TestGetMonthlyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetMonthlyVisitTrend {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetMonthlyVisitTrend, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetMonthlyVisitTrend, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -73,12 +73,12 @@ func TestGetWeeklyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetWeeklyVisitTrend {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetWeeklyVisitTrend, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetWeeklyVisitTrend, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -135,12 +135,12 @@ func TestGetDailyVisitTrend(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
-			t.Fatalf("Except 'POST' got '%s'", r.Method)
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
 		if path != apiGetDailyVisitTrend {
-			t.Fatalf("Except to path '%s',got '%s'", apiGetDailyVisitTrend, path)
+			t.Fatalf("Except to path '%s',get '%s'", apiGetDailyVisitTrend, path)
 		}
 
 		if err := r.ParseForm(); err != nil {

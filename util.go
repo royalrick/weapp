@@ -73,6 +73,17 @@ func postJSON(url string, params interface{}, response interface{}) error {
 	return json.NewDecoder(resp.Body).Decode(response)
 }
 
+func getJSON(url string, response interface{}) error {
+
+	resp, err := http.Get(url)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
+	return json.NewDecoder(resp.Body).Decode(response)
+}
+
 // postJSONWithBody return with http body.
 func postJSONWithBody(url string, params interface{}) (*http.Response, error) {
 	var reader *bytes.Reader
