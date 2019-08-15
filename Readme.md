@@ -742,12 +742,12 @@ import "github.com/medivhzhan/weapp"
 
 
 setter := UpdatableMsgSetter{
-    "966_NGiqxxxxxxxxx...xxxxxxxxE33BlwX",
-    UpdatableMsgUnstarted,
+    "mock-activity-id",
+    UpdatableMsgJoining,
     UpdatableMsgTempInfo{
         []UpdatableMsgParameter{
-            {UpdatableMsgParamMemberCount, "2"},
-            {UpdatableMsgParamRoomLimit, "5"},
+            {UpdatableMsgParamMemberCount, "mock-parameter-value-number"},
+            {UpdatableMsgParamRoomLimit, "mock-parameter-value-number"},
         },
     },
 }

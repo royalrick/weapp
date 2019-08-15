@@ -55,8 +55,8 @@ type UpdatableMsgTargetState = uint8
 
 // 动态消息状态
 const (
-	UpdatableMsgUnstarted UpdatableMsgTargetState = iota // 未开始
-	UpdatableMsgStarted                                  // 已开始
+	UpdatableMsgJoining UpdatableMsgTargetState = iota // 未开始
+	UpdatableMsgStarted                                // 已开始
 )
 
 // UpdatableMsgParamName 参数 name 的合法值

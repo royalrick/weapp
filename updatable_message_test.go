@@ -113,7 +113,7 @@ func TestSetUpdatableMsg(t *testing.T) {
 
 	setter := UpdatableMsgSetter{
 		"mock-activity-id",
-		UpdatableMsgUnstarted,
+		UpdatableMsgJoining,
 		UpdatableMsgTempInfo{
 			[]UpdatableMsgParameter{
 				{UpdatableMsgParamMemberCount, "mock-parameter-value-number"},
