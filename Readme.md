@@ -40,16 +40,16 @@ go get -u github.com/medivhzhan/weapp
   - [setTyping](#setTyping)
   - [uploadTempMedia](#uploadTempMedia)
   - [getTempMedia](#getTempMedia)
-  - [customerServiceMessage.send](#customerServiceMessage.send)
+  - [sendCustomerServiceMessage](#sendCustomerServiceMessage)
 - [模板消息](#模板消息)
   - [addTemplate](#addTemplate)
   - [deleteTemplate](#deleteTemplate)
   - [getTemplateLibraryById](#getTemplateLibraryById)
   - [getTemplateLibraryList](#getTemplateLibraryList)
   - [getTemplateList](#getTemplateList)
-  - [templateMessage.send](#templateMessage.send)
+  - [sendTemplateMessage](#sendTemplateMessage)
 - [统一服务消息](#统一服务消息)
-  - [uniformMessage.send](#uniformMessage.send)
+  - [sendUniformMessage](#sendUniformMessage)
 
 ---
 
@@ -450,7 +450,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-### customerServiceMessage.send
+### sendCustomerServiceMessage
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.send.html)
 
@@ -618,7 +618,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-### send
+### sendTemplateMessage
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/template-message/templateMessage.send.html)
 
@@ -657,7 +657,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 统一服务消息
 
-### uniformMessage.send
+### sendUniformMessage
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/uniform-message/uniformMessage.send.html)
 
