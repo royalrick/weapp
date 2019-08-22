@@ -53,6 +53,10 @@ go get -u github.com/medivhzhan/weapp
 - [动态消息](#动态消息)
   - [createActivityId](#createActivityId)
   - [setUpdatableMsg](#setUpdatableMsg)
+- [小程序码](#小程序码)
+  - [createQRCode](#createQRCode)
+  - [get](#get)
+  - [getUnlimited](#getUnlimited)
 
 ---
 
@@ -764,6 +768,125 @@ if err := res.GetResponseError(); err !=nil {
 }
 
 fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 小程序码
+
+### createQRCode
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp"
+)
+
+
+creator := QRCodeCreator{
+    Path:  "mock/path",
+    Width: 430,
+}
+
+body, res, err := creator.Create("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+defer body.Close()
+
+// 处理 body 内的 BUffer
+content, err := ioutil.ReadAll(body)
+
+// 处理图片内容
+
+```
+
+### get
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.get.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp"
+)
+
+
+getter := QRCode{
+    Path:      "mock/path",
+    Width:     430,
+    AutoColor: true,
+    LineColor: Color{"r", "g", "b"},
+    IsHyaline: true,
+}
+
+body, res, err := getter.Get("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+defer body.Close()
+
+// 处理 body 内的 BUffer
+content, err := ioutil.ReadAll(body)
+
+// 处理图片内容
+
+```
+
+### getUnlimited
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.getUnlimited.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp"
+)
+
+
+getter :=  UnlimitedQRCode{
+    Scene:     "mock-scene-data",
+    Page:      "mock/page",
+    Width:     430,
+    AutoColor: true,
+    LineColor: Color{"r", "g", "b"},
+    IsHyaline: true,
+}
+
+body, res, err := getter.Get("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+defer body.Close()
+
+// 处理 body 内的 BUffer
+content, err := ioutil.ReadAll(body)
+
+// 处理图片内容
 
 ```
 
