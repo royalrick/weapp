@@ -57,6 +57,10 @@ go get -u github.com/medivhzhan/weapp
   - [createQRCode](#createQRCode)
   - [get](#get)
   - [getUnlimited](#getUnlimited)
+- [内容安全](#内容安全)
+  - [imgSecCheck](#imgSecCheck)
+  - [mediaCheckAsync](#mediaCheckAsync)
+  - [msgSecCheck](#msgSecCheck)
 
 ---
 
@@ -467,17 +471,17 @@ import "github.com/medivhzhan/weapp"
 
 
 // 文本消息
-msg := CSMsgText{
+msg := weapp.CSMsgText{
     Content: "mock-content",
 },
 // 或者
 // 图片消息
-msg := CSMsgImage{
+msg := weapp.CSMsgImage{
     MediaID: "mock-media-id",
 },
 // 或者
 // 链接消息
-msg := CSMsgLink{
+msg := weapp.CSMsgLink{
     Title:       "mock-title",
     Description: "mock-description",
     URL:         "mock-url",
@@ -485,7 +489,7 @@ msg := CSMsgLink{
 },
 // 或者
 // 小程序卡片消息
-msg := CSMsgMPCard{
+msg := weapp.CSMsgMPCard{
     Title:        "mock-title",
     PagePath:     "mock-page-path",
     ThumbMediaID: "mock-thumb-media-id",
@@ -633,7 +637,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-sender := TempMsgSender{
+sender := weapp.TempMsgSender{
     ToUser:     "mock-open-id",
     TemplateID: "mock-template-id",
     Page:       "mock/page?foo=bar",
@@ -672,7 +676,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-sender := UniformMsgSender{
+sender := weapp.UniformMsgSender{
     ToUser: "mock-open-id",
     UniformMPMsg: UniformMPMsg{
         TemplateID: "mock-template-id",
@@ -745,7 +749,7 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp"
 
 
-setter := UpdatableMsgSetter{
+setter := weapp.UpdatableMsgSetter{
     "mock-activity-id",
     UpdatableMsgJoining,
     UpdatableMsgTempInfo{
@@ -787,7 +791,7 @@ import (
 )
 
 
-creator := QRCodeCreator{
+creator := weapp.QRCodeCreator{
     Path:  "mock/path",
     Width: 430,
 }
@@ -823,7 +827,7 @@ import (
 )
 
 
-getter := QRCode{
+getter := weapp.QRCode{
     Path:      "mock/path",
     Width:     430,
     AutoColor: true,
@@ -862,7 +866,7 @@ import (
 )
 
 
-getter :=  UnlimitedQRCode{
+getter :=  weapp.UnlimitedQRCode{
     Scene:     "mock-scene-data",
     Page:      "mock/page",
     Width:     430,
@@ -887,6 +891,103 @@ defer body.Close()
 content, err := ioutil.ReadAll(body)
 
 // 处理图片内容
+
+```
+
+---
+
+## 内容安全
+
+### imgSecCheck
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.imgSecCheck.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.IMGSecCheck("mock-access-token", "local-filename")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### mediaCheckAsync
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.mediaCheckAsync.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.MediaCheckAsync("access-token", "image-url", weapp.MediaTypeImage)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+// 接收并处理异步结果
+srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+    if mix.MsgType != MsgEvent {
+        if mix.Event != EventAsyncMediaCheck {
+            if mix.TraceID == res.TraceID {
+
+                fmt.Printf("返回结果: %#v", mix)
+                return true
+            }
+        }
+    }
+
+    return false
+})
+if err != nil {
+     // 处理错误
+    return
+}
+
+if err := srv.HandleRequest(w, r); err != nil {
+     // 处理错误
+    return
+}
+
+```
+
+### msgSecCheck
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.msgSecCheck.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.MSGSecCheck("access-token", "message-content")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
 
 ```
 

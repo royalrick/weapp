@@ -1,59 +1,25 @@
 package weapp
 
-import (
-	"net/http"
-)
-
 // 检测地址
 const (
-	apiCheckImg   = "/wxa/img_sec_check"
-	apiCheckMsg   = "/wxa/msg_sec_check"
-	apiCheckMedia = "/wxa/media_check_async"
+	apiIMGSecCheck     = "/wxa/img_sec_check"
+	apiMSGSecCheck     = "/wxa/msg_sec_check"
+	apiMediaCheckAsync = "/wxa/media_check_async"
 )
-
-// IMGSecCheckByURL 网络图片检测
-// 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
-//
-// imgURL 要检测的图片网络路径
-// token 接口调用凭证(access_token)
-func IMGSecCheckByURL(imgURL, token string) (*CommonError, error) {
-	api := baseURL + apiCheckImg
-	return imgSecCheckByURL(imgURL, token, api)
-}
-
-func imgSecCheckByURL(imgURL, token, api string) (*CommonError, error) {
-	resp, err := http.Get(imgURL)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	url, err := tokenAPI(api, token)
-	if err != nil {
-		return nil, err
-	}
-
-	res := new(CommonError)
-	if err := postForm(url, "media", "filename", resp.Body, res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
 
 // IMGSecCheck 本地图片检测
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api/imgSecCheck.html
 //
 // filename 要检测的图片本地路径
 // token 接口调用凭证(access_token)
-func IMGSecCheck(filename, token string) (*CommonError, error) {
-	api := baseURL + apiCheckImg
+func IMGSecCheck(token, filename string) (*CommonError, error) {
+	api := baseURL + apiIMGSecCheck
 	return imgSecCheck(filename, token, api)
 }
 
-func imgSecCheck(filename, token, api string) (*CommonError, error) {
+func imgSecCheck(api, token, filename string) (*CommonError, error) {
 
-	url, err := tokenAPI(baseURL+apiCheckImg, token)
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -71,8 +37,13 @@ func imgSecCheck(filename, token, api string) (*CommonError, error) {
 //
 // content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // token 接口调用凭证(access_token)
-func MSGSecCheck(content, token string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiCheckMsg, token)
+func MSGSecCheck(token, content string) (*CommonError, error) {
+	api := baseURL + apiMSGSecCheck
+	return msgSecCheck(api, token, content)
+}
+
+func msgSecCheck(api, token, content string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -82,7 +53,7 @@ func MSGSecCheck(content, token string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err = postJSON(api, params, res); err != nil {
+	if err = postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -102,15 +73,20 @@ const (
 // CheckMediaResponse 异步校验图片/音频返回数据
 type CheckMediaResponse struct {
 	CommonError
-	TranceID string `json:"trace_id"`
+	TraceID string `json:"trace_id"`
 }
 
 // MediaCheckAsync 异步校验图片/音频是否含有违法违规内容。
 //
 // mediaURL 要检测的多媒体url
 // mediaType 接口调用凭证(access_token)
-func MediaCheckAsync(mediaURL string, mediaType MediaType, token string) (*CheckMediaResponse, error) {
-	api, err := tokenAPI(baseURL+apiCheckMedia, token)
+func MediaCheckAsync(token, mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
+	api := baseURL + apiMediaCheckAsync
+	return mediaCheckAsync(api, token, mediaURL, mediaType)
+}
+
+func mediaCheckAsync(api, token, mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +97,7 @@ func MediaCheckAsync(mediaURL string, mediaType MediaType, token string) (*Check
 	}
 
 	res := new(CheckMediaResponse)
-	if err = postJSON(api, params, res); err != nil {
+	if err = postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 

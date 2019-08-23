@@ -11,12 +11,6 @@ type Image struct {
 	MediaID string `json:"MediaId,omitempty" xml:"MediaId,omitempty"`
 }
 
-// SessionEvent 会话事件
-type SessionEvent struct {
-	Event       SessionEventType `json:"Event,omitempty" xml:"Event,omitempty"`
-	SessionFrom string           `json:"SessionFrom,omitempty" xml:"SessionFrom,omitempty"`
-}
-
 // Card 接收的卡片消息
 type Card struct {
 	Title        string `json:"Title,omitempty" xml:"Title,omitempty"`               // 标题

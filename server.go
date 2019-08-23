@@ -26,14 +26,14 @@ const (
 	MsgEvent         = "event"           // 事件类型
 )
 
-// SessionEventType 事件类型
-type SessionEventType = string
+// EventType 事件类型
+type EventType = string
 
 // 所有事件类型
 const (
-	EventUserEntry       SessionEventType = "user_enter_tempsession" // 用户进入临时会话状态
-	EventGetQuota                         = "get_quota"              // 查询商户余额
-	EventAsyncMediaCheck                  = "wxa_media_check"        // 异步校验图片/音频
+	EventUserEntry       EventType = "user_enter_tempsession" // 用户进入临时会话状态
+	EventGetQuota                  = "get_quota"              // 查询商户余额
+	EventAsyncMediaCheck           = "wxa_media_check"        // 异步校验图片/音频
 )
 
 // EncryptedMsgResponse 接收的的加密消息格式
@@ -54,15 +54,14 @@ type EncryptedMsgRequest struct {
 
 // Mixture 混合消息体
 type Mixture struct {
-	XMLName      xml.Name `xml:"xml" json:"-"`
-	MsgID        int      `json:"MsgId" xml:"MsgId"`               // 消息 ID
-	ToUserName   string   `json:"ToUserName" xml:"ToUserName"`     // 小程序的原始ID
-	FromUserName string   `json:"FromUserName" xml:"FromUserName"` // 发送者的 openID | 平台推送服务UserName
-	CreateTime   uint64   `json:"CreateTime" xml:"CreateTime"`     // 消息创建时间(整型）
-	MsgType      MsgType  `json:"MsgType" xml:"MsgType"`           // 消息类型
-
-	Event SessionEvent `json:"event,omitempty" xml:"event,omitempty"` // 事件类型
-
+	XMLName      xml.Name  `xml:"xml" json:"-"`
+	MsgID        int       `json:"MsgId" xml:"MsgId"`               // 消息 ID
+	ToUserName   string    `json:"ToUserName" xml:"ToUserName"`     // 小程序的原始ID
+	FromUserName string    `json:"FromUserName" xml:"FromUserName"` // 发送者的 openID | 平台推送服务UserName
+	CreateTime   uint64    `json:"CreateTime" xml:"CreateTime"`     // 消息创建时间(整型）
+	MsgType      MsgType   `json:"MsgType" xml:"MsgType"`           // 消息类型
+	Event        EventType `json:"Event" xml:"Event"`               // 事件类型
+	SessionFrom  string    `json:"SessionFrom" xml:"SessionFrom"`
 	Text
 	Card
 	Image
@@ -70,6 +69,9 @@ type Mixture struct {
 
 	RawData map[string]interface{} `json:"-" xml:"-"` // 原始数据
 }
+
+// Serverhandler 服务处理器
+type Serverhandler = func(*Mixture) bool
 
 // Server 微信通知服务处理器
 type Server struct {
@@ -79,11 +81,7 @@ type Server struct {
 	token    string // 微信服务器验证令牌
 	aesKey   []byte // base64 解码后的消息加密密钥
 	validate bool   // 是否验证请求来自微信服务器
-
-	TextMessageHandler  func(Text) bool     // 文本消息处理器
-	CardMessageHandler  func(Card) bool     // 卡片消息处理器
-	ImageMessageHandler func(Image) bool    // 图片消息处理器
-	EventHandler        func(*Mixture) bool // 事件处理器
+	Handler  Serverhandler
 }
 
 type dataType = string
@@ -94,7 +92,7 @@ const (
 )
 
 // NewServer 返回经过初始化的Server
-func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Server, error) {
+func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool, handler Serverhandler) (*Server, error) {
 
 	key, err := base64.RawStdEncoding.DecodeString(aesKey)
 	if err != nil {
@@ -108,6 +106,7 @@ func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Serv
 		token:    token,
 		aesKey:   key,
 		validate: validate,
+		Handler:  handler,
 	}
 
 	return &server, nil
@@ -182,42 +181,7 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 			return err
 		}
 
-		ok := false // 是否已经收到消息
-		switch mix.MsgType {
-
-		case MsgText: // 文本消息
-			if srv.TextMessageHandler != nil {
-				msg := mix.Text
-				ok = srv.TextMessageHandler(msg)
-			}
-
-		case MsgImg: // 图片消息
-			if srv.ImageMessageHandler != nil {
-				msg := mix.Image
-				ok = srv.ImageMessageHandler(msg)
-			}
-
-		case MsgCard: // 卡片消息
-			if srv.CardMessageHandler != nil {
-				msg := mix.Card
-				ok = srv.CardMessageHandler(msg)
-			}
-
-		case MsgLink: // 图文链接消息
-			// TODO: ...
-
-		case MsgVideo: // 视频消息
-			// TODO: ...
-
-		case MsgEvent: // 事件
-			if srv.EventHandler != nil {
-				ok = srv.EventHandler(mix)
-			}
-
-		default:
-			return errors.New("invalid message type: " + mix.MsgType)
-		}
-
+		ok := srv.Handler(mix)
 		if ok {
 			_, err := io.WriteString(w, "SUCCESS")
 			if err != nil {
