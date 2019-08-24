@@ -61,6 +61,11 @@ go get -u github.com/medivhzhan/weapp
   - [imgSecCheck](#imgSecCheck)
   - [mediaCheckAsync](#mediaCheckAsync)
   - [msgSecCheck](#msgSecCheck)
+- [OCR](#OCR)
+  - [bankcard](#bankcard)
+  - [driverLicense](#driverLicense)
+  - [idcard](#idcard)
+  - [vehicleLicense](#vehicleLicense)
 
 ---
 
@@ -981,6 +986,114 @@ if err != nil {
     // 处理一般错误信息
     return
 }
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## OCR
+
+### bankcard
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.bankcard.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.BankCardByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+// 或者
+res, err := weapp.BankCardByFile("access-token", "file-path", weapp.RecognizeModeScan)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### driverLicense
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.driverLicense.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.DriverLicenseByURL("access-token", "card-url")
+// 或者
+res, err := weapp.DriverLicenseByFile("access-token", "file-path")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### idcard
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.idcard.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.IDCardByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+// 或者
+res, err := weapp.IDCardByFile("access-token", "file-path", weapp.RecognizeModeScan)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### vehicleLicense
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.vehicleLicense.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.VehicleLicenseByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+// 或者
+res, err := weapp.VehicleLicenseByFile("access-token", "file-path", weapp.RecognizeModeScan)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息

@@ -1,7 +1,6 @@
 package weapp
 
 type (
-	any    = interface{}
 	object = map[string]interface{}
 )
 

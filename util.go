@@ -86,7 +86,7 @@ func getJSON(url string, response interface{}) error {
 
 // postJSONWithBody return with http body.
 func postJSONWithBody(url string, params interface{}) (*http.Response, error) {
-	var reader *bytes.Reader
+	reader := new(bytes.Reader)
 	if params != nil {
 		raw, err := json.Marshal(params)
 		if err != nil {
