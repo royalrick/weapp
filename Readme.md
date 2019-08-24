@@ -66,6 +66,8 @@ go get -u github.com/medivhzhan/weapp
   - [driverLicense](#driverLicense)
   - [idcard](#idcard)
   - [vehicleLicense](#vehicleLicense)
+- [生物认证](#生物认证)
+  - [verifySignature](#verifySignature)
 
 ---
 
@@ -1089,6 +1091,34 @@ import "github.com/medivhzhan/weapp"
 res, err := weapp.VehicleLicenseByURL("access-token", "card-url", weapp.RecognizeModePhoto)
 // 或者
 res, err := weapp.VehicleLicenseByFile("access-token", "file-path", weapp.RecognizeModeScan)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 生物认证
+
+### verifySignature
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/soter/soter.verifySignature.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.VerifySignature("access-token", "open-id", "data", "signature")
 if err != nil {
     // 处理一般错误信息
     return
