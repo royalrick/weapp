@@ -68,6 +68,9 @@ go get -u github.com/medivhzhan/weapp
   - [imgSecCheck](#imgSecCheck)
   - [mediaCheckAsync](#mediaCheckAsync)
   - [msgSecCheck](#msgSecCheck)
+- [图像处理](#图像处理)
+  - [scanQRCode](#scanQRCode)
+  - [superResolution](#superResolution)
 - [OCR](#OCR)
   - [bankcard](#bankcard)
   - [driverLicense](#driverLicense)
@@ -1114,6 +1117,62 @@ if err != nil {
     // 处理一般错误信息
     return
 }
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 图像处理
+
+### scanQRCode
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.scanQRCode.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.scanQRCode("access-token", "file-path")
+// 或者
+res, err := weapp.scanQRCodeByURL("access-token", "qr-code-url")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### superResolution
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.superresolution.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.SuperResolution("access-token", "file-path")
+// 或者
+res, err := weapp.SuperResolutionByURL("access-token", "img-url")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
