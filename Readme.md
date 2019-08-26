@@ -4,7 +4,6 @@
 
 - [1.x 版本入口](https://github.com/medivhzhan/weapp/tree/v1)
 - 2.0 版本开始支付相关内容会分离到一个单独的包。
-- 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便您一一对照查找相关内容。
 - 目前 v2 还在测试阶段，请勿用于生产环境。
 
 ## 获取代码
@@ -16,6 +15,8 @@ go get -u github.com/medivhzhan/weapp
 ```
 
 ## `目录`
+
+> 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便您一一对照查找相关内容。
 
 - [用户登录](#用户登录)
   - [code2Session](#code2Session)
@@ -53,6 +54,12 @@ go get -u github.com/medivhzhan/weapp
 - [动态消息](#动态消息)
   - [createActivityId](#createActivityId)
   - [setUpdatableMsg](#setUpdatableMsg)
+- [插件管理](#插件管理)
+  - [applyPlugin](#applyPlugin)
+  - [getPluginDevApplyList](#getPluginDevApplyList)
+  - [getPluginList](#getPluginList)
+  - [setDevPluginApplyStatus](#setDevPluginApplyStatus)
+  - [unbindPlugin](#unbindPlugin)
 - [小程序码](#小程序码)
   - [createQRCode](#createQRCode)
   - [get](#get)
@@ -768,6 +775,125 @@ setter := weapp.UpdatableMsgSetter{
 }
 
 res, err := setter.Set("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 插件管理
+
+### applyPlugin
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/plugin-management/pluginManager.applyPlugin.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.ApplyPlugin("access-token", "plugin-app-id", "reason")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getPluginDevApplyList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/plugin-management/pluginManager.getPluginDevApplyList.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetPluginDevApplyList("mock-access-token", 1, 2)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getPluginList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/plugin-management/pluginManager.getPluginList.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetPluginList("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### setDevPluginApplyStatus
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/plugin-management/pluginManager.setDevPluginApplyStatus.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.SetDevPluginApplyStatus("access-token", "plugin-app-id", "reason", weapp.DevAgree)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### unbindPlugin
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/plugin-management/pluginManager.unbindPlugin.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.UnbindPlugin("access-token", "plugin-app-id")
 if err != nil {
     // 处理一般错误信息
     return
