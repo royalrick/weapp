@@ -42,18 +42,18 @@ func bankCardByURL(api, token, cardURL string, mode RecognizeMode) (*BankCardRes
 	return res, nil
 }
 
-// BankCardByFile 通过文件识别银行卡
+// BankCard 通过文件识别银行卡
 // 接口限制: 此接口需要提供对应小程序/公众号 appid，开通权限后方可调用。
 //
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func BankCardByFile(token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
+func BankCard(token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
 	api := baseURL + apiDriving
-	return bankCardByFile(api, token, filename, mode)
+	return bankCard(api, token, filename, mode)
 }
 
-func bankCardByFile(api, token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
+func bankCard(api, token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
 	res := new(BankCardResponse)
 	err := ocrByFile(api, token, filename, mode, res)
 	if err != nil {
@@ -103,18 +103,18 @@ func driverLicenseByURL(api, token, licenseURL string) (*DrivingLicenseResponse,
 	return res, nil
 }
 
-// DriverLicenseByFile 通过文件识别行驶证
+// DriverLicense 通过文件识别行驶证
 // 接口限制: 此接口需要提供对应小程序/公众号 appid，开通权限后方可调用。
 //
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func DriverLicenseByFile(token, filename string) (*DrivingLicenseResponse, error) {
+func DriverLicense(token, filename string) (*DrivingLicenseResponse, error) {
 	api := baseURL + apiDriving
-	return driverLicenseByFile(api, token, filename)
+	return driverLicense(api, token, filename)
 }
 
-func driverLicenseByFile(api, token, filename string) (*DrivingLicenseResponse, error) {
+func driverLicense(api, token, filename string) (*DrivingLicenseResponse, error) {
 	res := new(DrivingLicenseResponse)
 	err := ocrByFile(api, token, filename, "", res)
 	if err != nil {
@@ -148,18 +148,18 @@ func idCardByURL(api, token, cardURL string, mode RecognizeMode) (*IDCardRespons
 	return res, nil
 }
 
-// IDCardByFile 通过文件识别身份证
+// IDCard 通过文件识别身份证
 // 接口限制: 此接口需要提供对应小程序/公众号 appid，开通权限后方可调用。
 //
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func IDCardByFile(token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
+func IDCard(token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
 	api := baseURL + apiIDCard
-	return idCardByFile(api, token, filename, mode)
+	return idCard(api, token, filename, mode)
 }
 
-func idCardByFile(api, token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
+func idCard(api, token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
 	res := new(IDCardResponse)
 	err := ocrByFile(api, token, filename, mode, res)
 	if err != nil {
@@ -204,13 +204,13 @@ func vehicleLicenseByURL(api, token, cardURL string, mode RecognizeMode) (*Vehic
 	return res, nil
 }
 
-// VehicleLicenseByFile 通过文件识别行驶证
-func VehicleLicenseByFile(token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+// VehicleLicense 通过文件识别行驶证
+func VehicleLicense(token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	api := baseURL + apiDriving
-	return vehicleLicenseByFile(api, token, filename, mode)
+	return vehicleLicense(api, token, filename, mode)
 }
 
-func vehicleLicenseByFile(api, token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+func vehicleLicense(api, token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	res := new(VehicleLicenseResponse)
 	err := ocrByFile(api, token, filename, mode, res)
 	if err != nil {

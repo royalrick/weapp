@@ -1195,9 +1195,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.BankCardByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+res, err := weapp.BankCard("access-token", "file-path", weapp.RecognizeModeScan)
 // 或者
-res, err := weapp.BankCardByFile("access-token", "file-path", weapp.RecognizeModeScan)
+res, err := weapp.BankCardByURL("access-token", "card-url", weapp.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1221,9 +1221,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.DriverLicenseByURL("access-token", "card-url")
+res, err := weapp.DriverLicense("access-token", "file-path")
 // 或者
-res, err := weapp.DriverLicenseByFile("access-token", "file-path")
+res, err := weapp.DriverLicenseByURL("access-token", "card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1249,7 +1249,7 @@ import "github.com/medivhzhan/weapp"
 
 res, err := weapp.IDCardByURL("access-token", "card-url", weapp.RecognizeModePhoto)
 // 或者
-res, err := weapp.IDCardByFile("access-token", "file-path", weapp.RecognizeModeScan)
+res, err := weapp.IDCard("access-token", "file-path", weapp.RecognizeModeScan)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1273,9 +1273,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.VehicleLicenseByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+res, err := weapp.VehicleLicense("access-token", "file-path", weapp.RecognizeModeScan)
 // 或者
-res, err := weapp.VehicleLicenseByFile("access-token", "file-path", weapp.RecognizeModeScan)
+res, err := weapp.VehicleLicenseByURL("access-token", "card-url", weapp.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return

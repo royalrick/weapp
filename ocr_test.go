@@ -79,7 +79,7 @@ func TestBankCardByURL(t *testing.T) {
 	}
 }
 
-func TestBankCardByFile(t *testing.T) {
+func TestBankCard(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
@@ -120,11 +120,11 @@ func TestBankCardByFile(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := bankCardByFile(ts.URL+apiBankcard, "mock-access-token", testIMGName, RecognizeModePhoto)
+	_, err := bankCard(ts.URL+apiBankcard, "mock-access-token", testIMGName, RecognizeModePhoto)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = bankCardByFile(ts.URL+apiBankcard, "mock-access-token", testIMGName, RecognizeModeScan)
+	_, err = bankCard(ts.URL+apiBankcard, "mock-access-token", testIMGName, RecognizeModeScan)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -204,7 +204,7 @@ func TestDriverLicenseByURL(t *testing.T) {
 	}
 }
 
-func TestDriverLicenseByFile(t *testing.T) {
+func TestDriverLicense(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
@@ -251,7 +251,7 @@ func TestDriverLicenseByFile(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := driverLicenseByFile(ts.URL+apiDriving, "mock-access-token", testIMGName)
+	_, err := driverLicense(ts.URL+apiDriving, "mock-access-token", testIMGName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -327,7 +327,7 @@ func TestIDCardByURL(t *testing.T) {
 	}
 }
 
-func TestIDCardByFile(t *testing.T) {
+func TestIDCard(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
@@ -368,11 +368,11 @@ func TestIDCardByFile(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := idCardByFile(ts.URL+apiIDCard, "mock-access-token", testIMGName, RecognizeModePhoto)
+	_, err := idCard(ts.URL+apiIDCard, "mock-access-token", testIMGName, RecognizeModePhoto)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = idCardByFile(ts.URL+apiIDCard, "mock-access-token", testIMGName, RecognizeModeScan)
+	_, err = idCard(ts.URL+apiIDCard, "mock-access-token", testIMGName, RecognizeModeScan)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -458,7 +458,7 @@ func TestVehicleLicenseByURL(t *testing.T) {
 	}
 }
 
-func TestVehicleLicenseByFile(t *testing.T) {
+func TestVehicleLicense(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
@@ -509,11 +509,11 @@ func TestVehicleLicenseByFile(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := vehicleLicenseByFile(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModePhoto)
+	_, err := vehicleLicense(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModePhoto)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = vehicleLicenseByFile(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModeScan)
+	_, err = vehicleLicense(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModeScan)
 	if err != nil {
 		t.Fatal(err)
 	}
