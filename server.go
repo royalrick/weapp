@@ -27,13 +27,14 @@ const (
 )
 
 // EventType 事件类型
-type EventType = string
+type EventType string
 
 // 所有事件类型
 const (
-	EventUserEntry       EventType = "user_enter_tempsession" // 用户进入临时会话状态
-	EventGetQuota                  = "get_quota"              // 查询商户余额
-	EventAsyncMediaCheck           = "wxa_media_check"        // 异步校验图片/音频
+	EventUserEntry             EventType = "user_enter_tempsession"    // 用户进入临时会话状态
+	EventGetQuota                        = "get_quota"                 // 查询商户余额
+	EventAsyncMediaCheck                 = "wxa_media_check"           // 异步校验图片/音频
+	EventAddNearbyPoiAuditInfo           = "add_nearby_poi_audit_info" // 附近小程序添加地点审核状态通知
 )
 
 // EncryptedMsgResponse 接收的的加密消息格式
@@ -66,8 +67,7 @@ type Mixture struct {
 	Card
 	Image
 	AsyncMedia
-
-	RawData map[string]interface{} `json:"-" xml:"-"` // 原始数据
+	AddNearbyPoiAuditInfo
 }
 
 // Serverhandler 服务处理器
@@ -174,10 +174,6 @@ func (srv *Server) HandleRequest(w http.ResponseWriter, r *http.Request) error {
 			raw = body[20 : 20+length]
 		}
 		if err := unmarshal(raw, tp, mix); err != nil {
-			return err
-		}
-
-		if err := unmarshal(raw, tp, &mix.RawData); err != nil {
 			return err
 		}
 

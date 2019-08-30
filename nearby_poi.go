@@ -7,14 +7,14 @@ import (
 
 // apis
 const (
-	apiAddPosition          = "/wxa/addnearbypoi"
-	apiDeletePosition       = "/wxa/delnearbypoi"
-	apiGetPositionList      = "/wxa/getnearbypoilist"
-	apiSetPostionShowStatus = "/wxa/setnearbypoishowstatus"
+	apiAddNearbyPoi           = "/wxa/addnearbypoi"
+	apiDeleteNearbyPoi        = "/wxa/delnearbypoi"
+	apiGetNearbyPoiList       = "/wxa/getnearbypoilist"
+	apiSetNearbyPoiShowStatus = "/wxa/setnearbypoishowstatus"
 )
 
-// NearbyPosition 附近地点
-type NearbyPosition struct {
+// NearbyPoi 附近地点
+type NearbyPoi struct {
 	PicList           PicList      `json:"pic_list"`           // 门店图片，最多9张，最少1张，上传门店图片如门店外景、环境设施、商品服务等，图片将展示在微信客户端的门店页。图片链接通过文档https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729中的《上传图文消息内的图片获取URL》接口获取。必填，文件格式为bmp、png、jpeg、jpg或gif，大小不超过5M pic_list是字符串，内容是一个json！
 	ServiceInfos      ServiceInfos `json:"service_infos"`      // 必服务标签列表 选填，需要填写服务标签ID、APPID、对应服务落地页的path路径，详细字段格式见下方示例
 	StoreName         string       `json:"store_name"`         // 门店名字 必填，门店名称需按照所选地理位置自动拉取腾讯地图门店名称，不可修改，如需修改请重现选择地图地点或重新创建地点
@@ -49,12 +49,12 @@ type ServiceInfo struct {
 // KFInfo // 客服信息
 type KFInfo struct {
 	OpenKF    bool   `json:"open_kf"`
-	KDHeading string `json:"kf_headimg"`
+	KFHeading string `json:"kf_headimg"`
 	KFName    string `json:"kf_name"`
 }
 
-// PositionResponse response of add position.
-type PositionResponse struct {
+// AddNearbyPoiResponse response of add position.
+type AddNearbyPoiResponse struct {
 	CommonError
 	Data struct {
 		AuditID           string `json:"audit_id"`           //	审核单 ID
@@ -64,8 +64,13 @@ type PositionResponse struct {
 }
 
 // Add 添加地点
-// accessToken  接口调用凭证
-func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
+// token  接口调用凭证
+func (p *NearbyPoi) Add(token string) (*AddNearbyPoiResponse, error) {
+	api := baseURL + apiAddNearbyPoi
+	return p.add(api, token)
+}
+
+func (p *NearbyPoi) add(api, token string) (*AddNearbyPoiResponse, error) {
 
 	pisList, err := json.Marshal(p.PicList)
 	if err != nil {
@@ -82,7 +87,7 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 		return nil, fmt.Errorf("failed to marshal customer service staff info list to json: %v", err)
 	}
 
-	api, err := tokenAPI(baseURL+apiAddPosition, accessToken)
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -101,19 +106,24 @@ func (p *NearbyPosition) Add(accessToken string) (*PositionResponse, error) {
 		"poi_id":             p.PoiID,
 	}
 
-	res := new(PositionResponse)
-	if err := postJSON(api, params, res); err != nil {
+	res := new(AddNearbyPoiResponse)
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// DeleteNearbyPosition 删除地点
-// accessToken  接口调用凭证
+// DeleteNearbyPoi 删除地点
+// token  接口调用凭证
 // id  附近地点 ID
-func DeleteNearbyPosition(accessToken, id string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiDeletePosition, accessToken)
+func DeleteNearbyPoi(token, id string) (*CommonError, error) {
+	api := baseURL + apiDeleteNearbyPoi
+	return deleteNearbyPoi(api, token, id)
+}
+
+func deleteNearbyPoi(api, token, id string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -123,7 +133,7 @@ func DeleteNearbyPosition(accessToken, id string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -145,48 +155,64 @@ type PositionList struct {
 				DisplayStatus        int    `json:"display_status"`        // 地点展示在附近状态
 				RefuseReason         string `json:"refuse_reason"`         // 审核失败原因，audit_status=4 时返回
 			} `json:"poi_list"` // 地址列表
-		} `json:"data"` // 地址列表的 JSON 格式字符串
+		} `json:"-"`
+		RawData string `json:"data"` // 地址列表的 JSON 格式字符串
 	} `json:"data"` // 返回数据
 }
 
-// GetList 查看地点列表
-// accessToken  接口调用凭证
+// GetNearbyPoiList 查看地点列表
+// token  接口调用凭证
 // page  起始页id（从1开始计数）
-// pageRows  每页展示个数（最多1000个）
-func GetList(accessToken string, page, pageRows uint) (*PositionList, error) {
-	api, err := tokenAPI(baseURL+apiGetPositionList, accessToken)
+// rows  每页展示个数（最多1000个）
+func GetNearbyPoiList(token string, page, rows uint) (*PositionList, error) {
+	api := baseURL + apiGetNearbyPoiList
+	return getNearbyPoiList(api, token, page, rows)
+}
+
+func getNearbyPoiList(api, token string, page, rows uint) (*PositionList, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	params := requestParams{
 		"page":      page,
-		"page_rows": pageRows,
+		"page_rows": rows,
 	}
 
 	res := new(PositionList)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
+		return nil, err
+	}
+
+	err = json.Unmarshal([]byte(res.Data.RawData), &res.Data.Data)
+	if err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// ShowStatus 展示状态
-type ShowStatus = int8
+// NearbyPoiShowStatus 展示状态
+type NearbyPoiShowStatus int8
 
 // 所有展示状态
 const (
-	Hide ShowStatus = 0 // 不展示
-	Show            = 1 // 展示
+	HideNearbyPoi NearbyPoiShowStatus = iota // 不展示
+	ShowNearbyPoi                            // 展示
 )
 
-// SetShowStatus 展示/取消展示附近小程序
-// accessToken  接口调用凭证
+// SetNearbyPoiShowStatus 展示/取消展示附近小程序
+// token  接口调用凭证
 // poiID  附近地点 ID
 // status  是否展示
-func SetShowStatus(accessToken, poiID string, status ShowStatus) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiSetPostionShowStatus, accessToken)
+func SetNearbyPoiShowStatus(token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+	api := baseURL + apiSetNearbyPoiShowStatus
+	return setNearbyPoiShowStatus(api, token, poiID, status)
+}
+
+func setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -197,7 +223,7 @@ func SetShowStatus(accessToken, poiID string, status ShowStatus) (*CommonError, 
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, params, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 

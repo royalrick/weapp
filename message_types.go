@@ -28,3 +28,11 @@ type AsyncMedia struct {
 	TraceID       string `json:"trace_id"`        // 任务id
 	StatusCode    int    `json:"status_code"`     // 默认为：0，4294966288(-1008)为链接无法下载
 }
+
+// AddNearbyPoiAuditInfo 附近小程序添加地点审核状态通知数据
+type AddNearbyPoiAuditInfo struct {
+	AuditID uint   `xml:"audit_id"` // 审核单id
+	Status  uint8  `xml:"status"`   // 审核状态（3：审核通过，2：审核失败）
+	Reason  string `xml:"reason"`   // 如果status为2，会返回审核失败的原因
+	PoiID   uint   `xml:"poi_id"`
+}

@@ -18,7 +18,7 @@ go get -u github.com/medivhzhan/weapp
 
 > 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便您一一对照查找相关内容。
 
-- [用户登录](#用户登录)
+- [登录](#登录)
   - [code2Session](#code2Session)
 - [用户信息](#用户信息)
   - [getPaidUnionId](#getPaidUnionId)
@@ -60,6 +60,11 @@ go get -u github.com/medivhzhan/weapp
   - [getPluginList](#getPluginList)
   - [setDevPluginApplyStatus](#setDevPluginApplyStatus)
   - [unbindPlugin](#unbindPlugin)
+- [附近的小程序](#附近的小程序)
+  - [addNearbyPoi](#addNearbyPoi)
+  - [deleteNearbyPoi](#deleteNearbyPoi)
+  - [getNearbyPoiList](#getNearbyPoiList)
+  - [setNearbyPoiShowStatus](#setNearbyPoiShowStatus)
 - [小程序码](#小程序码)
   - [createQRCode](#createQRCode)
   - [get](#get)
@@ -81,7 +86,7 @@ go get -u github.com/medivhzhan/weapp
 
 ---
 
-## 用户登录
+## 登录
 
 ### code2Session
 
@@ -913,6 +918,143 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
+## 附近的小程序
+
+### addNearbyPoi
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.add.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+poi := NearbyPoi{
+    PicList: PicList{[]string{"first-picture-url", "second-picture-url", "third-picture-url"}},
+    ServiceInfos: ServiceInfos{[]ServiceInfo{
+        ServiceInfo{1, 1, "name", "app-id", "path"},
+    }},
+    StoreName:         "store-name",
+    Hour:              "11:11-12:12",
+    Credential:        "credential",
+    Address:           "address",                         // 地址 必填
+    CompanyName:       "company-name",                    // 主体名字 必填
+    QualificationList: "qualification-list",              // 证明材料 必填 如果company_name和该小程序主体不一致，需要填qualification_list，详细规则见附近的小程序使用指南-如何证明门店的经营主体跟公众号或小程序帐号主体相关http://kf.qq.com/faq/170401MbUnim17040122m2qY.html
+    KFInfo:            KFInfo{true, "kf-head-img", "kf-name"}, // 客服信息 选填，可自定义服务头像与昵称，具体填写字段见下方示例kf_info pic_list是字符串，内容是一个json！
+    PoiID:             "poi-id",                          // 如果创建新的门店，poi_id字段为空 如果更新门店，poi_id参数则填对应门店的poi_id 选填
+}
+
+res, err := poi.Add("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+// 接收并处理异步结果
+srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+    if mix.MsgType != MsgEvent {
+        if mix.Event != weapp.EventAddNearbyPoiAuditInfo {
+            if mix.AuditID == res.Data.AuditID {
+
+                fmt.Printf("返回结果: %#v", mix)
+                return true
+            }
+        }
+    }
+
+    return false
+})
+if err != nil {
+     // 处理错误
+    return
+}
+
+if err := srv.HandleRequest(w, r); err != nil {
+     // 处理错误
+    return
+}
+
+```
+
+### deleteNearbyPoi
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.delete.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.DeleteNearbyPoi("access-token", "poi-id")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getNearbyPoiList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.getList.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetNearbyPoiList("access-token", 1, 10)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### setNearbyPoiShowStatus
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/nearby-poi/nearbyPoi.setShowStatus.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.SetNearbyPoiShowStatus("access-token", "poi-id", weapp.ShowNearbyPoi)
+// 或者
+res, err := weapp.SetNearbyPoiShowStatus("access-token", "poi-id", weapp.HideNearbyPoi)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
 ## 小程序码
 
 ### createQRCode
@@ -1081,7 +1223,7 @@ fmt.Printf("返回结果: %#v", res)
 // 接收并处理异步结果
 srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
     if mix.MsgType != MsgEvent {
-        if mix.Event != EventAsyncMediaCheck {
+        if mix.Event != weapp.EventAsyncMediaCheck {
             if mix.TraceID == res.TraceID {
 
                 fmt.Printf("返回结果: %#v", mix)
