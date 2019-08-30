@@ -930,8 +930,8 @@ import "github.com/medivhzhan/weapp"
 
 poi := NearbyPoi{
     PicList: PicList{[]string{"first-picture-url", "second-picture-url", "third-picture-url"}},
-    ServiceInfos: ServiceInfos{[]ServiceInfo{
-        ServiceInfo{1, 1, "name", "app-id", "path"},
+    ServiceInfos: weapp.ServiceInfos{[]weapp.ServiceInfo{
+        {1, 1, "name", "app-id", "path"},
     }},
     StoreName:         "store-name",
     Hour:              "11:11-12:12",
@@ -939,7 +939,7 @@ poi := NearbyPoi{
     Address:           "address",                         // 地址 必填
     CompanyName:       "company-name",                    // 主体名字 必填
     QualificationList: "qualification-list",              // 证明材料 必填 如果company_name和该小程序主体不一致，需要填qualification_list，详细规则见附近的小程序使用指南-如何证明门店的经营主体跟公众号或小程序帐号主体相关http://kf.qq.com/faq/170401MbUnim17040122m2qY.html
-    KFInfo:            KFInfo{true, "kf-head-img", "kf-name"}, // 客服信息 选填，可自定义服务头像与昵称，具体填写字段见下方示例kf_info pic_list是字符串，内容是一个json！
+    KFInfo:            weapp.KFInfo{true, "kf-head-img", "kf-name"}, // 客服信息 选填，可自定义服务头像与昵称，具体填写字段见下方示例kf_info pic_list是字符串，内容是一个json！
     PoiID:             "poi-id",                          // 如果创建新的门店，poi_id字段为空 如果更新门店，poi_id参数则填对应门店的poi_id 选填
 }
 
@@ -958,7 +958,7 @@ fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
 srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
-    if mix.MsgType != MsgEvent {
+    if mix.MsgType != weapp.MsgEvent {
         if mix.Event != weapp.EventAddNearbyPoiAuditInfo {
             if mix.AuditID == res.Data.AuditID {
 
@@ -1222,7 +1222,7 @@ fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
 srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
-    if mix.MsgType != MsgEvent {
+    if mix.MsgType != weapp.MsgEvent {
         if mix.Event != weapp.EventAsyncMediaCheck {
             if mix.TraceID == res.TraceID {
 

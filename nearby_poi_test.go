@@ -166,7 +166,7 @@ func TestAddNearbyPoi(t *testing.T) {
 	poi := NearbyPoi{
 		PicList: PicList{[]string{"first-mock-picture-url", "second-mock-picture-url", "third-mock-picture-url"}},
 		ServiceInfos: ServiceInfos{[]ServiceInfo{
-			ServiceInfo{1, 1, "mock-name", "mock-app-id", "mock-path"},
+			{1, 1, "mock-name", "mock-app-id", "mock-path"},
 		}},
 		StoreName:         "mock-store-name",
 		Hour:              "11:11-12:12",
