@@ -14,7 +14,12 @@ func TestAddNearbyPoi(t *testing.T) {
 	localServer := http.NewServeMux()
 	localServer.HandleFunc("/notify", func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
-		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		srv.HandleAddNearbyPoiAuditRequest(func(mix *AddNearbyPoiAuditResult) {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -46,13 +51,9 @@ func TestAddNearbyPoi(t *testing.T) {
 				t.Error("poi_id can not be zero")
 			}
 
-			return false
 		})
-		if err != nil {
-			t.Fatal(err)
-		}
 
-		if err := srv.HandleRequest(w, r); err != nil {
+		if err := srv.Serve(w, r); err != nil {
 			t.Fatal(err)
 		}
 	})

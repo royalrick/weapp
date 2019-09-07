@@ -60,7 +60,12 @@ func TestMediaCheckAsync(t *testing.T) {
 	localServer := http.NewServeMux()
 	localServer.HandleFunc("/notify", func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
-		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		srv.HandleMediaCheckAsyncRequest(func(mix *MediaCheckAsyncResult) {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -75,23 +80,19 @@ func TestMediaCheckAsync(t *testing.T) {
 				t.Error("Unexpected message type")
 			}
 
-			if mix.Event != EventAsyncMediaCheck {
+			if mix.Event != EventMediaCheckAsync {
 				t.Error("Unexpected message event")
 			}
-			if mix.AsyncMedia.AppID == "" {
+			if mix.AppID == "" {
 				t.Error("AppID can not be empty")
 			}
 			if mix.TraceID == "" {
 				t.Error("TraceID can not be empty")
 			}
 
-			return false
 		})
-		if err != nil {
-			t.Fatal(err)
-		}
 
-		if err := srv.HandleRequest(w, r); err != nil {
+		if err := srv.Serve(w, r); err != nil {
 			t.Fatal(err)
 		}
 	})

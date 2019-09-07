@@ -1,16 +1,17 @@
 package weapp
 
 const (
-	apiBindAccount    = "/cgi-bin/express/business/account/bind"
-	apiGetAllAccount  = "/cgi-bin/express/business/account/getall"
-	apiGetPath        = "/cgi-bin/express/business/path/get"
-	apiAddOrder       = "/cgi-bin/express/business/order/add"
-	apiCancelOrder    = "/cgi-bin/express/business/order/cancel"
-	apiGetAllDelivery = "/cgi-bin/express/business/delivery/getall"
-	apiGetOrder       = "/cgi-bin/express/business/order/get"
-	apiGetPrinter     = "/cgi-bin/express/business/printer/getall"
-	apiGetQuota       = "/cgi-bin/express/business/quota/get"
-	apiUpdatePrinter  = "/cgi-bin/express/business/printer/update"
+	apiBindAccount        = "/cgi-bin/express/business/account/bind"
+	apiGetAllAccount      = "/cgi-bin/express/business/account/getall"
+	apiGetExpressPath     = "/cgi-bin/express/business/path/get"
+	apiAddExpressOrder    = "/cgi-bin/express/business/order/add"
+	apiCancelExpressOrder = "/cgi-bin/express/business/order/cancel"
+	apiGetAllDelivery     = "/cgi-bin/express/business/delivery/getall"
+	apiGetExpressOrder    = "/cgi-bin/express/business/order/get"
+	apiGetPrinter         = "/cgi-bin/express/business/printer/getall"
+	apiGetQuota           = "/cgi-bin/express/business/quota/get"
+	apiUpdatePrinter      = "/cgi-bin/express/business/printer/update"
+	apiTestUpdateOrder    = "/cgi-bin/express/business/test_update_order"
 )
 
 // ExpressAccount 物流账号
@@ -32,15 +33,20 @@ const (
 )
 
 // Bind 绑定、解绑物流账号
-// accessToken 接口调用凭证
-func (ac *ExpressAccount) Bind(accessToken string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiBindAccount, accessToken)
+// token 接口调用凭证
+func (ea *ExpressAccount) Bind(token string) (*CommonError, error) {
+	api := baseURL + apiBindAccount
+	return ea.bind(api, token)
+}
+
+func (ea *ExpressAccount) bind(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, ac, res); err != nil {
+	if err := postJSON(url, ea, res); err != nil {
 		return nil, err
 	}
 
@@ -62,7 +68,6 @@ type AccountList struct {
 		RemarkContent   string     `json:"remark_content"`    // 	账号绑定时的备注内容（提交EMS审核需要)）
 		QuotaNum        uint       `json:"quota_num"`         // 	电子面单余额
 		QuotaUpdateTime uint       `json:"quota_update_time"` // 	电子面单余额更新时间
-
 	} `json:"list"` // 账号列表
 }
 
@@ -76,15 +81,20 @@ const (
 )
 
 // GetAllAccount 获取所有绑定的物流账号
-// accessToken 接口调用凭证
-func GetAllAccount(accessToken string) (*AccountList, error) {
-	api, err := tokenAPI(baseURL+apiGetAllAccount, accessToken)
+// token 接口调用凭证
+func GetAllAccount(token string) (*AccountList, error) {
+	api := baseURL + apiGetAllAccount
+	return getAllAccount(api, token)
+}
+
+func getAllAccount(api, token string) (*AccountList, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AccountList)
-	if err := postJSON(api, requestParams{}, res); err != nil {
+	if err := postJSON(url, requestParams{}, res); err != nil {
 		return nil, err
 	}
 
@@ -92,15 +102,10 @@ func GetAllAccount(accessToken string) (*AccountList, error) {
 }
 
 // ExpressPathGetter 查询运单轨迹所需参数
-type ExpressPathGetter struct {
-	OrderID    string `json:"order_id"`         //	订单 ID，需保证全局唯一
-	OpenID     string `json:"openid,omitempty"` //	用户openid，当add_source=2时无需填写（不发送物流服务通知）
-	DeliveryID string `json:"delivery_id"`      //	快递公司ID，参见getAllDelivery
-	WaybillID  string `json:"waybill_id"`       //	运单ID
-}
+type ExpressPathGetter ExpressOrderGetter
 
-// ExpressPath 运单轨迹
-type ExpressPath struct {
+// GetExpressPathResponse 运单轨迹
+type GetExpressPathResponse struct {
 	CommonError
 	OpenID       string            `json:"openid"`         // 用户openid
 	DeliveryID   string            `json:"delivery_id"`    // 快递公司 ID
@@ -117,120 +122,60 @@ type ExpressPathNode struct {
 }
 
 // Get 查询运单轨迹
-// accessToken 接口调用凭证
-func (pg *ExpressPathGetter) Get(accessToken string) (*ExpressPath, error) {
-	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
+// token 接口调用凭证
+func (ep *ExpressPathGetter) Get(token string) (*GetExpressPathResponse, error) {
+	api := baseURL + apiGetExpressPath
+	return ep.get(api, token)
+}
+
+func (ep *ExpressPathGetter) get(api, token string) (*GetExpressPathResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(ExpressPath)
-	if err := postJSON(api, pg, res); err != nil {
+	res := new(GetExpressPathResponse)
+	if err := postJSON(url, ep, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// Order 订单
-type Order struct {
-	OrderID      string        `json:"order_id"`                // 订单ID，须保证全局唯一，不超过512字节
-	OpenID       string        `json:"openid,omitempty"`        //	用户openid，当add_source=2时无需填写（不发送物流服务通知）
-	DeliveryID   string        `json:"delivery_id"`             // 快递公司ID，参见getAllDelivery
-	BizID        string        `json:"biz_id"`                  // 快递客户编码或者现付编码
-	CustomRemark string        `json:"custom_remark,omitempty"` //	快递备注信息，比如"易碎物品"，不超过1024字节
-	Sender       OrderSender   `json:"sender"`                  // 发件人信息
-	Receiver     OrderReceiver `json:"receiver"`                // 收件人信息
-	Cargo        OrderCargo    `json:"cargo"`                   // 包裹信息，将传递给快递公司
-	Shop         OrderShop     `json:"shop,omitempty"`          //	商家信息，会展示到物流服务通知中，当add_source=2时无需填写（不发送物流服务通知）
-	Insured      OrderInsure   `json:"insured"`                 // 保价信息
-	Service      OrderService  `json:"service"`                 // 服务类型
-	ExpectTime   uint          `json:"expect_time,omitempty"`   //	顺丰必须填写此字段。预期的上门揽件时间，0表示已事先约定取件时间；否则请传预期揽件时间戳，需大于当前时间，收件员会在预期时间附近上门。例如expect_time为“1557989929”，表示希望收件员将在2019年05月16日14:58:49-15:58:49内上门取货。
-
-}
-
-// OrderSource 订单来源
-type OrderSource = int8
+// ExpressOrderSource 订单来源
+type ExpressOrderSource = uint8
 
 // 所有订单来源
 const (
-	FromWeapp   OrderSource = iota // 小程序订单
-	FromAppOrH5                    // APP或H5订单
+	FromWeapp   ExpressOrderSource = 0 // 小程序订单
+	FromAppOrH5                    = 2 // APP或H5订单
 )
 
-// OrderCreator 订单创建器
-type OrderCreator struct {
-	Order
-	AddSource OrderSource `json:"add_source"` // 订单来源，0为小程序订单，2为App或H5订单，填2则不发送物流服务通知
-	WXAppID   string      `json:"wx_appid"`   // App或H5的appid，add_source=2时必填，需和开通了物流助手的小程序绑定同一open帐号
+// ExpressOrderCreator 订单创建器
+type ExpressOrderCreator struct {
+	ExpressOrder
+	AddSource  ExpressOrderSource `json:"add_source"`            // 订单来源，0为小程序订单，2为App或H5订单，填2则不发送物流服务通知
+	WXAppID    string             `json:"wx_appid,omitempty"`    // App或H5的appid，add_source=2时必填，需和开通了物流助手的小程序绑定同一open帐号
+	ExpectTime uint               `json:"expect_time,omitempty"` //	顺丰必须填写此字段。预期的上门揽件时间，0表示已事先约定取件时间；否则请传预期揽件时间戳，需大于当前时间，收件员会在预期时间附近上门。例如expect_time为“1557989929”，表示希望收件员将在2019年05月16日14:58:49-15:58:49内上门取货。
+	TagID      uint               `json:"tagid,omitempty"`       //订单标签id，用于平台型小程序区分平台上的入驻方，tagid须与入驻方账号一一对应，非平台型小程序无需填写该字段
 }
 
-// OrderSender 发件人信息
-type OrderSender struct {
-	Name     string `json:"name"`                // 发件人姓名，不超过64字节
-	Tel      string `json:"tel,omitempty"`       // 发件人座机号码，若不填写则必须填写 mobile，不超过32字节
-	Mobile   string `json:"mobile,omitempty"`    // 发件人手机号码，若不填写则必须填写 tel，不超过32字节
-	Company  string `json:"company,omitempty"`   // 发件人公司名称，不超过64字节
-	PostCode string `json:"post_code,omitempty"` // 发件人邮编，不超过10字节
-	Country  string `json:"country,omitempty"`   // 发件人国家，不超过64字节
-	Province string `json:"province"`            // 发件人省份，比如："广东省"，不超过64字节
-	City     string `json:"city"`                // 发件人市/地区，比如："广州市"，不超过64字节
-	Area     string `json:"area"`                // 发件人区/县，比如："海珠区"，不超过64字节
-	Address  string `json:"address"`             // 发件人详细地址，比如："XX路XX号XX大厦XX"，不超过512字节
-}
-
-// OrderReceiver 收件人信息
-type OrderReceiver struct {
-	Name     string `json:"name"`                // 收件人姓名，不超过64字节
-	Tel      string `json:"tel,omitempty"`       // 收件人座机号码，若不填写则必须填写 mobile，不超过32字节
-	Mobile   string `json:"mobile,omitempty"`    // 收件人手机号码，若不填写则必须填写 tel，不超过32字节
-	Company  string `json:"company,omitempty"`   // 收件人公司名，不超过64字节
-	PostCode string `json:"post_code,omitempty"` // 收件人邮编，不超过10字节
-	Country  string `json:"country,omitempty"`   // 收件人所在国家，不超过64字节
-	Province string `json:"province"`            // 收件人省份，比如："广东省"，不超过64字节
-	City     string `json:"city"`                // 收件人地区/市，比如："广州市"，不超过64字节
-	Area     string `json:"area"`                // 收件人区/县，比如："天河区"，不超过64字节
-	Address  string `json:"address"`             // 收件人详细地址，比如："XX路XX号XX大厦XX"，不超过512字节
-}
-
-// OrderCargo 包裹信息
-type OrderCargo struct {
-	Count      uint          `json:"count"`       // 包裹数量
-	Height     uint          `json:"weight"`      // 包裹总重量，单位是千克(kg)
-	SpaceX     uint          `json:"space_x"`     // 包裹长度，单位厘米(cm)
-	SpaceY     uint          `json:"space_y"`     // 包裹宽度，单位厘米(cm)
-	SpaceZ     uint          `json:"space_z"`     // 包裹高度，单位厘米(cm)
-	DetailList []CargoDetail `json:"detail_list"` // 包裹中商品详情列表
-}
-
-// OrderShop 商家信息
-type OrderShop struct {
-	WXAPath    string `json:"wxa_path"`    // 商家小程序的路径，建议为订单页面
-	IMGUrl     string `json:"img_url"`     // 商品缩略图 url
-	GoodsName  string `json:"goods_name"`  // 商品名称
-	GoodsCount uint   `json:"goods_count"` // 商品数量
-}
-
-// CargoDetail 包裹详情
-type CargoDetail struct {
-	Name  string `json:"name"`  // 商品名，不超过128字节
-	Count uint   `json:"count"` // 商品数量
-}
-
-// OrderInsure 订单保价
-type OrderInsure struct {
-	UseInsured   InsureStatus // 是否保价，0 表示不保价，1 表示保价
-	InsuredValue uint         // 保价金额，单位是分，比如: 10000 表示 100 元
-}
-
-// OrderService 服务类型
-type OrderService struct {
-	Type int8   `json:"service_type"` // 服务类型ID
-	Name string `json:"service_name"` // 服务名称
+// ExpreseeUserInfo 收件人/发件人信息
+type ExpreseeUserInfo struct {
+	Name     string `json:"name"`                // 收件人/发件人姓名，不超过64字节
+	Tel      string `json:"tel,omitempty"`       // 收件人/发件人座机号码，若不填写则必须填写 mobile，不超过32字节
+	Mobile   string `json:"mobile,omitempty"`    // 收件人/发件人手机号码，若不填写则必须填写 tel，不超过32字节
+	Company  string `json:"company,omitempty"`   // 收件人/发件人公司名称，不超过64字节
+	PostCode string `json:"post_code,omitempty"` // 收件人/发件人邮编，不超过10字节
+	Country  string `json:"country,omitempty"`   // 收件人/发件人国家，不超过64字节
+	Province string `json:"province"`            // 收件人/发件人省份，比如："广东省"，不超过64字节
+	City     string `json:"city"`                // 收件人/发件人市/地区，比如："广州市"，不超过64字节
+	Area     string `json:"area"`                // 收件人/发件人区/县，比如："海珠区"，不超过64字节
+	Address  string `json:"address"`             // 收件人/发件人详细地址，比如："XX路XX号XX大厦XX"，不超过512字节
 }
 
 // InsureStatus 保价状态
-type InsureStatus = int8
+type InsureStatus = uint8
 
 // 所有保价状态
 const (
@@ -252,28 +197,24 @@ type AddOrderResponse struct {
 }
 
 // Add 生成运单
-// accessToken 接口调用凭证
-func (oc *OrderCreator) Add(accessToken string) (*AddOrderResponse, error) {
-	api, err := tokenAPI(baseURL+apiGetPath, accessToken)
+// token 接口调用凭证
+func (creator *ExpressOrderCreator) Add(token string) (*AddOrderResponse, error) {
+	api := baseURL + apiAddExpressOrder
+	return creator.add(api, token)
+}
+
+func (creator *ExpressOrderCreator) add(api, token string) (*AddOrderResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AddOrderResponse)
-	if err := postJSON(api, oc, res); err != nil {
+	if err := postJSON(url, creator, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
-}
-
-// OrderCanceler din
-type OrderCanceler struct {
-	OrderID    string `json:"order_id"`         // 订单 ID，需保证全局唯一
-	OpenID     string `json:"openid,omitempty"` // 用户openid，当add_source=2时无需填写（不发送物流服务通知）
-	DeliveryID string `json:"delivery_id"`      // 快递公司ID，参见getAllDelivery
-	WaybillID  string `json:"waybill_id"`       // 运单ID
-
 }
 
 // CancelOrderResponse 取消订单返回数据
@@ -287,22 +228,6 @@ type CancelOrderResponse struct {
 	} `json:"data"` //快递公司信息列表
 }
 
-// Cancel 取消运单
-// accessToken 接口调用凭证
-func (oc *OrderCanceler) Cancel(accessToken string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiCancelOrder, accessToken)
-	if err != nil {
-		return nil, err
-	}
-
-	res := new(CommonError)
-	if err := postJSON(api, oc, res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
 // DeliveryList 支持的快递公司列表
 type DeliveryList struct {
 	CommonError
@@ -314,51 +239,87 @@ type DeliveryList struct {
 }
 
 // GetAllDelivery 获取支持的快递公司列表
-// accessToken 接口调用凭证
-func GetAllDelivery(accessToken string) (*DeliveryList, error) {
-	api, err := tokenAPI(baseURL+apiGetAllDelivery, accessToken)
+// token 接口调用凭证
+func GetAllDelivery(token string) (*DeliveryList, error) {
+	api := baseURL + apiGetAllDelivery
+	return getAllDelivery(api, token)
+}
+
+func getAllDelivery(api, token string) (*DeliveryList, error) {
+	queries := requestQueries{
+		"access_token": token,
+	}
+
+	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(DeliveryList)
-	if err := postJSON(api, requestParams{}, res); err != nil {
+	if err := getJSON(url, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// OrderGetter 订单获取器
-type OrderGetter struct {
+// ExpressOrderGetter 订单获取器
+type ExpressOrderGetter struct {
 	OrderID    string `json:"order_id"`         // 订单 ID，需保证全局唯一
 	OpenID     string `json:"openid,omitempty"` // 用户openid，当add_source=2时无需填写（不发送物流服务通知）
 	DeliveryID string `json:"delivery_id"`      // 快递公司ID，参见getAllDelivery
 	WaybillID  string `json:"waybill_id"`       // 运单ID
-
 }
 
-// GetOrderResponse 获取运单返回数据
-type GetOrderResponse struct {
+// GetExpressOrderResponse 获取运单返回数据
+type GetExpressOrderResponse struct {
 	CommonError
 	PrintHTML   string `json:"print_html"` // 运单 html 的 BASE64 结果
 	WaybillData []struct {
 		Key   string `json:"key"`   // 运单信息 key
 		Value string `json:"value"` // 运单信息 value
-
 	} `json:"waybill_data"` // 运单信息
 }
 
 // Get 获取运单数据
-// accessToken 接口调用凭证
-func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
-	api, err := tokenAPI(baseURL+apiGetOrder, accessToken)
+// token 接口调用凭证
+func (getter *ExpressOrderGetter) Get(token string) (*GetExpressOrderResponse, error) {
+	api := baseURL + apiGetExpressOrder
+	return getter.get(api, token)
+}
+
+func (getter *ExpressOrderGetter) get(api, token string) (*GetExpressOrderResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(GetOrderResponse)
-	if err := postJSON(api, og, res); err != nil {
+	res := new(GetExpressOrderResponse)
+	if err := postJSON(url, getter, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// ExpressOrderCanceler 订单取消器
+type ExpressOrderCanceler ExpressOrderGetter
+
+// Cancel 取消运单
+// token 接 口调用凭证
+func (canceler *ExpressOrderCanceler) Cancel(token string) (*CommonError, error) {
+	api := baseURL + apiCancelExpressOrder
+	return canceler.cancel(api, token)
+}
+
+func (canceler *ExpressOrderCanceler) cancel(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(CommonError)
+	if err := postJSON(url, canceler, res); err != nil {
 		return nil, err
 	}
 
@@ -368,21 +329,26 @@ func (og *OrderGetter) Get(accessToken string) (*GetOrderResponse, error) {
 // GetPrinterResponse 获取打印员返回数据
 type GetPrinterResponse struct {
 	CommonError
-	Count  uint     `json:"count"`  // 已经绑定的打印员数量
-	OpenID []string `json:"openid"` // 打印员 openid 列表
-
+	Count     uint     `json:"count"`  // 已经绑定的打印员数量
+	OpenID    []string `json:"openid"` // 打印员 openid 列表
+	TagIDList []string `json:"tagid_list"`
 }
 
 // GetPrinter 获取打印员。若需要使用微信打单 PC 软件，才需要调用。
-// accessToken 接口调用凭证
-func GetPrinter(accessToken string) (*GetPrinterResponse, error) {
-	api, err := tokenAPI(baseURL+apiGetPrinter, accessToken)
+// token 接口调用凭证
+func GetPrinter(token string) (*GetPrinterResponse, error) {
+	api := baseURL + apiGetPrinter
+	return getPrinter(api, token)
+}
+
+func getPrinter(api, token string) (*GetPrinterResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetPrinterResponse)
-	if err := postJSON(api, requestParams{}, res); err != nil {
+	if err := getJSON(url, res); err != nil {
 		return nil, err
 	}
 
@@ -393,24 +359,59 @@ func GetPrinter(accessToken string) (*GetPrinterResponse, error) {
 type QuotaGetter struct {
 	DeliveryID string `json:"delivery_id"` // 快递公司ID，参见getAllDelivery
 	BizID      string `json:"biz_id"`      // 快递公司客户编码
-
 }
 
-// Quota 电子面单余额
-type Quota struct {
+// GetQuotaResponse 电子面单余额
+type GetQuotaResponse struct {
 	CommonError
 	Number uint // 电子面单余额
 }
 
-// GetQuota 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。
-func (qg *QuotaGetter) GetQuota(accessToken string) (*Quota, error) {
-	api, err := tokenAPI(baseURL+apiGetQuota, accessToken)
+// Get 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。
+func (getter *QuotaGetter) Get(token string) (*GetQuotaResponse, error) {
+	api := baseURL + apiGetQuota
+	return getter.get(api, token)
+}
+
+func (getter *QuotaGetter) get(api, token string) (*GetQuotaResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(Quota)
-	if err := postJSON(api, requestParams{}, res); err != nil {
+	res := new(GetQuotaResponse)
+	if err := postJSON(url, getter, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// UpdateExpressOrderTester 模拟的快递公司更新订单
+type UpdateExpressOrderTester struct {
+	BizID      string `json:"biz_id"`      // 商户id,需填test_biz_id
+	OrderID    string `json:"order_id"`    //	订单ID，下单成功时返回
+	WaybillID  string `json:"waybill_id"`  // 运单 ID
+	DeliveryID string `json:"delivery_id"` // 快递公司 ID
+	ActionTime uint   `json:"action_time"` // 轨迹变化 Unix 时间戳
+	ActionType uint   `json:"action_type"` // 轨迹变化类型
+	ActionMsg  string `json:"action_msg"`  // 轨迹变化具体信息说明，展示在快递轨迹详情页中。若有手机号码，则直接写11位手机号码。使用UTF-8编码。
+}
+
+// Test 模拟快递公司更新订单状态, 该接口只能用户测试
+func (tester *UpdateExpressOrderTester) Test(token string) (*CommonError, error) {
+	api := baseURL + apiTestUpdateOrder
+	return tester.test(api, token)
+}
+
+func (tester *UpdateExpressOrderTester) test(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(CommonError)
+	if err := postJSON(url, tester, res); err != nil {
 		return nil, err
 	}
 
@@ -419,19 +420,25 @@ func (qg *QuotaGetter) GetQuota(accessToken string) (*Quota, error) {
 
 // PrinterUpdater 打印员更新器
 type PrinterUpdater struct {
-	OpenID string   `json:"openid"`      // 打印员 openid
-	Type   BindType `json:"update_type"` // 更新类型
+	OpenID    string   `json:"openid"`      // 打印员 openid
+	Type      BindType `json:"update_type"` // 更新类型
+	TagIDList string   `json:"tagid_list"`  // 用于平台型小程序设置入驻方的打印员面单打印权限，同一打印员最多支持10个tagid，使用逗号分隔，如填写123，456，表示该打印员可以拉取到tagid为123和456的下的单，非平台型小程序无需填写该字段
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (pu *PrinterUpdater) Update(accessToken string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiUpdatePrinter, accessToken)
+func (updater *PrinterUpdater) Update(token string) (*CommonError, error) {
+	api := baseURL + apiUpdatePrinter
+	return updater.update(api, token)
+}
+
+func (updater *PrinterUpdater) update(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, pu, res); err != nil {
+	if err := postJSON(url, updater, res); err != nil {
 		return nil, err
 	}
 

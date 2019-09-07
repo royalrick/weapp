@@ -7,19 +7,12 @@ const (
 	apiUpdatePath      = "/cgi-bin/express/delivery/path/update"
 )
 
-// ContactGetter 面单联系人信息获取器
-type ContactGetter struct {
-	Token     string `json:"token"`      // 商户侧下单事件中推送的 Token 字段
-	WaybillID string `json:"waybill_id"` // 运单 ID
-
-}
-
 // GetContactResponse 获取面单联系人信息返回数据
 type GetContactResponse struct {
 	CommonError
-	WaybillID string        `json:"waybill_id"` // 运单 ID
-	Sender    []ContactUser `json:"sender"`     // 发件人信息
-	Receiver  []ContactUser `json:"receiver"`   // 收件人信息
+	WaybillID string      `json:"waybill_id"` // 运单 ID
+	Sender    ContactUser `json:"sender"`     // 发件人信息
+	Receiver  ContactUser `json:"receiver"`   // 收件人信息
 }
 
 // ContactUser 联系人
@@ -30,29 +23,38 @@ type ContactUser struct {
 	Mobile  string `json:"mobile"`  //手机号码
 }
 
-// Get 获取面单联系人信息
-// accessToken 接口调用凭证
-func (cg *ContactGetter) Get(accessToken string) (*GetContactResponse, error) {
-	api, err := tokenAPI(baseURL+apiGetContact, accessToken)
+// GetContact 获取面单联系人信息
+// accessToken, token, watBillID 接口调用凭证
+func GetContact(accessToken, token, watBillID string) (*GetContactResponse, error) {
+	api := baseURL + apiGetContact
+	return getContact(api, accessToken, token, watBillID)
+}
+
+func getContact(api, accessToken, token, watBillID string) (*GetContactResponse, error) {
+	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
 	}
 
+	params := requestParams{
+		"token":      token,
+		"waybill_id": watBillID,
+	}
+
 	res := new(GetContactResponse)
-	if err := postJSON(api, cg, res); err != nil {
+	if err := postJSON(url, params, res); err != nil {
 		return nil, err
 	}
 
 	return res, nil
 }
 
-// TemplateViewer 面单模板预览器
-type TemplateViewer struct {
-	WaybillID       string `json:"waybill_id"`       // 运单 ID
-	WaybillTemplate string `json:"waybill_template"` // 面单 HTML 模板内容（需经 Base64 编码）
-	WaybillData     string `json:"waybill_data"`     // 面单数据。详情参考下单事件返回值中的 WaybillData
-	Custom          Order  `json:"custom"`           // 商户下单数据，格式是商户侧下单 API 中的请求体
-
+// TemplatePreviewer 面单模板预览器
+type TemplatePreviewer struct {
+	WaybillID       string       `json:"waybill_id"`       // 运单 ID
+	WaybillTemplate string       `json:"waybill_template"` // 面单 HTML 模板内容（需经 Base64 编码）
+	WaybillData     string       `json:"waybill_data"`     // 面单数据。详情参考下单事件返回值中的 WaybillData
+	Custom          ExpressOrder `json:"custom"`           // 商户下单数据，格式是商户侧下单 API 中的请求体
 }
 
 // PreviewTemplateResponse 预览面单模板返回数据
@@ -63,15 +65,20 @@ type PreviewTemplateResponse struct {
 }
 
 // Preview 预览面单模板。用于调试面单模板使用。
-// accessToken 接口调用凭证
-func (tv *OrderCreator) Preview(accessToken string) (*PreviewTemplateResponse, error) {
-	api, err := tokenAPI(baseURL+apiPreviewTemplate, accessToken)
+// token 接口调用凭证
+func (previewer *TemplatePreviewer) Preview(token string) (*PreviewTemplateResponse, error) {
+	api := baseURL + apiPreviewTemplate
+	return previewer.preview(api, token)
+}
+
+func (previewer *TemplatePreviewer) preview(api, token string) (*PreviewTemplateResponse, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PreviewTemplateResponse)
-	if err := postJSON(api, tv, res); err != nil {
+	if err := postJSON(url, previewer, res); err != nil {
 		return nil, err
 	}
 
@@ -96,15 +103,20 @@ type BusinnessUpdater struct {
 }
 
 // Update 更新商户审核结果
-// accessToken 接口调用凭证
-func (bu *BusinnessUpdater) Update(accessToken string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiUpdateBusiness, accessToken)
+// token 接口调用凭证
+func (updater *BusinnessUpdater) Update(token string) (*CommonError, error) {
+	api := baseURL + apiUpdateBusiness
+	return updater.update(api, token)
+}
+
+func (updater *BusinnessUpdater) update(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, bu, res); err != nil {
+	if err := postJSON(url, updater, res); err != nil {
 		return nil, err
 	}
 
@@ -116,20 +128,25 @@ type ExpressPathUpdater struct {
 	Token      string `json:"token"`       // 商户侧下单事件中推送的 Token 字段
 	WaybillID  string `json:"waybill_id"`  // 运单 ID
 	ActionTime uint   `json:"action_time"` // 轨迹变化 Unix 时间戳
-	ActionType int    `json:"action_type"` // 轨迹变化类型
+	ActionType uint   `json:"action_type"` // 轨迹变化类型
 	ActionMsg  string `json:"action_msg"`  // 轨迹变化具体信息说明，展示在快递轨迹详情页中。若有手机号码，则直接写11位手机号码。使用UTF-8编码。
 }
 
 // Update 更新运单轨迹
-// accessToken 接口调用凭证
-func (pu *ExpressPathUpdater) Update(accessToken string) (*CommonError, error) {
-	api, err := tokenAPI(baseURL+apiUpdatePath, accessToken)
+// token 接口调用凭证
+func (updater *ExpressPathUpdater) Update(token string) (*CommonError, error) {
+	api := baseURL + apiUpdatePath
+	return updater.update(api, token)
+}
+
+func (updater *ExpressPathUpdater) update(api, token string) (*CommonError, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, pu, res); err != nil {
+	if err := postJSON(url, updater, res); err != nil {
 		return nil, err
 	}
 
