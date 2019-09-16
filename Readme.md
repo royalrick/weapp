@@ -959,7 +959,7 @@ fmt.Printf("返回结果: %#v", res)
 // 接收并处理异步结果
 srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
     if mix.MsgType != weapp.MsgEvent {
-        if mix.Event != weapp.EventAddNearbyPoiAuditInfo {
+        if mix.Event != weapp.EventNearbyPoiAuditInfoAdd {
             if mix.AuditID == res.Data.AuditID {
 
                 fmt.Printf("返回结果: %#v", mix)

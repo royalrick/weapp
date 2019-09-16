@@ -210,18 +210,14 @@ func TestOnAddExpressOrder(t *testing.T) {
 			}
 
 			res := AddExpressOrderReturn{
-				ToUserName:   "oABCD",
-				FromUserName: "gh_abcdefg",
-				CreateTime:   1533042556,
-				MsgType:      "event",
-				Event:        "add_waybill",
-				Token:        "1234ABC234523451",
-				OrderID:      "012345678901234567890123456789",
-				BizID:        "xyz",
-				WayBillID:    "123456789",
-				ResultCode:   0,
-				ResultMsg:    "success",
-				WaybillData:  "##ZTO_bagAddr##广州##ZTO_mark##888-666-666##",
+				CommonServerReturn: CommonServerReturn{
+					"oABCD", "gh_abcdefg", 1533042556, "event", "add_waybill", 1, "success",
+				},
+				Token:       "1234ABC234523451",
+				OrderID:     "012345678901234567890123456789",
+				BizID:       "xyz",
+				WayBillID:   "123456789",
+				WaybillData: "##ZTO_bagAddr##广州##ZTO_mark##888-666-666##",
 			}
 
 			return &res
@@ -449,7 +445,7 @@ func TestOnAddExpressOrder(t *testing.T) {
 	}
 }
 
-func TestOnCancelExpressOrder(t *testing.T) {
+func TestOnExpressOrderCancel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
 		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
@@ -457,7 +453,7 @@ func TestOnCancelExpressOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleCancelExpressOrderRequest(func(result *CancelExpressOrderResult) *CancelExpressOrderReturn {
+		srv.HandleExpressOrderCancelRequest(func(result *ExpressOrderCancelResult) *ExpressOrderCancelReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -490,17 +486,13 @@ func TestOnCancelExpressOrder(t *testing.T) {
 				t.Error("Result column 'WayBillID' can not be empty")
 			}
 
-			res := CancelExpressOrderReturn{
-				ToUserName:   "oABCD",
-				FromUserName: "gh_abcdefg",
-				CreateTime:   1533042556,
-				MsgType:      "event",
-				Event:        "add_waybill",
-				OrderID:      "012345678901234567890123456789",
-				BizID:        "xyz",
-				WayBillID:    "123456789",
-				ResultCode:   0,
-				ResultMsg:    "success",
+			res := ExpressOrderCancelReturn{
+				CommonServerReturn: CommonServerReturn{
+					"oABCD", "gh_abcdefg", 1533042556, "event", "cancel_waybill", 1, "success",
+				},
+				OrderID:   "012345678901234567890123456789",
+				BizID:     "xyz",
+				WayBillID: "123456789",
 			}
 
 			return &res
@@ -529,7 +521,7 @@ func TestOnCancelExpressOrder(t *testing.T) {
 		t.Error(err)
 	}
 	defer xmlResp.Body.Close()
-	res := new(CancelExpressOrderReturn)
+	res := new(ExpressOrderCancelReturn)
 	if err := xml.NewDecoder(xmlResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -581,7 +573,7 @@ func TestOnCancelExpressOrder(t *testing.T) {
 		t.Error(err)
 	}
 	defer jsonResp.Body.Close()
-	res = new(CancelExpressOrderReturn)
+	res = new(ExpressOrderCancelReturn)
 	if err := json.NewDecoder(jsonResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -668,15 +660,11 @@ func TestOnCheckBusiness(t *testing.T) {
 			}
 
 			res := CheckBusinessReturn{
-				ToUserName:   "oABCD",
-				FromUserName: "gh_abcdefg",
-				CreateTime:   1533042556,
-				MsgType:      "event",
-				Event:        "add_waybill",
-				BizID:        "xyz",
-				Quota:        3.14159265358,
-				ResultCode:   0,
-				ResultMsg:    "success",
+				CommonServerReturn: CommonServerReturn{
+					"oABCD", "gh_abcdefg", 1533042556, "event", "check_biz", 1, "success",
+				},
+				BizID: "xyz",
+				Quota: 3.14159265358,
 			}
 			return &res
 		})
@@ -789,7 +777,7 @@ func TestOnCheckBusiness(t *testing.T) {
 	}
 }
 
-func TestOnGetQuota(t *testing.T) {
+func TestOnQuotaGet(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
 		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
@@ -797,7 +785,7 @@ func TestOnGetQuota(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleGetQuotaRequest(func(result *GetQuotaResult) *GetQuotaReturn {
+		srv.HandleQuotaGetRequest(func(result *QuotaGetResult) *QuotaGetReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -824,16 +812,12 @@ func TestOnGetQuota(t *testing.T) {
 				t.Error("Result column 'ShopAppID' can not be empty")
 			}
 
-			res := GetQuotaReturn{
-				ToUserName:   "oABCD",
-				FromUserName: "gh_abcdefg",
-				CreateTime:   1533042556,
-				MsgType:      "event",
-				Event:        "get_quota",
-				BizID:        "xyz",
-				Quota:        3.14159265358,
-				ResultCode:   0,
-				ResultMsg:    "success",
+			res := QuotaGetReturn{
+				CommonServerReturn: CommonServerReturn{
+					"oABCD", "gh_abcdefg", 1533042556, "event", "get_quota", 1, "success",
+				},
+				BizID: "xyz",
+				Quota: 3.14159265358,
 			}
 			return &res
 		})
@@ -859,7 +843,7 @@ func TestOnGetQuota(t *testing.T) {
 		t.Error(err)
 	}
 	defer xmlResp.Body.Close()
-	res := new(GetQuotaReturn)
+	res := new(QuotaGetReturn)
 	if err := xml.NewDecoder(xmlResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -905,7 +889,7 @@ func TestOnGetQuota(t *testing.T) {
 		t.Error(err)
 	}
 	defer jsonResp.Body.Close()
-	res = new(GetQuotaReturn)
+	res = new(QuotaGetReturn)
 	if err := json.NewDecoder(jsonResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}

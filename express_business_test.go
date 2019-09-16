@@ -275,13 +275,13 @@ func TestAddExpressOrder(t *testing.T) {
 			},
 		},
 	}
-	_, err := creator.add(ts.URL+apiAddExpressOrder, "mock-access-token")
+	_, err := creator.create(ts.URL+apiAddExpressOrder, "mock-access-token")
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
-func TestCancelOrder(t *testing.T) {
+func TestCancelExpressOrder(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
@@ -691,11 +691,11 @@ func TestOnPathUpdate(t *testing.T) {
 			if mix.CreateTime == 0 {
 				t.Error("CreateTime can not be zero")
 			}
-			if mix.MsgType != MsgEvent {
+			if mix.MsgType != "event" {
 				t.Error("Unexpected message type")
 			}
 
-			if mix.Event != EventExpressPathUpdate {
+			if mix.Event != "add_express_path" {
 				t.Error("Unexpected message event")
 			}
 
@@ -757,7 +757,11 @@ func TestOnPathUpdate(t *testing.T) {
 		<ActionMsg><![CDATA[运往目的地]]></ActionMsg>
 		</Actions>
 	</xml>`
-	http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	res, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
 
 	jsonData := `{
 		"ToUserName": "toUser",
@@ -787,8 +791,11 @@ func TestOnPathUpdate(t *testing.T) {
 		  }
 		]
 	  }`
-
-	http.Post(ts.URL, "application/json", strings.NewReader(jsonData))
+	res, err = http.Post(ts.URL, "application/json", strings.NewReader(jsonData))
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer res.Body.Close()
 }
 
 func TestTestUpdateOrder(t *testing.T) {

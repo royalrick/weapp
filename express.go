@@ -15,6 +15,20 @@ type ExpressOrder struct {
 	Service      ExpressService   `json:"service"`                 // 服务类型
 }
 
+// ExpreseeUserInfo 收件人/发件人信息
+type ExpreseeUserInfo struct {
+	Name     string `json:"name"`                // 收件人/发件人姓名，不超过64字节
+	Tel      string `json:"tel,omitempty"`       // 收件人/发件人座机号码，若不填写则必须填写 mobile，不超过32字节
+	Mobile   string `json:"mobile,omitempty"`    // 收件人/发件人手机号码，若不填写则必须填写 tel，不超过32字节
+	Company  string `json:"company,omitempty"`   // 收件人/发件人公司名称，不超过64字节
+	PostCode string `json:"post_code,omitempty"` // 收件人/发件人邮编，不超过10字节
+	Country  string `json:"country,omitempty"`   // 收件人/发件人国家，不超过64字节
+	Province string `json:"province"`            // 收件人/发件人省份，比如："广东省"，不超过64字节
+	City     string `json:"city"`                // 收件人/发件人市/地区，比如："广州市"，不超过64字节
+	Area     string `json:"area"`                // 收件人/发件人区/县，比如："海珠区"，不超过64字节
+	Address  string `json:"address"`             // 收件人/发件人详细地址，比如："XX路XX号XX大厦XX"，不超过512字节
+}
+
 // ExpressCargo 包裹信息
 type ExpressCargo struct {
 	Count      uint          `json:"count"`       // 包裹数量

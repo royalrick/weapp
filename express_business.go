@@ -160,20 +160,6 @@ type ExpressOrderCreator struct {
 	TagID      uint               `json:"tagid,omitempty"`       //订单标签id，用于平台型小程序区分平台上的入驻方，tagid须与入驻方账号一一对应，非平台型小程序无需填写该字段
 }
 
-// ExpreseeUserInfo 收件人/发件人信息
-type ExpreseeUserInfo struct {
-	Name     string `json:"name"`                // 收件人/发件人姓名，不超过64字节
-	Tel      string `json:"tel,omitempty"`       // 收件人/发件人座机号码，若不填写则必须填写 mobile，不超过32字节
-	Mobile   string `json:"mobile,omitempty"`    // 收件人/发件人手机号码，若不填写则必须填写 tel，不超过32字节
-	Company  string `json:"company,omitempty"`   // 收件人/发件人公司名称，不超过64字节
-	PostCode string `json:"post_code,omitempty"` // 收件人/发件人邮编，不超过10字节
-	Country  string `json:"country,omitempty"`   // 收件人/发件人国家，不超过64字节
-	Province string `json:"province"`            // 收件人/发件人省份，比如："广东省"，不超过64字节
-	City     string `json:"city"`                // 收件人/发件人市/地区，比如："广州市"，不超过64字节
-	Area     string `json:"area"`                // 收件人/发件人区/县，比如："海珠区"，不超过64字节
-	Address  string `json:"address"`             // 收件人/发件人详细地址，比如："XX路XX号XX大厦XX"，不超过512字节
-}
-
 // InsureStatus 保价状态
 type InsureStatus = uint8
 
@@ -183,8 +169,8 @@ const (
 	Insured   = 1 // 保价
 )
 
-// AddOrderResponse 创建订单返回数据
-type AddOrderResponse struct {
+// CreateExpressOrderResponse 创建订单返回数据
+type CreateExpressOrderResponse struct {
 	CommonError
 	OrderID     string `json:"order_id"`   //	订单ID，下单成功时返回
 	WaybillID   string `json:"waybill_id"` //	运单ID，下单成功时返回
@@ -196,20 +182,20 @@ type AddOrderResponse struct {
 	DeliveryResultmsg  string `json:"delivery_resultmsg"`  //	快递侧错误信息，下单失败时返回
 }
 
-// Add 生成运单
+// Create 生成运单
 // token 接口调用凭证
-func (creator *ExpressOrderCreator) Add(token string) (*AddOrderResponse, error) {
+func (creator *ExpressOrderCreator) Create(token string) (*CreateExpressOrderResponse, error) {
 	api := baseURL + apiAddExpressOrder
-	return creator.add(api, token)
+	return creator.create(api, token)
 }
 
-func (creator *ExpressOrderCreator) add(api, token string) (*AddOrderResponse, error) {
+func (creator *ExpressOrderCreator) create(api, token string) (*CreateExpressOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(AddOrderResponse)
+	res := new(CreateExpressOrderResponse)
 	if err := postJSON(url, creator, res); err != nil {
 		return nil, err
 	}
@@ -361,25 +347,25 @@ type QuotaGetter struct {
 	BizID      string `json:"biz_id"`      // 快递公司客户编码
 }
 
-// GetQuotaResponse 电子面单余额
-type GetQuotaResponse struct {
+// QuotaGetResponse 电子面单余额
+type QuotaGetResponse struct {
 	CommonError
 	Number uint // 电子面单余额
 }
 
 // Get 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。
-func (getter *QuotaGetter) Get(token string) (*GetQuotaResponse, error) {
+func (getter *QuotaGetter) Get(token string) (*QuotaGetResponse, error) {
 	api := baseURL + apiGetQuota
 	return getter.get(api, token)
 }
 
-func (getter *QuotaGetter) get(api, token string) (*GetQuotaResponse, error) {
+func (getter *QuotaGetter) get(api, token string) (*QuotaGetResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(GetQuotaResponse)
+	res := new(QuotaGetResponse)
 	if err := postJSON(url, getter, res); err != nil {
 		return nil, err
 	}

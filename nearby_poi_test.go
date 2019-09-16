@@ -30,11 +30,11 @@ func TestAddNearbyPoi(t *testing.T) {
 			if mix.CreateTime == 0 {
 				t.Error("CreateTime can not be zero")
 			}
-			if mix.MsgType != MsgEvent {
+			if mix.MsgType != "event" {
 				t.Error("Unexpected message type")
 			}
 
-			if mix.Event != EventAddNearbyPoiAuditInfo {
+			if mix.Event != "add_nearby_poi_audit_info" {
 				t.Error("Unexpected message event")
 			}
 

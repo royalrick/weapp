@@ -76,11 +76,10 @@ func TestMediaCheckAsync(t *testing.T) {
 			if mix.CreateTime == 0 {
 				t.Error("CreateTime can not be empty")
 			}
-			if mix.MsgType != MsgEvent {
+			if mix.MsgType != "event" {
 				t.Error("Unexpected message type")
 			}
-
-			if mix.Event != EventMediaCheckAsync {
+			if mix.Event != "wxa_media_check" {
 				t.Error("Unexpected message event")
 			}
 			if mix.AppID == "" {
