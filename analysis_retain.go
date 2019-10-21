@@ -38,11 +38,11 @@ func GetWeeklyRetain(accessToken, begin, end string) (*RetainResponse, error) {
 	return getRetain(accessToken, begin, end, api)
 }
 
-// GetDailyRetainAPI 获取用户访问小程序日留存
+// GetDailyRetain 获取用户访问小程序日留存
 // accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetDailyRetainAPI(accessToken, begin, end string) (*RetainResponse, error) {
+func GetDailyRetain(accessToken, begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetDailyRetain
 	return getRetain(accessToken, begin, end, api)
 }

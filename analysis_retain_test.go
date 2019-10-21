@@ -143,7 +143,7 @@ func TestGetWeeklyRetain(t *testing.T) {
 	}
 }
 
-func TestGetDailyRetainAPI(t *testing.T) {
+func TestGetDailyRetain(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
 		if r.Method != "POST" {
