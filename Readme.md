@@ -1,6 +1,6 @@
 # ![title](title.png)
 
-## `注意`
+## `注意⚠️`
 
 - [1.x 版本入口](https://github.com/medivhzhan/weapp/tree/v1)
 - 2.0 版本开始支付相关内容会分离到一个单独的包。
@@ -18,30 +18,33 @@ go get -u github.com/medivhzhan/weapp
 
 > 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便您一一对照查找相关内容。
 
+✅：代表已经通过线上测试
+⚠️：代表还没有或者未完成
+
 - [登录](#登录)
-  - [code2Session](#code2Session)
+  - [code2Session](#code2Session) ✅
 - [用户信息](#用户信息)
-  - [getPaidUnionId](#getPaidUnionId)
+  - [getPaidUnionId](#getPaidUnionId) ✅
 - [接口调用凭证](#接口调用凭证)
-  - [getAccessToken](#getAccessToken)
+  - [getAccessToken](#getAccessToken) ✅
 - [数据分析](#数据分析)
   - [访问留存](#访问留存)
-    - [getMonthlyRetain](#getMonthlyRetain)
-    - [getWeeklyRetain](#getWeeklyRetain)
-    - [getDailyRetain](#getDailyRetain)
+    - [getDailyRetain](#getDailyRetain) ✅
+    - [getWeeklyRetain](#getWeeklyRetain) ✅
+    - [getMonthlyRetain](#getMonthlyRetain) ✅
+  - [getDailySummary](#getDailySummary) ✅
   - [访问趋势](#访问趋势)
-    - [getMonthlyVisitTrend](#getMonthlyVisitTrend)
-    - [getWeeklyVisitTrend](#getWeeklyVisitTrend)
-    - [getDailyVisitTrend](#getDailyVisitTrend)
-  - [getUserPortrait](#getUserPortrait)
-  - [getVisitDistribution](#getVisitDistribution)
-  - [getVisitPage](#getVisitPage)
-  - [getDailySummary](#getDailySummary)
+    - [getDailyVisitTrend](#getDailyVisitTrend) ✅
+    - [getWeeklyVisitTrend](#getWeeklyVisitTrend) ✅
+    - [getMonthlyVisitTrend](#getMonthlyVisitTrend) ✅
+  - [getUserPortrait](#getUserPortrait) ✅
+  - [getVisitDistribution](#getVisitDistribution) ✅
+  - [getVisitPage](#getVisitPage) ✅
 - [客服消息](#客服消息)
-  - [setTyping](#setTyping)
-  - [uploadTempMedia](#uploadTempMedia)
-  - [getTempMedia](#getTempMedia)
-  - [sendCustomerServiceMessage](#sendCustomerServiceMessage)
+  - [getTempMedia](#getTempMedia) ✅
+  - [sendCustomerServiceMessage](#sendCustomerServiceMessage) ✅
+  - [setTyping](#setTyping) ✅
+  - [uploadTempMedia](#uploadTempMedia) ✅
 - [模板消息](#模板消息)
   - [addTemplate](#addTemplate)
   - [deleteTemplate](#deleteTemplate)
@@ -74,15 +77,21 @@ go get -u github.com/medivhzhan/weapp
   - [mediaCheckAsync](#mediaCheckAsync)
   - [msgSecCheck](#msgSecCheck)
 - [图像处理](#图像处理)
+  - [aiCrop](#aiCrop)⚠️
   - [scanQRCode](#scanQRCode)
   - [superResolution](#superResolution)
+- [及时配送](#及时配送)⚠️
+- [物流助手](#物流助手)⚠️
 - [OCR](#OCR)
   - [bankcard](#bankcard)
+  - [businessLicense](#businessLicense)⚠️
   - [driverLicense](#driverLicense)
   - [idcard](#idcard)
+  - [printedText](#printedText)⚠️
   - [vehicleLicense](#vehicleLicense)
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
+- [订阅消息](#订阅消息)⚠️
 
 ---
 
@@ -176,15 +185,15 @@ fmt.Printf("返回结果: %#v", res)
 
 ### 访问留存
 
-#### getMonthlyRetain
+#### getDailyRetain
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getMonthlyRetain.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getDailyRetain.html)
 
 ```go
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetMonthlyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetDailyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -222,15 +231,38 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-#### getDailyRetain
+#### getMonthlyRetain
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getDailyRetain.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-retain/analysis.getMonthlyRetain.html)
 
 ```go
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetDailyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetMonthlyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### getDailySummary
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getDailySummary.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.GetDailySummary("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -247,15 +279,15 @@ fmt.Printf("返回结果: %#v", res)
 
 ### 访问趋势
 
-#### getMonthlyVisitTrend
+#### getDailyVisitTrend
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getMonthlyVisitTrend.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getDailyVisitTrend.html)
 
 ```go
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetMonthlyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetDailyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -293,15 +325,15 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-#### getDailyVisitTrend
+#### getMonthlyVisitTrend
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getDailyVisitTrend.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/visit-trend/analysis.getMonthlyVisitTrend.html)
 
 ```go
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetDailyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetMonthlyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -385,80 +417,9 @@ fmt.Printf("返回结果: %#v", res)
 
 ```
 
-### getDailySummary
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/data-analysis/analysis.getDailySummary.html)
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-res, err := weapp.GetDailySummary("mock-access-token", "mock-begin-date", "mock-end-date")
-if err != nil {
-    // 处理一般错误信息
-    return
-}
-
-if err := res.GetResponseError(); err !=nil {
-    // 处理微信返回错误信息
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
-
 ---
 
 ## 客服消息
-
-### setTyping
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-res, err := weapp.SetTyping("mock-access-token", "mock-open-id", "mock-command")
-if err != nil {
-    // 处理一般错误信息
-    return
-}
-
-if err := res.GetResponseError(); err !=nil {
-    // 处理微信返回错误信息
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
-
-### uploadTempMedia
-
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.uploadTempMedia.html)
-
-```go
-
-import "github.com/medivhzhan/weapp"
-
-res, err := weapp.UploadTempMedia("mock-access-token", "mock-media-type", "mock-media-filename")
-// 或者
-res, err := weapp.uploadTempMediaByURL("mock-access-token", "mock-media-type", "mock-media-url") // 通过 URL 上传
-if err != nil {
-    // 处理一般错误信息
-    return
-}
-
-if err := res.GetResponseError(); err !=nil {
-    // 处理微信返回错误信息
-    return
-}
-
-fmt.Printf("返回结果: %#v", res)
-
-```
 
 ### getTempMedia
 
@@ -468,11 +429,12 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetTempMedia("mock-access-token", "mock-media-id")
+resp, res, err := weapp.GetTempMedia("mock-access-token", "mock-media-id")
 if err != nil {
     // 处理一般错误信息
     return
 }
+defer resp.Close()
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
@@ -495,12 +457,12 @@ import "github.com/medivhzhan/weapp"
 // 文本消息
 msg := weapp.CSMsgText{
     Content: "mock-content",
-},
+}
 // 或者
 // 图片消息
 msg := weapp.CSMsgImage{
     MediaID: "mock-media-id",
-},
+}
 // 或者
 // 链接消息
 msg := weapp.CSMsgLink{
@@ -508,16 +470,62 @@ msg := weapp.CSMsgLink{
     Description: "mock-description",
     URL:         "mock-url",
     ThumbURL:    "mock-thumb-url",
-},
+}
 // 或者
 // 小程序卡片消息
 msg := weapp.CSMsgMPCard{
     Title:        "mock-title",
     PagePath:     "mock-page-path",
     ThumbMediaID: "mock-thumb-media-id",
-},
+}
 
 res, err := msg.SendTo("mock-open-id", "mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### setTyping
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.setTyping.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.SetTyping("mock-access-token", "mock-open-id", weapp.SetTypingCommandTyping)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### uploadTempMedia
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/customer-message/customerServiceMessage.uploadTempMedia.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.UploadTempMedia("mock-access-token", weapp.TempMediaTypeImage, "mock-media-filename")
 if err != nil {
     // 处理一般错误信息
     return
