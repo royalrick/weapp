@@ -206,42 +206,6 @@ func UploadTempMedia(token string, mediaType TempMediaType, medianame string) (*
 	return uploadTempMedia(token, mediaType, medianame, api)
 }
 
-// UploadTempMediaByURL 把网络文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
-//
-// token 接口调用凭证
-// mediaType 文件类型
-// medianame 媒体文件名
-func UploadTempMediaByURL(token string, mediaType TempMediaType, mediaurl string) (*UploadTempMediaResponse, error) {
-	api := baseURL + apiUploadTemplateMedia
-	return uploadTempMediaByURL(token, mediaType, mediaurl, api)
-}
-
-func uploadTempMediaByURL(token string, mediaType TempMediaType, mediaurl, api string) (*UploadTempMediaResponse, error) {
-
-	resp, err := http.Get(mediaurl)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	queries := requestQueries{
-		"type":         mediaType,
-		"access_token": token,
-	}
-
-	url, err := encodeURL(api, queries)
-	if err != nil {
-		return nil, err
-	}
-
-	res := new(UploadTempMediaResponse)
-	if err := postForm(url, "media", "filename", resp.Body, res); err != nil {
-		return nil, err
-	}
-
-	return res, nil
-}
-
 func uploadTempMedia(token string, mediaType TempMediaType, medianame, api string) (*UploadTempMediaResponse, error) {
 	queries := requestQueries{
 		"type":         mediaType,
