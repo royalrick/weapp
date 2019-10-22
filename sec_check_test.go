@@ -197,8 +197,8 @@ func TestMSGSecCheck(t *testing.T) {
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiSendTemplateMessage {
-			t.Fatalf("Except to path '%s',get '%s'", apiSendTemplateMessage, path)
+		if path != "/wxa/img_sec_check" {
+			t.Error("Invalid request path")
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -233,7 +233,7 @@ func TestMSGSecCheck(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := msgSecCheck(ts.URL+apiSendTemplateMessage, "mock-access-token", "mock-content")
+	_, err := msgSecCheck(ts.URL+apiIMGSecCheck, "mock-access-token", "mock-content")
 	if err != nil {
 		t.Fatal(err)
 	}
