@@ -2,6 +2,7 @@
 package code
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -46,12 +47,12 @@ type Color struct {
 //
 // @token 微信access_token
 func (code QRCoder) AppCode(token string) (*http.Response, error) {
-	body, err := json.Marshal(code)
+	data, err := toUnescapedJSON(code)
 	if err != nil {
 		return nil, err
 	}
 
-	return fetchCode(appCodeAPI, string(body), token)
+	return fetchCode(appCodeAPI, data, token)
 }
 
 // UnlimitedAppCode 获取小程序码
@@ -60,13 +61,12 @@ func (code QRCoder) AppCode(token string) (*http.Response, error) {
 //
 // @token 微信access_token
 func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
-
-	body, err := json.Marshal(code)
+	data, err := toUnescapedJSON(code)
 	if err != nil {
 		return nil, err
 	}
 
-	return fetchCode(unlimitedAppCodeAPI, string(body), token)
+	return fetchCode(unlimitedAppCodeAPI, data, token)
 }
 
 // QRCode 获取小程序二维码
@@ -74,13 +74,12 @@ func (code QRCoder) UnlimitedAppCode(token string) (*http.Response, error) {
 //
 // @token 微信access_token
 func (code QRCoder) QRCode(token string) (*http.Response, error) {
-
-	body, err := json.Marshal(code)
+	data, err := toUnescapedJSON(code)
 	if err != nil {
 		return nil, err
 	}
 
-	return fetchCode(QRCodeAPI, string(body), token)
+	return fetchCode(QRCodeAPI, data, token)
 }
 
 // 向微信服务器获取二维码
@@ -111,4 +110,13 @@ func fetchCode(path, body, token string) (res *http.Response, err error) {
 		err = errors.New("unknown response header: " + header)
 		return
 	}
+}
+
+// 生成不转义特殊字符的JSON字符串
+func toUnescapedJSON(v interface{}) (string, error) {
+	buf := bytes.NewBuffer([]byte{})
+	enc := json.NewEncoder(buf)
+	enc.SetEscapeHTML(false)
+	err := enc.Encode(v)
+	return buf.String(), err
 }
