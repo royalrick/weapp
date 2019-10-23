@@ -14,7 +14,7 @@ const (
 // token 接口调用凭证(access_token)
 func IMGSecCheck(token, filename string) (*CommonError, error) {
 	api := baseURL + apiIMGSecCheck
-	return imgSecCheck(filename, token, api)
+	return imgSecCheck(api, filename, token)
 }
 
 func imgSecCheck(api, token, filename string) (*CommonError, error) {
