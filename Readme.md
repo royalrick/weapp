@@ -62,14 +62,14 @@ go get -u github.com/medivhzhan/weapp
   - [deleteNearbyPoi](#deleteNearbyPoi)
   - [getNearbyPoiList](#getNearbyPoiList)
   - [setNearbyPoiShowStatus](#setNearbyPoiShowStatus)
-- [小程序码](#小程序码)
-  - [createQRCode](#createQRCode)
-  - [get](#get)
-  - [getUnlimited](#getUnlimited)
+- [小程序码](#小程序码) ✅
+  - [createQRCode](#createQRCode) ✅
+  - [get](#get) ✅
+  - [getUnlimited](#getUnlimited) ✅
 - [内容安全](#内容安全)
-  - [imgSecCheck](#imgSecCheck)
+  - [imgSecCheck](#imgSecCheck) ✅
   - [mediaCheckAsync](#mediaCheckAsync)
-  - [msgSecCheck](#msgSecCheck)
+  - [msgSecCheck](#msgSecCheck) ✅
 - [图像处理](#图像处理)
   - [aiCrop](#aiCrop)⚠️
   - [scanQRCode](#scanQRCode)
@@ -922,7 +922,7 @@ creator := weapp.QRCodeCreator{
     Width: 430,
 }
 
-body, res, err := creator.Create("mock-access-token")
+resp, res, err := creator.Create("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -932,11 +932,9 @@ if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
 }
-defer body.Close()
+defer resp.Body.Close()
 
-// 处理 body 内的 BUffer
-content, err := ioutil.ReadAll(body)
-
+content, err := ioutil.ReadAll(resp.Body)
 // 处理图片内容
 
 ```
@@ -957,11 +955,11 @@ getter := weapp.QRCode{
     Path:      "mock/path",
     Width:     430,
     AutoColor: true,
-    LineColor: Color{"r", "g", "b"},
+    LineColor: weapp.Color{"r", "g", "b"},
     IsHyaline: true,
 }
 
-body, res, err := getter.Get("mock-access-token")
+resp, res, err := getter.Get("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -971,11 +969,9 @@ if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
 }
-defer body.Close()
+defer resp.Body.Close()
 
-// 处理 body 内的 BUffer
-content, err := ioutil.ReadAll(body)
-
+content, err := ioutil.ReadAll(resp.Body)
 // 处理图片内容
 
 ```
@@ -997,11 +993,11 @@ getter :=  weapp.UnlimitedQRCode{
     Page:      "mock/page",
     Width:     430,
     AutoColor: true,
-    LineColor: Color{"r", "g", "b"},
+    LineColor: weapp.Color{"r", "g", "b"},
     IsHyaline: true,
 }
 
-body, res, err := getter.Get("mock-access-token")
+resp, res, err := getter.Get("mock-access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1011,11 +1007,9 @@ if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
 }
-defer body.Close()
+defer resp.Body.Close()
 
-// 处理 body 内的 BUffer
-content, err := ioutil.ReadAll(body)
-
+content, err := ioutil.ReadAll(resp.Body)
 // 处理图片内容
 
 ```
