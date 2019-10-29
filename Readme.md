@@ -47,7 +47,7 @@ go get -u github.com/medivhzhan/weapp
   - [uploadTempMedia](#uploadTempMedia) ✅
 - [模板消息](#模板消息)(腾讯将于 2020 年 1 月 10 日下线该接口，请使用`订阅消息`))
 - [统一服务消息](#统一服务消息)
-  - [sendUniformMessage](#sendUniformMessage)
+  - [sendUniformMessage](#sendUniformMessage) ✅
 - [动态消息](#动态消息)
   - [createActivityId](#createActivityId)
   - [setUpdatableMsg](#setUpdatableMsg)
@@ -548,22 +548,22 @@ import "github.com/medivhzhan/weapp"
 
 sender := weapp.UniformMsgSender{
     ToUser: "mock-open-id",
-    UniformMPMsg: UniformMPMsg{
+    UniformWeappTmpMsg: weapp.UniformWeappTmpMsg{
         TemplateID: "mock-template-id",
         Page:       "mock-page",
         FormID:     "mock-form-id",
-        Data: UniformMsgData{
-            "mock-keyword": UniformMsgKeyword{Value: "mock-value"},
+        Data: weapp.UniformMsgData{
+            "mock-keyword": weapp.UniformMsgKeyword{Value: "mock-value"},
         },
         EmphasisKeyword: "mock-keyword.DATA",
     },
-    UniformOAMsg: UniformOAMsg{
+    UniformMpTmpMsg: weapp.UniformMpTmpMsg{
         AppID:       "mock-app-id",
         TemplateID:  "mock-template-id",
         URL:         "mock-url",
-        Miniprogram: UniformMsgMiniprogram{"mock-miniprogram-app-id", "mock-page-path"},
-        Data: UniformMsgData{
-            "mock-keyword": UniformMsgKeyword{"mock-value", "mock-color"},
+        Miniprogram: weapp.UniformMsgMiniprogram{"mock-miniprogram-app-id", "mock-page-path"},
+        Data: weapp.UniformMsgData{
+            "mock-keyword": weapp.UniformMsgKeyword{"mock-value", "mock-color"},
         },
     },
 }
