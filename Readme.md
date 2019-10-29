@@ -85,7 +85,8 @@ go get -u github.com/medivhzhan/weapp
   - [vehicleLicense](#vehicleLicense)
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
-- [订阅消息](#订阅消息)⚠️
+- [订阅消息](#订阅消息)
+  - [sendSubscribeMessage](#sendSubscribeMessage) ✅
 
 ---
 
@@ -553,7 +554,7 @@ sender := weapp.UniformMsgSender{
         Page:       "mock-page",
         FormID:     "mock-form-id",
         Data: weapp.UniformMsgData{
-            "mock-keyword": weapp.UniformMsgKeyword{Value: "mock-value"},
+            "mock-keyword": {Value: "mock-value"},
         },
         EmphasisKeyword: "mock-keyword.DATA",
     },
@@ -563,7 +564,7 @@ sender := weapp.UniformMsgSender{
         URL:         "mock-url",
         Miniprogram: weapp.UniformMsgMiniprogram{"mock-miniprogram-app-id", "mock-page-path"},
         Data: weapp.UniformMsgData{
-            "mock-keyword": weapp.UniformMsgKeyword{"mock-value", "mock-color"},
+            "mock-keyword": {"mock-value", "mock-color"},
         },
     },
 }
@@ -1293,6 +1294,47 @@ if err != nil {
     return
 }
 
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 订阅消息
+
+### sendSubscribeMessage
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.send.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+sender := weapp.SubscribeMessage{
+    ToUser:     mpOpenID,
+    TemplateID: "mock-template-id",
+    Page:       "mock/page/path",
+    Data: weapp.SubscribeMessageData{
+        "first-mock-key": {
+            Value: "mock-value",
+        },
+        "second-mock-key": {
+            Value: "mock-value",
+        },
+    },
+}
+
+_, err := sender.Send("mock-access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
