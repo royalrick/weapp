@@ -30,7 +30,7 @@ func TestSendUniformMessage(t *testing.T) {
 		params := struct {
 			ToUser string `json:"touser"` // 用户 openid
 
-			UniformMPMsg struct {
+			UniformWeappTmpMsg struct {
 				TemplateID string `json:"template_id"`
 				Page       string `json:"page"`
 				FormID     string `json:"form_id"`
@@ -39,7 +39,7 @@ func TestSendUniformMessage(t *testing.T) {
 				} `json:"data"`
 				EmphasisKeyword string `json:"emphasis_keyword"`
 			} `json:"weapp_template_msg"`
-			UniformOAMsg struct {
+			UniformMpTmpMsg struct {
 				AppID       string `json:"appid"`
 				TemplateID  string `json:"template_id"`
 				URL         string `json:"url"`
@@ -75,7 +75,7 @@ func TestSendUniformMessage(t *testing.T) {
 
 	sender := UniformMsgSender{
 		ToUser: "mock-open-id",
-		UniformMPMsg: UniformMPMsg{
+		UniformWeappTmpMsg: UniformWeappTmpMsg{
 			TemplateID: "mock-template-id",
 			Page:       "mock-page",
 			FormID:     "mock-form-id",
@@ -84,7 +84,7 @@ func TestSendUniformMessage(t *testing.T) {
 			},
 			EmphasisKeyword: "mock-keyword.DATA",
 		},
-		UniformOAMsg: UniformOAMsg{
+		UniformMpTmpMsg: UniformMpTmpMsg{
 			AppID:       "mock-app-id",
 			TemplateID:  "mock-template-id",
 			URL:         "mock-url",
