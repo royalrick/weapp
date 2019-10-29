@@ -13,8 +13,8 @@ type UniformMsgKeyword struct {
 	Color string `json:"color,omitempty"`
 }
 
-// UniformMPMsg 小程序模板消息
-type UniformMPMsg struct {
+// UniformWeappTmpMsg 小程序模板消息
+type UniformWeappTmpMsg struct {
 	TemplateID      string         `json:"template_id"`
 	Page            string         `json:"page"`
 	FormID          string         `json:"form_id"`
@@ -28,8 +28,8 @@ type UniformMsgMiniprogram struct {
 	PagePath string `json:"pagepath"`
 }
 
-// UniformOAMsg 公众号模板消息
-type UniformOAMsg struct {
+// UniformMpTmpMsg 公众号模板消息
+type UniformMpTmpMsg struct {
 	AppID       string                `json:"appid"`
 	TemplateID  string                `json:"template_id"`
 	URL         string                `json:"url"`
@@ -45,9 +45,9 @@ type Miniprogram struct {
 
 // UniformMsgSender 统一服务消息
 type UniformMsgSender struct {
-	ToUser       string       `json:"touser"` // 用户 openid
-	UniformMPMsg UniformMPMsg `json:"weapp_template_msg,omitempty"`
-	UniformOAMsg UniformOAMsg `json:"mp_template_msg,omitempty"`
+	ToUser             string             `json:"touser"` // 用户 openid
+	UniformWeappTmpMsg UniformWeappTmpMsg `json:"weapp_template_msg,omitempty"`
+	UniformMpTmpMsg    UniformMpTmpMsg    `json:"mp_template_msg,omitempty"`
 }
 
 // Send 统一服务消息
