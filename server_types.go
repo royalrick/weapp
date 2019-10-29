@@ -544,7 +544,7 @@ type DeliveryOrderReaddReturn struct {
 	WaybillID        string  `json:"waybill_id" xml:"waybill_id"`               // 否	配送单号, 可以在API1更新配送单状态异步返回
 	OrderStatus      float64 `json:"order_status" xml:"order_status"`           // 是	配送单状态
 	FinishCode       uint    `json:"finish_code" xml:"finish_code"`             // 否	收货码
-	pickupCode       uint    `json:"pickup_code" xml:"pickup_code"`             // 否	取货码
+	PickupCode       uint    `json:"pickup_code" xml:"pickup_code"`             // 否	取货码
 	DispatchDuration uint    `json:"dispatch_duration" xml:"dispatch_duration"` // 否	预计骑手接单时间，单位秒，比如5分钟，就填300, 无法预计填0
 	SenderLng        float64 `json:"sender_lng" xml:"sender_lng"`               // 否	发货方经度，火星坐标，精确到小数点后6位， 用于消息通知，如果下单请求里有发货人信息则不需要
 	SenderLat        float64 `json:"sender_lat" xml:"sender_lat"`               // 否	发货方纬度，火星坐标，精确到小数点后6位， 用于消息通知，如果下单请求里有发货人信息则不需要
@@ -622,7 +622,7 @@ type DeliveryOrderReaddResult struct {
 // PreAuthCodeGetReturn 需要返回的数据
 type PreAuthCodeGetReturn struct {
 	CommonServerReturn
-	preAuthCode string `json:"pre_auth_code" xml:"pre_auth_code"` // 是	预授权码
+	PreAuthCode string `json:"pre_auth_code" xml:"pre_auth_code"` // 是	预授权码
 }
 
 // PreAuthCodeGetResult 服务器携带的参数
