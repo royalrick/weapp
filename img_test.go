@@ -10,6 +10,143 @@ import (
 	"testing"
 )
 
+func TestAICrop(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
+		}
+
+		if r.URL.EscapedPath() != "/cv/img/aicrop" {
+			t.Error("Invalid request path")
+		}
+
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
+		if r.Form.Get("access_token") == "" {
+			t.Fatalf("access_token can not be empty")
+		}
+
+		if _, _, err := r.FormFile("img"); err != nil {
+			t.Fatal(err)
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		raw := `{
+			"errcode": 0,
+			"errmsg": "ok",
+			"results": [
+			{
+				"crop_left": 112,
+				"crop_top": 0,
+				"crop_right": 839,
+				"crop_bottom": 727
+			},
+			{
+				"crop_left": 0,
+				"crop_top": 205,
+				"crop_right": 965,
+				"crop_bottom": 615
+			}
+			],
+			"img_size": {
+				"w": 966,
+				"h": 728
+			}
+		 }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
+	}))
+	defer ts.Close()
+
+	_, err := aiCrop(ts.URL+apiAICrop, "mock-access-token", testIMGName)
+	if err != nil {
+		t.Fatal(err)
+	}
+}
+
+func TestAICropByURL(t *testing.T) {
+	server := http.NewServeMux()
+	server.HandleFunc("/cv/img/aicrop", func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != "POST" {
+			t.Fatalf("Expect 'POST' get '%s'", r.Method)
+		}
+
+		if r.URL.EscapedPath() != "/cv/img/aicrop" {
+			t.Error("Invalid request path")
+		}
+
+		if err := r.ParseForm(); err != nil {
+			t.Fatal(err)
+		}
+
+		queries := []string{"access_token", "img_url"}
+		for _, v := range queries {
+			content := r.Form.Get(v)
+			if content == "" {
+				t.Fatalf("%v can not be empty", v)
+			}
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "application/json")
+		raw := `{
+			"errcode": 0,
+			"errmsg": "ok",
+			"results": [
+			{
+				"crop_left": 112,
+				"crop_top": 0,
+				"crop_right": 839,
+				"crop_bottom": 727
+			},
+			{
+				"crop_left": 0,
+				"crop_top": 205,
+				"crop_right": 965,
+				"crop_bottom": 615
+			}
+			],
+			"img_size": {
+				"w": 966,
+				"h": 728
+			}
+		 }`
+		if _, err := w.Write([]byte(raw)); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	server.HandleFunc("/mediaurl", func(w http.ResponseWriter, r *http.Request) {
+		filename := testIMGName
+		file, err := os.Open(filename)
+		if err != nil {
+			t.Fatal((err))
+		}
+		defer file.Close()
+
+		ext := path.Ext(filename)
+		ext = ext[1:len(ext)]
+		w.Header().Set("Content-Type", "image/"+ext)
+		w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=\"%s\"", path.Base(filename)))
+		w.WriteHeader(http.StatusOK)
+
+		if _, err := io.Copy(w, file); err != nil {
+			t.Fatal(err)
+		}
+	})
+
+	ts := httptest.NewServer(server)
+	defer ts.Close()
+
+	_, err := aiCropByURL(ts.URL+apiAICrop, "mock-access-token", ts.URL+"/mediaurl")
+	if err != nil {
+		t.Fatal(err)
+	}
+}
 func TestScanQRCode(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {

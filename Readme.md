@@ -1,6 +1,6 @@
 # ![title](title.png)
 
-## `注意⚠️`
+## `注意`⚠️
 
 - [1.x 版本入口](https://github.com/medivhzhan/weapp/tree/v1)
 - 2.0 版本开始支付相关内容会分离到一个单独的包。
@@ -71,8 +71,8 @@ go get -u github.com/medivhzhan/weapp
   - [mediaCheckAsync](#mediaCheckAsync)
   - [msgSecCheck](#msgSecCheck) ✅
 - [图像处理](#图像处理)
-  - [aiCrop](#aiCrop)⚠️
-  - [scanQRCode](#scanQRCode)
+  - [aiCrop](#aiCrop) ✅
+  - [scanQRCode](#scanQRCode) ✅
   - [superResolution](#superResolution)
 - [及时配送](#及时配送)⚠️
 - [物流助手](#物流助手)⚠️
@@ -83,6 +83,7 @@ go get -u github.com/medivhzhan/weapp
   - [idcard](#idcard)
   - [printedText](#printedText)⚠️
   - [vehicleLicense](#vehicleLicense)
+- [运维中心](#运维中心)⚠️
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
 - [订阅消息](#订阅消息)
@@ -1116,6 +1117,31 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 图像处理
 
+### aiCrop
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.aiCrop.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.AICrop("access-token", "filename")
+// 或者
+res, err := weapp.AICropByURL("access-token", "url")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 ### scanQRCode
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/img/img.scanQRCode.html)
@@ -1124,14 +1150,13 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.scanQRCode("access-token", "file-path")
+res, err := weapp.ScanQRCode("access-token", "file-path")
 // 或者
-res, err := weapp.scanQRCodeByURL("access-token", "qr-code-url")
+res, err := weapp.ScanQRCodeByURL("access-token", "qr-code-url")
 if err != nil {
     // 处理一般错误信息
     return
 }
-
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息

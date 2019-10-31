@@ -1,9 +1,70 @@
 package weapp
 
 const (
+	apiAICrop          = "/cv/img/aicrop"
 	apiScanQRCode      = "/cv/img/qrcode"
 	apiSuperResolution = "/cv/img/superResolution"
 )
+
+// AICropResponse 图片智能裁剪后的返回数据
+type AICropResponse struct {
+	CommonError
+	Results []struct {
+		CropLeft   uint `json:"crop_left"`
+		CropTop    uint `json:"crop_top"`
+		CropRight  uint `json:"crop_right"`
+		CropBottom uint `json:"crop_bottom"`
+	} `json:"results"`
+	IMGSize struct {
+		Width  uint `json:"w"`
+		Height uint `json:"h"`
+	} `json:"img_size"`
+}
+
+// AICrop 本接口提供基于小程序的图片智能裁剪能力。
+func AICrop(token, filename string) (*AICropResponse, error) {
+	api := baseURL + apiAICrop
+	return aiCrop(api, token, filename)
+}
+
+func aiCrop(api, token, filename string) (*AICropResponse, error) {
+	url, err := tokenAPI(api, token)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(AICropResponse)
+	if err := postFormByFile(url, "img", filename, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// AICropByURL 本接口提供基于小程序的图片智能裁剪能力。
+func AICropByURL(token, url string) (*AICropResponse, error) {
+	api := baseURL + apiAICrop
+	return aiCropByURL(api, token, url)
+}
+
+func aiCropByURL(api, token, imgURL string) (*AICropResponse, error) {
+	queries := requestQueries{
+		"access_token": token,
+		"img_url":      imgURL,
+	}
+
+	url, err := encodeURL(api, queries)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(AICropResponse)
+	if err := postJSON(url, nil, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
 
 // QRCodePoint 二维码角的位置
 type QRCodePoint struct {
