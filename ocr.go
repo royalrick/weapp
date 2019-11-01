@@ -1,9 +1,11 @@
 package weapp
 
 const (
-	apiBankcard = "/cv/ocr/bankcard"
-	apiDriving  = "/cv/ocr/driving"
-	apiIDCard   = "/cv/ocr/idcard"
+	apiBankcard        = "/cv/ocr/bankcard"
+	apiDriving         = "/cv/ocr/driving"
+	apiIDCard          = "/cv/ocr/idcard"
+	apiBusinessLicense = "/cv/ocr/bizlicense"
+	apiPrintedText     = "/cv/ocr/comm"
 )
 
 // RecognizeMode 图片识别模式
@@ -213,6 +215,115 @@ func VehicleLicense(token, filename string, mode RecognizeMode) (*VehicleLicense
 func vehicleLicense(api, token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	res := new(VehicleLicenseResponse)
 	err := ocrByFile(api, token, filename, mode, res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, err
+}
+
+// LicensePoint 证件点
+type LicensePoint struct {
+	X uint `json:"x"`
+	Y uint `json:"y"`
+}
+
+// LicensePosition 证件位置
+type LicensePosition struct {
+	LeftTop     LicensePoint `json:"left_top"`
+	RightTop    LicensePoint `json:"right_top"`
+	RightBottom LicensePoint `json:"right_bottom"`
+	LeftBottom  LicensePoint `json:"left_bottom"`
+}
+
+// BusinessLicenseResponse 营业执照 OCR 识别返回数据
+type BusinessLicenseResponse struct {
+	CommonError
+	RegNum              string `json:"reg_num"`              //	注册号
+	Serial              string `json:"serial"`               //	编号
+	LegalRepresentative string `json:"legal_representative"` //	法定代表人姓名
+	EnterpriseName      string `json:"enterprise_name"`      //	企业名称
+	TypeOfOrganization  string `json:"type_of_organization"` //	组成形式
+	Address             string `json:"address"`              //	经营场所/企业住所
+	TypeOfEnterprise    string `json:"type_of_enterprise"`   //	公司类型
+	BusinessScope       string `json:"business_scope"`       //	经营范围
+	RegisteredCapital   string `json:"registered_capital"`   //	注册资本
+	PaidInCapital       string `json:"paid_in_capital"`      //	实收资本
+	ValidPeriod         string `json:"valid_period"`         //	营业期限
+	RegisteredDate      string `json:"registered_date"`      //	注册日期/成立日期
+	CertPosition        struct {
+		Position LicensePosition `json:"pos"`
+	} `json:"cert_position"` //	营业执照位置
+	ImgSize LicensePoint `json:"img_size"` //	图片大小
+}
+
+// BusinessLicenseByURL 通过链接进行营业执照 OCR 识别
+func BusinessLicenseByURL(token, cardURL string) (*BusinessLicenseResponse, error) {
+	api := baseURL + apiBusinessLicense
+	return businessLicenseByURL(api, token, cardURL)
+}
+
+func businessLicenseByURL(api, token, cardURL string) (*BusinessLicenseResponse, error) {
+	res := new(BusinessLicenseResponse)
+	err := ocrByURL(api, token, cardURL, "", res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// BusinessLicense 通过文件进行营业执照 OCR 识别
+func BusinessLicense(token, filename string) (*BusinessLicenseResponse, error) {
+	api := baseURL + apiBusinessLicense
+	return businessLicense(api, token, filename)
+}
+
+func businessLicense(api, token, filename string) (*BusinessLicenseResponse, error) {
+	res := new(BusinessLicenseResponse)
+	err := ocrByFile(api, token, filename, "", res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, err
+}
+
+// PrintedTextResponse 通用印刷体 OCR 识别返回数据
+type PrintedTextResponse struct {
+	CommonError
+	Items []struct {
+		Text     string          `json:"text"`
+		Position LicensePosition `json:"pos"`
+	} `json:"items"` //	识别结果
+	ImgSize LicensePoint `json:"img_size"` //	图片大小
+}
+
+// PrintedTextByURL 通过链接进行通用印刷体 OCR 识别
+func PrintedTextByURL(token, cardURL string) (*PrintedTextResponse, error) {
+	api := baseURL + apiPrintedText
+	return printedTextByURL(api, token, cardURL)
+}
+
+func printedTextByURL(api, token, cardURL string) (*PrintedTextResponse, error) {
+	res := new(PrintedTextResponse)
+	err := ocrByURL(api, token, cardURL, "", res)
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}
+
+// PrintedText 通过文件进行通用印刷体 OCR 识别
+func PrintedText(token, filename string) (*PrintedTextResponse, error) {
+	api := baseURL + apiPrintedText
+	return printedText(api, token, filename)
+}
+
+func printedText(api, token, filename string) (*PrintedTextResponse, error) {
+	res := new(PrintedTextResponse)
+	err := ocrByFile(api, token, filename, "", res)
 	if err != nil {
 		return nil, err
 	}

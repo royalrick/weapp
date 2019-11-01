@@ -78,10 +78,10 @@ go get -u github.com/medivhzhan/weapp
 - [物流助手](#物流助手)⚠️
 - [OCR](#OCR)
   - [bankcard](#bankcard)
-  - [businessLicense](#businessLicense)⚠️
+  - [businessLicense](#businessLicense)
   - [driverLicense](#driverLicense)
   - [idcard](#idcard)
-  - [printedText](#printedText)⚠️
+  - [printedText](#printedText)
   - [vehicleLicense](#vehicleLicense)
 - [运维中心](#运维中心)⚠️
 - [生物认证](#生物认证)
@@ -1183,7 +1183,6 @@ if err != nil {
     return
 }
 
-
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
@@ -1213,6 +1212,30 @@ if err != nil {
     return
 }
 
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### businessLicense
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.businessLicense.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.BusinessLicense("access-token", "file-path")
+// 或者
+res, err := weapp.BusinessLicenseByURL("access-token", "card-url")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
@@ -1239,7 +1262,6 @@ if err != nil {
     return
 }
 
-
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
@@ -1265,6 +1287,30 @@ if err != nil {
     return
 }
 
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+### printedText
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/ocr/ocr.printedText.html)
+
+```go
+
+import "github.com/medivhzhan/weapp"
+
+res, err := weapp.PrintedText("access-token", "file-path")
+// 或者
+res, err := weapp.PrintedTextByURL("access-token", "card-url")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
@@ -1290,7 +1336,6 @@ if err != nil {
     // 处理一般错误信息
     return
 }
-
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
@@ -1318,7 +1363,6 @@ if err != nil {
     // 处理一般错误信息
     return
 }
-
 
 if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
