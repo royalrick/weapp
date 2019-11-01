@@ -41,7 +41,7 @@
 
 ```sh
 
-go get -u github.com/medivhzhan/weapp
+go get -u github.com/medivhzhan/weapp@v1
 
 ```
 
