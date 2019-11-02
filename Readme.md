@@ -10,7 +10,7 @@
 
 ```sh
 
-go get -u github.com/medivhzhan/weapp
+go get -u github.com/medivhzhan/weapp@v2
 
 ```
 
@@ -45,7 +45,7 @@ go get -u github.com/medivhzhan/weapp
   - [sendCustomerServiceMessage](#sendCustomerServiceMessage) ✅
   - [setTyping](#setTyping) ✅
   - [uploadTempMedia](#uploadTempMedia) ✅
-- [模板消息](#模板消息)(腾讯将于 2020 年 1 月 10 日下线该接口，请使用`订阅消息`))
+- [模板消息](#模板消息)(腾讯将于 2020 年 1 月 10 日下线该接口，请使用 [`订阅消息`](#订阅消息))
 - [统一服务消息](#统一服务消息)
   - [sendUniformMessage](#sendUniformMessage) ✅
 - [动态消息](#动态消息)
@@ -77,12 +77,12 @@ go get -u github.com/medivhzhan/weapp
 - [及时配送](#及时配送)⚠️
 - [物流助手](#物流助手)⚠️
 - [OCR](#OCR)
-  - [bankcard](#bankcard)
-  - [businessLicense](#businessLicense)
-  - [driverLicense](#driverLicense)
-  - [idcard](#idcard)
-  - [printedText](#printedText)
-  - [vehicleLicense](#vehicleLicense)
+  - [bankcard](#bankcard) ✅
+  - [businessLicense](#businessLicense) ✅
+  - [driverLicense](#driverLicense) ✅
+  - [idcard](#idcard) ✅
+  - [printedText](#printedText) ✅
+  - [vehicleLicense](#vehicleLicense) ✅
 - [运维中心](#运维中心)⚠️
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
@@ -101,7 +101,7 @@ go get -u github.com/medivhzhan/weapp
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.Login("mock-appid", "mock-secret", "mock-code")
+res, err := weapp.Login("appid", "secret", "code")
 if err != nil {
     // 处理一般错误信息
     return
@@ -128,9 +128,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetPaidUnionID("mock-access-token", "mock-open-id", "mock-transaction-id")
+res, err := weapp.GetPaidUnionID("access-token", "open-id", "transaction-id")
 // 或者
-res, err := weapp.GetPaidUnionIDWithMCH("mock-access-token", "mock-open-id", "mock-out-trade-number", "mock-mch-id")
+res, err := weapp.GetPaidUnionIDWithMCH("access-token", "open-id", "out-trade-number", "mch-id")
 
 if err != nil {
     // 处理一般错误信息
@@ -160,7 +160,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetAccessToken("mock-appid", "mock-secret")
+res, err := weapp.GetAccessToken("appid", "secret")
 if err != nil {
     // 处理一般错误信息
     return
@@ -189,7 +189,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetDailyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetDailyRetain("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -212,7 +212,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetWeeklyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetWeeklyRetain("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -235,7 +235,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetMonthlyRetain("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetMonthlyRetain("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -258,7 +258,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetDailySummary("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetDailySummary("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -283,7 +283,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetDailyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetDailyVisitTrend("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -306,7 +306,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetWeeklyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetWeeklyVisitTrend("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -329,7 +329,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetMonthlyVisitTrend("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetMonthlyVisitTrend("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -352,7 +352,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetUserPortrait("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetUserPortrait("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -375,7 +375,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetVisitDistribution("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetVisitDistribution("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -398,7 +398,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetVisitPage("mock-access-token", "mock-begin-date", "mock-end-date")
+res, err := weapp.GetVisitPage("access-token", "begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -425,7 +425,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-resp, res, err := weapp.GetTempMedia("mock-access-token", "mock-media-id")
+resp, res, err := weapp.GetTempMedia("access-token", "media-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -452,30 +452,30 @@ import "github.com/medivhzhan/weapp"
 
 // 文本消息
 msg := weapp.CSMsgText{
-    Content: "mock-content",
+    Content: "content",
 }
 // 或者
 // 图片消息
 msg := weapp.CSMsgImage{
-    MediaID: "mock-media-id",
+    MediaID: "media-id",
 }
 // 或者
 // 链接消息
 msg := weapp.CSMsgLink{
-    Title:       "mock-title",
-    Description: "mock-description",
-    URL:         "mock-url",
-    ThumbURL:    "mock-thumb-url",
+    Title:       "title",
+    Description: "description",
+    URL:         "url",
+    ThumbURL:    "thumb-url",
 }
 // 或者
 // 小程序卡片消息
 msg := weapp.CSMsgMPCard{
-    Title:        "mock-title",
-    PagePath:     "mock-page-path",
-    ThumbMediaID: "mock-thumb-media-id",
+    Title:        "title",
+    PagePath:     "page-path",
+    ThumbMediaID: "thumb-media-id",
 }
 
-res, err := msg.SendTo("mock-open-id", "mock-access-token")
+res, err := msg.SendTo("open-id", "access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -498,7 +498,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.SetTyping("mock-access-token", "mock-open-id", weapp.SetTypingCommandTyping)
+res, err := weapp.SetTyping("access-token", "open-id", weapp.SetTypingCommandTyping)
 if err != nil {
     // 处理一般错误信息
     return
@@ -521,7 +521,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.UploadTempMedia("mock-access-token", weapp.TempMediaTypeImage, "mock-media-filename")
+res, err := weapp.UploadTempMedia("access-token", weapp.TempMediaTypeImage, "media-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -549,28 +549,28 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp"
 
 sender := weapp.UniformMsgSender{
-    ToUser: "mock-open-id",
+    ToUser: "open-id",
     UniformWeappTmpMsg: weapp.UniformWeappTmpMsg{
-        TemplateID: "mock-template-id",
-        Page:       "mock-page",
-        FormID:     "mock-form-id",
+        TemplateID: "template-id",
+        Page:       "page",
+        FormID:     "form-id",
         Data: weapp.UniformMsgData{
-            "mock-keyword": {Value: "mock-value"},
+            "keyword": {Value: "value"},
         },
-        EmphasisKeyword: "mock-keyword.DATA",
+        EmphasisKeyword: "keyword.DATA",
     },
     UniformMpTmpMsg: weapp.UniformMpTmpMsg{
-        AppID:       "mock-app-id",
-        TemplateID:  "mock-template-id",
-        URL:         "mock-url",
-        Miniprogram: weapp.UniformMsgMiniprogram{"mock-miniprogram-app-id", "mock-page-path"},
+        AppID:       "app-id",
+        TemplateID:  "template-id",
+        URL:         "url",
+        Miniprogram: weapp.UniformMsgMiniprogram{"miniprogram-app-id", "page-path"},
         Data: weapp.UniformMsgData{
-            "mock-keyword": {"mock-value", "mock-color"},
+            "keyword": {"value", "color"},
         },
     },
 }
 
-_, err := sender.Send("mock-access-token")
+_, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -597,7 +597,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.CreateActivityId("mock-access-token")
+res, err := weapp.CreateActivityId("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -622,17 +622,17 @@ import "github.com/medivhzhan/weapp"
 
 
 setter := weapp.UpdatableMsgSetter{
-    "mock-activity-id",
+    "activity-id",
     UpdatableMsgJoining,
     UpdatableMsgTempInfo{
         []UpdatableMsgParameter{
-            {UpdatableMsgParamMemberCount, "mock-parameter-value-number"},
-            {UpdatableMsgParamRoomLimit, "mock-parameter-value-number"},
+            {UpdatableMsgParamMemberCount, "parameter-value-number"},
+            {UpdatableMsgParamRoomLimit, "parameter-value-number"},
         },
     },
 }
 
-res, err := setter.Set("mock-access-token")
+res, err := setter.Set("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -682,7 +682,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.GetPluginDevApplyList("mock-access-token", 1, 2)
+res, err := weapp.GetPluginDevApplyList("access-token", 1, 2)
 if err != nil {
     // 处理一般错误信息
     return
@@ -807,7 +807,7 @@ if err := res.GetResponseError(); err !=nil {
 fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
-srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+srv, err := NewServer("app-id", "access-token", aesKey, "mch-id", "api-key", false, func(mix *Mixture) bool {
     if mix.MsgType != weapp.MsgEvent {
         if mix.Event != weapp.EventNearbyPoiAuditInfoAdd {
             if mix.AuditID == res.Data.AuditID {
@@ -924,7 +924,7 @@ creator := weapp.QRCodeCreator{
     Width: 430,
 }
 
-resp, res, err := creator.Create("mock-access-token")
+resp, res, err := creator.Create("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -961,7 +961,7 @@ getter := weapp.QRCode{
     IsHyaline: true,
 }
 
-resp, res, err := getter.Get("mock-access-token")
+resp, res, err := getter.Get("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -991,7 +991,7 @@ import (
 
 
 getter :=  weapp.UnlimitedQRCode{
-    Scene:     "mock-scene-data",
+    Scene:     "scene-data",
     Page:      "mock/page",
     Width:     430,
     AutoColor: true,
@@ -999,7 +999,7 @@ getter :=  weapp.UnlimitedQRCode{
     IsHyaline: true,
 }
 
-resp, res, err := getter.Get("mock-access-token")
+resp, res, err := getter.Get("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1028,7 +1028,7 @@ content, err := ioutil.ReadAll(resp.Body)
 
 import "github.com/medivhzhan/weapp"
 
-res, err := weapp.IMGSecCheck("mock-access-token", "local-filename")
+res, err := weapp.IMGSecCheck("access-token", "local-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1065,7 +1065,7 @@ if err := res.GetResponseError(); err !=nil {
 fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
-srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false, func(mix *Mixture) bool {
+srv, err := NewServer("app-id", "access-token", aesKey, "mch-id", "api-key", false, func(mix *Mixture) bool {
     if mix.MsgType != weapp.MsgEvent {
         if mix.Event != weapp.EventAsyncMediaCheck {
             if mix.TraceID == res.TraceID {
@@ -1387,19 +1387,19 @@ import "github.com/medivhzhan/weapp"
 
 sender := weapp.SubscribeMessage{
     ToUser:     mpOpenID,
-    TemplateID: "mock-template-id",
+    TemplateID: "template-id",
     Page:       "mock/page/path",
     Data: weapp.SubscribeMessageData{
-        "first-mock-key": {
-            Value: "mock-value",
+        "first-key": {
+            Value: "value",
         },
-        "second-mock-key": {
-            Value: "mock-value",
+        "second-key": {
+            Value: "value",
         },
     },
 }
 
-_, err := sender.Send("mock-access-token")
+_, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return

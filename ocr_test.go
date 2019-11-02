@@ -132,14 +132,14 @@ func TestBankCard(t *testing.T) {
 
 func TestDriverLicenseByURL(t *testing.T) {
 	server := http.NewServeMux()
-	server.HandleFunc(apiDriving, func(w http.ResponseWriter, r *http.Request) {
+	server.HandleFunc(apiDrivingLicense, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiDriving {
-			t.Fatalf("Except to path '%s',get '%s'", apiDriving, path)
+		if path != apiDrivingLicense {
+			t.Fatalf("Except to path '%s',get '%s'", apiDrivingLicense, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -198,7 +198,7 @@ func TestDriverLicenseByURL(t *testing.T) {
 	ts := httptest.NewServer(server)
 	defer ts.Close()
 
-	_, err := driverLicenseByURL(ts.URL+apiDriving, "mock-access-token", ts.URL+"/mediaurl")
+	_, err := driverLicenseByURL(ts.URL+apiDrivingLicense, "mock-access-token", ts.URL+"/mediaurl")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -212,8 +212,8 @@ func TestDriverLicense(t *testing.T) {
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiDriving {
-			t.Fatalf("Except to path '%s',get '%s'", apiDriving, path)
+		if path != apiDrivingLicense {
+			t.Fatalf("Except to path '%s',get '%s'", apiDrivingLicense, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -251,7 +251,7 @@ func TestDriverLicense(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := driverLicense(ts.URL+apiDriving, "mock-access-token", testIMGName)
+	_, err := driverLicense(ts.URL+apiDrivingLicense, "mock-access-token", testIMGName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -754,14 +754,14 @@ func TestIDCard(t *testing.T) {
 
 func TestVehicleLicenseByURL(t *testing.T) {
 	server := http.NewServeMux()
-	server.HandleFunc(apiDriving, func(w http.ResponseWriter, r *http.Request) {
+	server.HandleFunc(apiVehicleLicense, func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Fatalf("Expect 'POST' get '%s'", r.Method)
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiDriving {
-			t.Fatalf("Except to path '%s',get '%s'", apiDriving, path)
+		if path != apiVehicleLicense {
+			t.Fatalf("Except to path '%s',get '%s'", apiVehicleLicense, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -821,12 +821,12 @@ func TestVehicleLicenseByURL(t *testing.T) {
 	ts := httptest.NewServer(server)
 	defer ts.Close()
 
-	_, err := vehicleLicenseByURL(ts.URL+apiDriving, "mock-access-token", ts.URL+"/mediaurl", RecognizeModePhoto)
+	_, err := vehicleLicenseByURL(ts.URL+apiVehicleLicense, "mock-access-token", ts.URL+"/mediaurl", RecognizeModePhoto)
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	_, err = vehicleLicenseByURL(ts.URL+apiDriving, "mock-access-token", ts.URL+"/mediaurl", RecognizeModeScan)
+	_, err = vehicleLicenseByURL(ts.URL+apiVehicleLicense, "mock-access-token", ts.URL+"/mediaurl", RecognizeModeScan)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -840,8 +840,8 @@ func TestVehicleLicense(t *testing.T) {
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiDriving {
-			t.Fatalf("Except to path '%s',get '%s'", apiDriving, path)
+		if path != apiVehicleLicense {
+			t.Fatalf("Except to path '%s',get '%s'", apiVehicleLicense, path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -883,11 +883,11 @@ func TestVehicleLicense(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	_, err := vehicleLicense(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModePhoto)
+	_, err := vehicleLicense(ts.URL+apiVehicleLicense, "mock-access-token", testIMGName, RecognizeModePhoto)
 	if err != nil {
 		t.Fatal(err)
 	}
-	_, err = vehicleLicense(ts.URL+apiDriving, "mock-access-token", testIMGName, RecognizeModeScan)
+	_, err = vehicleLicense(ts.URL+apiVehicleLicense, "mock-access-token", testIMGName, RecognizeModeScan)
 	if err != nil {
 		t.Fatal(err)
 	}

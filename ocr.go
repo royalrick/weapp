@@ -2,7 +2,8 @@ package weapp
 
 const (
 	apiBankcard        = "/cv/ocr/bankcard"
-	apiDriving         = "/cv/ocr/driving"
+	apiVehicleLicense  = "/cv/ocr/driving"
+	apiDrivingLicense  = "/cv/ocr/drivinglicense"
 	apiIDCard          = "/cv/ocr/idcard"
 	apiBusinessLicense = "/cv/ocr/bizlicense"
 	apiPrintedText     = "/cv/ocr/comm"
@@ -51,7 +52,7 @@ func bankCardByURL(api, token, cardURL string, mode RecognizeMode) (*BankCardRes
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func BankCard(token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
-	api := baseURL + apiDriving
+	api := baseURL + apiBankcard
 	return bankCard(api, token, filename, mode)
 }
 
@@ -82,7 +83,20 @@ type CardResponse struct {
 }
 
 // DrivingLicenseResponse 识别行驶证返回数据
-type DrivingLicenseResponse = CardResponse
+type DrivingLicenseResponse struct {
+	CommonError
+	IDNum        string `json:"id_num"`        // 证号
+	Name         string `json:"name"`          // 姓名
+	Nationality  string `json:"nationality"`   // 国家
+	Sex          string `json:"sex"`           // 性别
+	Address      string `json:"address"`       // 地址
+	BirthDate    string `json:"birth_date"`    // 出生日期
+	IssueDate    string `json:"issue_date"`    // 初次领证日期
+	CarClass     string `json:"car_class"`     // 准驾车型
+	ValidFrom    string `json:"valid_from"`    // 有效期限起始日
+	ValidTo      string `json:"valid_to"`      // 有效期限终止日
+	OfficialSeal string `json:"official_seal"` // 印章文构
+}
 
 // DriverLicenseByURL 通过URL识别行驶证
 // 接口限制: 此接口需要提供对应小程序/公众号 appid，开通权限后方可调用。
@@ -91,7 +105,7 @@ type DrivingLicenseResponse = CardResponse
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func DriverLicenseByURL(token, licenseURL string) (*DrivingLicenseResponse, error) {
-	api := baseURL + apiDriving
+	api := baseURL + apiDrivingLicense
 	return driverLicenseByURL(api, token, licenseURL)
 }
 
@@ -112,7 +126,7 @@ func driverLicenseByURL(api, token, licenseURL string) (*DrivingLicenseResponse,
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
 func DriverLicense(token, filename string) (*DrivingLicenseResponse, error) {
-	api := baseURL + apiDriving
+	api := baseURL + apiDrivingLicense
 	return driverLicense(api, token, filename)
 }
 
@@ -192,7 +206,7 @@ type VehicleLicenseResponse struct {
 
 // VehicleLicenseByURL 行驶证 OCR 识别
 func VehicleLicenseByURL(token, cardURL string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
-	api := baseURL + apiDriving
+	api := baseURL + apiVehicleLicense
 	return vehicleLicenseByURL(api, token, cardURL, mode)
 }
 
@@ -208,7 +222,7 @@ func vehicleLicenseByURL(api, token, cardURL string, mode RecognizeMode) (*Vehic
 
 // VehicleLicense 通过文件识别行驶证
 func VehicleLicense(token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
-	api := baseURL + apiDriving
+	api := baseURL + apiVehicleLicense
 	return vehicleLicense(api, token, filename, mode)
 }
 
