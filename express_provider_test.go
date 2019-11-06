@@ -83,7 +83,7 @@ func TestOnAddExpressOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleAddExpressOrderRequest(func(result *AddExpressOrderResult) *AddExpressOrderReturn {
+		srv.OnAddExpressOrderRequest(func(result *AddExpressOrderResult) *AddExpressOrderReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -453,7 +453,7 @@ func TestOnExpressOrderCancel(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleExpressOrderCancelRequest(func(result *ExpressOrderCancelResult) *ExpressOrderCancelReturn {
+		srv.OnExpressOrderCancelRequest(func(result *ExpressOrderCancelResult) *ExpressOrderCancelReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -616,7 +616,7 @@ func TestOnCheckBusiness(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleCheckBusinessRequest(func(result *CheckBusinessResult) *CheckBusinessReturn {
+		srv.OnCheckBusinessRequest(func(result *CheckBusinessResult) *CheckBusinessReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -785,7 +785,7 @@ func TestOnQuotaGet(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleQuotaGetRequest(func(result *QuotaGetResult) *QuotaGetReturn {
+		srv.OnQuotaGetRequest(func(result *QuotaGetResult) *QuotaGetReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}

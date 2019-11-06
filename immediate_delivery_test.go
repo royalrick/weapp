@@ -1942,7 +1942,7 @@ func TestOnDeliveryOrderStatusUpdate(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.HandleDeliveryOrderStatusUpdate(func(mix *DeliveryOrderStatusUpdateResult) *DeliveryOrderStatusUpdateReturn {
+		srv.OnDeliveryOrderStatusUpdate(func(mix *DeliveryOrderStatusUpdateResult) *DeliveryOrderStatusUpdateReturn {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}

@@ -91,129 +91,129 @@ type Server struct {
 	riderScoreSetHandler              func(*RiderScoreSetResult) *RiderScoreSetReturn
 }
 
-// CustomerServiceTextMessageHandler add handler to handle customer text service message.
-func (srv *Server) CustomerServiceTextMessageHandler(fn func(*TextMessageResult)) {
+// OnCustomerServiceTextMessage add handler to handle customer text service message.
+func (srv *Server) OnCustomerServiceTextMessage(fn func(*TextMessageResult)) {
 	srv.textMessageHandler = fn
 }
 
-// CustomerServiceImageMessageHandler add handler to handle customer image service message.
-func (srv *Server) CustomerServiceImageMessageHandler(fn func(*ImageMessageResult)) {
+// OnCustomerServiceImageMessage add handler to handle customer image service message.
+func (srv *Server) OnCustomerServiceImageMessage(fn func(*ImageMessageResult)) {
 	srv.imageMessageHandler = fn
 }
 
-// CustomerServiceCardMessageHandler add handler to handle customer card service message.
-func (srv *Server) CustomerServiceCardMessageHandler(fn func(*CardMessageResult)) {
+// OnCustomerServiceCardMessage add handler to handle customer card service message.
+func (srv *Server) OnCustomerServiceCardMessage(fn func(*CardMessageResult)) {
 	srv.cardMessageHandler = fn
 }
 
-// UserTempsessionEnterHandler add handler to handle customer service message.
-func (srv *Server) UserTempsessionEnterHandler(fn func(*UserTempsessionEnterResult)) {
+// OnUserTempsessionEnter add handler to handle customer service message.
+func (srv *Server) OnUserTempsessionEnter(fn func(*UserTempsessionEnterResult)) {
 	srv.userTempsessionEnterHandler = fn
 }
 
-// HandleMediaCheckAsyncRequest add handler to handle MediaCheckAsync.
-func (srv *Server) HandleMediaCheckAsyncRequest(fn func(*MediaCheckAsyncResult)) {
+// OnMediaCheckAsyncRequest add handler to handle MediaCheckAsync.
+func (srv *Server) OnMediaCheckAsyncRequest(fn func(*MediaCheckAsyncResult)) {
 	srv.mediaCheckAsyncHandler = fn
 }
 
-// HandleExpressPathUpdateRequest add handler to handle ExpressPathUpdate.
-func (srv *Server) HandleExpressPathUpdateRequest(fn func(*ExpressPathUpdateResult)) {
+// OnExpressPathUpdateRequest add handler to handle ExpressPathUpdate.
+func (srv *Server) OnExpressPathUpdateRequest(fn func(*ExpressPathUpdateResult)) {
 	srv.expressPathUpdateHandler = fn
 }
 
-// HandleAddNearbyPoiAuditRequest add handler to handle AddNearbyPoiAudit.
-func (srv *Server) HandleAddNearbyPoiAuditRequest(fn func(*AddNearbyPoiAuditResult)) {
+// OnAddNearbyPoiAuditRequest add handler to handle AddNearbyPoiAudit.
+func (srv *Server) OnAddNearbyPoiAuditRequest(fn func(*AddNearbyPoiAuditResult)) {
 	srv.addNearbyPoiAuditHandler = fn
 }
 
-// HandleAddExpressOrderRequest add handler to handle AddExpressOrder.
-func (srv *Server) HandleAddExpressOrderRequest(fn func(*AddExpressOrderResult) *AddExpressOrderReturn) {
+// OnAddExpressOrderRequest add handler to handle AddExpressOrder.
+func (srv *Server) OnAddExpressOrderRequest(fn func(*AddExpressOrderResult) *AddExpressOrderReturn) {
 	srv.addExpressOrderHandler = fn
 }
 
-// HandleCheckBusinessRequest cancel handler to handle CheckBusiness.
-func (srv *Server) HandleCheckBusinessRequest(fn func(*CheckBusinessResult) *CheckBusinessReturn) {
+// OnCheckBusinessRequest cancel handler to handle CheckBusiness.
+func (srv *Server) OnCheckBusinessRequest(fn func(*CheckBusinessResult) *CheckBusinessReturn) {
 	srv.checkBusinessHandler = fn
 }
 
-// HandleExpressOrderCancelRequest cancel handler to handle ExpressOrderCancel.
-func (srv *Server) HandleExpressOrderCancelRequest(fn func(*ExpressOrderCancelResult) *ExpressOrderCancelReturn) {
+// OnExpressOrderCancelRequest cancel handler to handle ExpressOrderCancel.
+func (srv *Server) OnExpressOrderCancelRequest(fn func(*ExpressOrderCancelResult) *ExpressOrderCancelReturn) {
 	srv.expressOrderCancelHandler = fn
 }
 
-// HandleQuotaGetRequest add handler to handle QuotaGet.
-func (srv *Server) HandleQuotaGetRequest(fn func(*QuotaGetResult) *QuotaGetReturn) {
+// OnQuotaGetRequest add handler to handle QuotaGet.
+func (srv *Server) OnQuotaGetRequest(fn func(*QuotaGetResult) *QuotaGetReturn) {
 	srv.quotaGetHandler = fn
 }
 
-// HandleDeliveryOrderStatusUpdate add handler to handle DeliveryOrderStatusUpdate.
-// HandleDeliveryOrderStatusUpdate add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderStatusUpdate(fn func(*DeliveryOrderStatusUpdateResult) *DeliveryOrderStatusUpdateReturn) {
+// OnDeliveryOrderStatusUpdate add handler to handle DeliveryOrderStatusUpdate.
+// OnDeliveryOrderStatusUpdate add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderStatusUpdate(fn func(*DeliveryOrderStatusUpdateResult) *DeliveryOrderStatusUpdateReturn) {
 	srv.deliveryOrderStatusUpdateHandler = fn
 }
 
-// HandleAgentPosQuery add handler to handle AgentPosQuery.
-func (srv *Server) HandleAgentPosQuery(fn func(*AgentPosQueryResult) *AgentPosQueryReturn) {
+// OnAgentPosQuery add handler to handle AgentPosQuery.
+func (srv *Server) OnAgentPosQuery(fn func(*AgentPosQueryResult) *AgentPosQueryReturn) {
 	srv.agentPosQueryHandler = fn
 }
 
-// HandleAuthInfoGet add handler to handle AuthInfoGet.
-func (srv *Server) HandleAuthInfoGet(fn func(*AuthInfoGetResult) *AuthInfoGetReturn) {
+// OnAuthInfoGet add handler to handle AuthInfoGet.
+func (srv *Server) OnAuthInfoGet(fn func(*AuthInfoGetResult) *AuthInfoGetReturn) {
 	srv.authInfoGetHandler = fn
 }
 
-// HandleAuthAccountCancel add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleAuthAccountCancel(fn func(*AuthAccountCancelResult) *AuthAccountCancelReturn) {
+// OnAuthAccountCancel add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnAuthAccountCancel(fn func(*AuthAccountCancelResult) *AuthAccountCancelReturn) {
 	srv.authAccountCancelHandler = fn
 }
 
-// HandleDeliveryOrderAdd add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderAdd(fn func(*DeliveryOrderAddResult) *DeliveryOrderAddReturn) {
+// OnDeliveryOrderAdd add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderAdd(fn func(*DeliveryOrderAddResult) *DeliveryOrderAddReturn) {
 	srv.deliveryOrderAddHandler = fn
 }
 
-// HandleDeliveryOrderTipsAdd add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderTipsAdd(fn func(*DeliveryOrderTipsAddResult) *DeliveryOrderTipsAddReturn) {
+// OnDeliveryOrderTipsAdd add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderTipsAdd(fn func(*DeliveryOrderTipsAddResult) *DeliveryOrderTipsAddReturn) {
 	srv.deliveryOrderTipsAddHandler = fn
 }
 
-// HandleDeliveryOrderCancel add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderCancel(fn func(*DeliveryOrderCancelResult) *DeliveryOrderCancelReturn) {
+// OnDeliveryOrderCancel add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderCancel(fn func(*DeliveryOrderCancelResult) *DeliveryOrderCancelReturn) {
 	srv.deliveryOrderCancelHandler = fn
 }
 
-// HandleDeliveryOrderReturnConfirm add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderReturnConfirm(fn func(*DeliveryOrderReturnConfirmResult) *DeliveryOrderReturnConfirmReturn) {
+// OnDeliveryOrderReturnConfirm add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderReturnConfirm(fn func(*DeliveryOrderReturnConfirmResult) *DeliveryOrderReturnConfirmReturn) {
 	srv.deliveryOrderReturnConfirmHandler = fn
 }
 
-// HandleDeliveryOrderPreAdd add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderPreAdd(fn func(*DeliveryOrderPreAddResult) *DeliveryOrderPreAddReturn) {
+// OnDeliveryOrderPreAdd add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderPreAdd(fn func(*DeliveryOrderPreAddResult) *DeliveryOrderPreAddReturn) {
 	srv.deliveryOrderPreAddHandler = fn
 }
 
-// HandleDeliveryOrderPreCancel add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderPreCancel(fn func(*DeliveryOrderPreCancelResult) *DeliveryOrderPreCancelReturn) {
+// OnDeliveryOrderPreCancel add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderPreCancel(fn func(*DeliveryOrderPreCancelResult) *DeliveryOrderPreCancelReturn) {
 	srv.deliveryOrderPreCancelHandler = fn
 }
 
-// HandleDeliveryOrderQuery add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderQuery(fn func(*DeliveryOrderQueryResult) *DeliveryOrderQueryReturn) {
+// OnDeliveryOrderQuery add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderQuery(fn func(*DeliveryOrderQueryResult) *DeliveryOrderQueryReturn) {
 	srv.deliveryOrderQueryHandler = fn
 }
 
-// HandleDeliveryOrderReadd add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) HandleDeliveryOrderReadd(fn func(*DeliveryOrderReaddResult) *DeliveryOrderReaddReturn) {
+// OnDeliveryOrderReadd add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderReadd(fn func(*DeliveryOrderReaddResult) *DeliveryOrderReaddReturn) {
 	srv.deliveryOrderReaddHandler = fn
 }
 
-// HandlePreAuthCodeGet add handler to handle preAuthCodeGet.
-func (srv *Server) HandlePreAuthCodeGet(fn func(*PreAuthCodeGetResult) *PreAuthCodeGetReturn) {
+// OnPreAuthCodeGet add handler to handle preAuthCodeGet.
+func (srv *Server) OnPreAuthCodeGet(fn func(*PreAuthCodeGetResult) *PreAuthCodeGetReturn) {
 	srv.preAuthCodeGetHandler = fn
 }
 
-// HandleRiderScoreSet add handler to handle riderScoreSet.
-func (srv *Server) HandleRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetReturn) {
+// OnRiderScoreSet add handler to handle riderScoreSet.
+func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetReturn) {
 	srv.riderScoreSetHandler = fn
 }
 

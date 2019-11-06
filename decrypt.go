@@ -20,11 +20,11 @@ type Mobile struct {
 
 // DecryptMobile 解密手机号码
 //
-// ssk 通过 Login 向微信服务端请求得到的 session_key
-// data 小程序通过 api 得到的加密数据(encryptedData)
+// sessionKey 通过 Login 向微信服务端请求得到的 session_key
+// encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
-func DecryptMobile(ssk, data, iv string) (*Mobile, error) {
-	raw, err := decryptUserData(ssk, data, iv)
+func DecryptMobile(sessionKey, encryptedData, iv string) (*Mobile, error) {
+	raw, err := decryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -44,14 +44,14 @@ type ShareInfo struct {
 
 // DecryptShareInfo 解密转发信息的加密数据
 //
-// ssk 通过 Login 向微信服务端请求得到的 session_key
-// data 小程序通过 api 得到的加密数据(encryptedData)
+// sessionKey 通过 Login 向微信服务端请求得到的 session_key
+// encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
 //
 // gid 小程序唯一群号
-func DecryptShareInfo(ssk, data, iv string) (*ShareInfo, error) {
+func DecryptShareInfo(sessionKey, encryptedData, iv string) (*ShareInfo, error) {
 
-	raw, err := decryptUserData(ssk, data, iv)
+	raw, err := decryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -80,18 +80,18 @@ type UserInfo struct {
 
 // DecryptUserInfo 解密用户信息
 //
+// sessionKey 微信 session_key
 // rawData 不包括敏感信息的原始数据字符串，用于计算签名。
 // encryptedData 包括敏感数据在内的完整用户信息的加密数据
 // signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // iv 加密算法的初始向量
-// ssk 微信 session_key
-func DecryptUserInfo(rawData, encryptedData, signature, iv, ssk string) (*UserInfo, error) {
+func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
 
-	if ok := validateSignature(signature, rawData, ssk); !ok {
+	if ok := validateSignature(signature, rawData, sessionKey); !ok {
 		return nil, errors.New("failed to validate signature")
 	}
 
-	raw, err := decryptUserData(ssk, encryptedData, iv)
+	raw, err := decryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
