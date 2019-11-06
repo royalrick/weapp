@@ -87,7 +87,7 @@ type UserInfo struct {
 // iv 加密算法的初始向量
 func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
 
-	if ok := validateSignature(signature, rawData, sessionKey); !ok {
+	if ok := validateUserInfo(signature, rawData, sessionKey); !ok {
 		return nil, errors.New("failed to validate signature")
 	}
 

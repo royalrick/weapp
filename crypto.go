@@ -47,9 +47,15 @@ func pkcs7decode(plaintext []byte) []byte {
 	return plaintext[:(ln - pad)]
 }
 
-//  对数据包进行签名校验，确保数据的完整性。
+// 对加密数据包进行签名校验，确保数据的完整性。
 func validateSignature(signature string, parts ...string) bool {
 	return signature == createSignature(parts...)
+}
+
+// 校验用户数据数据
+func validateUserInfo(signature, rawData, ssk string) bool {
+	raw := sha1.Sum([]byte(rawData + ssk))
+	return signature == hex.EncodeToString(raw[:])
 }
 
 // 拼凑签名
