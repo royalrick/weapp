@@ -107,20 +107,20 @@ go get -u github.com/medivhzhan/weapp/v2
     - [onRiderScoreSet](#onRiderScoreSet)
 - [物流助手](#物流助手) ⚠️
   - [小程序使用](#小程序使用)
-    - [addExpressDeliveryOrder](#addExpressDeliveryOrder)
-    - [cancelExpressDeliveryOrder](#cancelExpressDeliveryOrder)
+    - [addExpressOrder](#addExpressOrder)
+    - [cancelExpressOrder](#cancelExpressOrder)
     - [getAllDelivery](#getAllDelivery)
-    - [getExpressDeliveryOrder](#getExpressDeliveryOrder)
+    - [getExpressOrder](#getExpressOrder)
     - [getExpressPath](#getExpressPath)
     - [getExpressPrinter](#getExpressPrinter)
     - [getExpressQuota](#getExpressQuota)
     - [onExpressPathUpdate](#onExpressPathUpdate)
-    - [testUpdateExpressDeliveryOrder](#testUpdateExpressDeliveryOrder)
+    - [testUpdateExpressOrder](#testUpdateExpressOrder)
     - [updateExpressPrinter](#updateExpressPrinter)
   - [服务提供方使用](#服务提供方使用)
     - [getExpressContact](#getExpressContact)
-    - [onAddExpressDeliveryOrder](#onAddExpressDeliveryOrder)
-    - [onCancelExpressDeliveryOrder](#onCancelExpressDeliveryOrder)
+    - [onAddExpressOrder](#onAddExpressOrder)
+    - [onCancelExpressOrder](#onCancelExpressOrder)
     - [onCheckExpressBusiness](#onCheckExpressBusiness)
     - [onGetExpressQuota](#onGetExpressQuota)
     - [previewExpressTemplate](#previewExpressTemplate)
@@ -868,7 +868,7 @@ if err != nil {
     return
 }
 
-srv.OnAddNearbyPoiAuditRequest(func(mix *weapp.AddNearbyPoiAuditResult) {
+srv.OnAddNearbyPoi(func(mix *weapp.AddNearbyPoiResult) {
     // 处理返回结果
 })
 
@@ -1118,7 +1118,7 @@ if err != nil {
     return
 }
 
-srv.OnMediaCheckAsyncRequest(func(mix *weapp.MediaCheckAsyncResult) {
+srv.OnMediaCheckAsync(func(mix *weapp.MediaCheckAsyncResult) {
     // 处理返回结果
 })
 
@@ -1336,10 +1336,10 @@ if err != nil {
     return
 }
 
-srv.OnAuthAccountCancel(func(mix *weapp.AuthAccountCancelResult) *weapp.AuthAccountCancelReturn {
+srv.OnCancelAuth(func(mix *weapp.CancelAuthResult) *weapp.CancelAuthReturn {
     // 处理返回结果
 
-    return &weapp.AuthAccountCancelReturn{
+    return &weapp.CancelAuthReturn{
         // ...
     }
 })
@@ -1394,10 +1394,10 @@ if err != nil {
     return
 }
 
-srv.OnDeliveryOrderTipsAdd(func(mix *weapp.DeliveryOrderTipsAddResult) *weapp.DeliveryOrderTipsAddReturn {
+srv.OnDeliveryOrderAddTips(func(mix *weapp.DeliveryOrderAddTipsResult) *weapp.DeliveryOrderAddTipsReturn {
     // 处理返回结果
 
-    return &weapp.DeliveryOrderTipsAddReturn{
+    return &weapp.DeliveryOrderAddTipsReturn{
         // ...
     }
 })
@@ -1976,41 +1976,261 @@ fmt.Printf("返回结果: %#v", res)
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.addOrder.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+creator := weapp.ExpressOrderCreator{
+   // ...
+}
+
+res, err := creator.Create("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### cancelExpressOrder
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.cancelOrder.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+canceler := weapp.ExpressOrderCanceler{
+   // ...
+}
+
+res, err := canceler.cancel("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 #### getAllDelivery
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.getAllDelivery.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+res, err := weapp.getAllDelivery("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### getExpressOrder
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.getOrder.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+getter := weapp.ExpressOrderGetter{
+   // ...
+}
+
+res, err := getter.Get("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 #### getExpressPath
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.getPath.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+getter := weapp.ExpressPathGetter{
+   // ...
+}
+
+res, err := getter.Get("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### getExpressPrinter
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.getPrinter.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+res, err := weapp.GetPrinter("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 #### getExpressQuota
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.getQuota.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+getter := weapp.QuotaGetter{
+   // ...
+}
+
+res, err := getter.Get("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### onExpressPathUpdate
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.onPathUpdate.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+if err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+srv.OnExpressPathUpdate(func(mix *weapp.ExpressPathUpdateResult) {
+    // 处理返回结果
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+```
 
 #### testUpdateExpressOrder
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.testUpdateOrder.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+tester := weapp.UpdateExpressOrderTester{
+   // ...
+}
+
+res, err := tester.Test("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### updateExpressPrinter
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-business/logistics.updatePrinter.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+updater := weapp.PrinterUpdater{
+   // ...
+}
+
+res, err := updater.Update("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 ### 服务提供方使用
 
@@ -2018,33 +2238,221 @@ fmt.Printf("返回结果: %#v", res)
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.getContact.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+res, err := weapp.GetContact("access-token", "token", "wat-bill-id")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### onAddExpressOrder
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.onAddOrder.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+if err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+srv.OnAddExpressOrder(func(mix *weapp.AddExpressOrderResult) *weapp.AddExpressOrderReturn {
+    // 处理返回结果
+
+    return &weapp.AddExpressOrderReturn{
+        // ...
+    }
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+```
 
 #### onCancelExpressOrder
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.onCancelOrder.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+if err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+srv.OnCancelExpressOrder(func(mix *weapp.CancelExpressOrderResult) *weapp.CancelExpressOrderReturn {
+    // 处理返回结果
+
+    return &weapp.CancelExpressOrderReturn{
+        // ...
+    }
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+```
+
 #### onCheckExpressBusiness
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.onCheckBusiness.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+if err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+srv.OnCheckExpressBusiness(func(mix *weapp.CheckExpressBusinessResult) *weapp.CheckExpressBusinessReturn {
+    // 处理返回结果
+
+    return &weapp.CheckExpressBusinessReturn{
+        // ...
+    }
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+```
 
 #### onGetExpressQuota
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.onGetQuota.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+if err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+srv.OnGetExpressQuota(func(mix *weapp.GetExpressQuotaResult) *weapp.GetExpressQuotaReturn {
+    // 处理返回结果
+
+    return &weapp.GetExpressQuotaReturn{
+        // ...
+    }
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
+
+```
+
 #### previewExpressTemplate
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.previewTemplate.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+previewer := weapp.ExpressTemplatePreviewer{
+   // ...
+}
+
+res, err := previewer.Preview("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 #### updateExpressBusiness
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.updateBusiness.html)
 
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+updater := weapp.BusinessUpdater{
+   // ...
+}
+
+res, err := updater.Update("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 #### updateExpressPath
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/express/by-provider/logistics.updatePath.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+updater := weapp.ExpressPathUpdater{
+   // ...
+}
+
+res, err := updater.Update("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 ---
 
