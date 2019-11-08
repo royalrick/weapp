@@ -83,7 +83,7 @@ func TestOnAddExpressOrder(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnAddExpressOrderRequest(func(result *AddExpressOrderResult) *AddExpressOrderReturn {
+		srv.OnAddExpressOrder(func(result *AddExpressOrderResult) *AddExpressOrderReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -445,7 +445,7 @@ func TestOnAddExpressOrder(t *testing.T) {
 	}
 }
 
-func TestOnExpressOrderCancel(t *testing.T) {
+func TestOnCancelExpressOrder(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
 		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
@@ -453,7 +453,7 @@ func TestOnExpressOrderCancel(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnExpressOrderCancelRequest(func(result *ExpressOrderCancelResult) *ExpressOrderCancelReturn {
+		srv.OnCancelExpressOrder(func(result *CancelExpressOrderResult) *CancelExpressOrderReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -486,7 +486,7 @@ func TestOnExpressOrderCancel(t *testing.T) {
 				t.Error("Result column 'WayBillID' can not be empty")
 			}
 
-			res := ExpressOrderCancelReturn{
+			res := CancelExpressOrderReturn{
 				CommonServerReturn: CommonServerReturn{
 					"oABCD", "gh_abcdefg", 1533042556, "event", "cancel_waybill", 1, "success",
 				},
@@ -521,7 +521,7 @@ func TestOnExpressOrderCancel(t *testing.T) {
 		t.Error(err)
 	}
 	defer xmlResp.Body.Close()
-	res := new(ExpressOrderCancelReturn)
+	res := new(CancelExpressOrderReturn)
 	if err := xml.NewDecoder(xmlResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -573,7 +573,7 @@ func TestOnExpressOrderCancel(t *testing.T) {
 		t.Error(err)
 	}
 	defer jsonResp.Body.Close()
-	res = new(ExpressOrderCancelReturn)
+	res = new(CancelExpressOrderReturn)
 	if err := json.NewDecoder(jsonResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -616,7 +616,7 @@ func TestOnCheckBusiness(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnCheckBusinessRequest(func(result *CheckBusinessResult) *CheckBusinessReturn {
+		srv.OnCheckExpressBusiness(func(result *CheckExpressBusinessResult) *CheckExpressBusinessReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -659,7 +659,7 @@ func TestOnCheckBusiness(t *testing.T) {
 				t.Error("Result column 'ServiceName' can not be empty")
 			}
 
-			res := CheckBusinessReturn{
+			res := CheckExpressBusinessReturn{
 				CommonServerReturn: CommonServerReturn{
 					"oABCD", "gh_abcdefg", 1533042556, "event", "check_biz", 1, "success",
 				},
@@ -695,7 +695,7 @@ func TestOnCheckBusiness(t *testing.T) {
 		t.Error(err)
 	}
 	defer xmlResp.Body.Close()
-	res := new(CheckBusinessReturn)
+	res := new(CheckExpressBusinessReturn)
 	if err := xml.NewDecoder(xmlResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -746,7 +746,7 @@ func TestOnCheckBusiness(t *testing.T) {
 		t.Error(err)
 	}
 	defer jsonResp.Body.Close()
-	res = new(CheckBusinessReturn)
+	res = new(CheckExpressBusinessReturn)
 	if err := json.NewDecoder(jsonResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -777,7 +777,7 @@ func TestOnCheckBusiness(t *testing.T) {
 	}
 }
 
-func TestOnQuotaGet(t *testing.T) {
+func TestOnGetExpressQuota(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		aesKey := base64.StdEncoding.EncodeToString([]byte("mock-aes-key"))
 		srv, err := NewServer("mock-app-id", "mock-access-token", aesKey, "mock-mch-id", "mock-api-key", false)
@@ -785,7 +785,7 @@ func TestOnQuotaGet(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnQuotaGetRequest(func(result *QuotaGetResult) *QuotaGetReturn {
+		srv.OnGetExpressQuota(func(result *GetExpressQuotaResult) *GetExpressQuotaReturn {
 			if result.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
@@ -812,7 +812,7 @@ func TestOnQuotaGet(t *testing.T) {
 				t.Error("Result column 'ShopAppID' can not be empty")
 			}
 
-			res := QuotaGetReturn{
+			res := GetExpressQuotaReturn{
 				CommonServerReturn: CommonServerReturn{
 					"oABCD", "gh_abcdefg", 1533042556, "event", "get_quota", 1, "success",
 				},
@@ -843,7 +843,7 @@ func TestOnQuotaGet(t *testing.T) {
 		t.Error(err)
 	}
 	defer xmlResp.Body.Close()
-	res := new(QuotaGetReturn)
+	res := new(GetExpressQuotaReturn)
 	if err := xml.NewDecoder(xmlResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -889,7 +889,7 @@ func TestOnQuotaGet(t *testing.T) {
 		t.Error(err)
 	}
 	defer jsonResp.Body.Close()
-	res = new(QuotaGetReturn)
+	res = new(GetExpressQuotaReturn)
 	if err := json.NewDecoder(jsonResp.Body).Decode(res); err != nil {
 		t.Error(err)
 	}
@@ -1174,7 +1174,7 @@ func TestPreviewTemplate(t *testing.T) {
 		}
 	  }`
 
-	previewer := new(TemplatePreviewer)
+	previewer := new(ExpressTemplatePreviewer)
 	err := json.Unmarshal([]byte(raw), previewer)
 	if err != nil {
 		t.Fatal(err)
@@ -1244,7 +1244,7 @@ func TestUpdateBusiness(t *testing.T) {
 		"result_msg": "审核通过"
 	  }`
 
-	updater := new(BusinnessUpdater)
+	updater := new(BusinessUpdater)
 	err := json.Unmarshal([]byte(raw), updater)
 	if err != nil {
 		t.Fatal(err)

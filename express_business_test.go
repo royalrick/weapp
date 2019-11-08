@@ -680,7 +680,7 @@ func TestOnPathUpdate(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnExpressPathUpdateRequest(func(mix *ExpressPathUpdateResult) {
+		srv.OnExpressPathUpdate(func(mix *ExpressPathUpdateResult) {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}

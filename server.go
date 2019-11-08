@@ -70,17 +70,17 @@ type Server struct {
 	userTempsessionEnterHandler       func(*UserTempsessionEnterResult)
 	mediaCheckAsyncHandler            func(*MediaCheckAsyncResult)
 	expressPathUpdateHandler          func(*ExpressPathUpdateResult)
-	addNearbyPoiAuditHandler          func(*AddNearbyPoiAuditResult)
+	addNearbyPoiAuditHandler          func(*AddNearbyPoiResult)
 	addExpressOrderHandler            func(*AddExpressOrderResult) *AddExpressOrderReturn
-	expressOrderCancelHandler         func(*ExpressOrderCancelResult) *ExpressOrderCancelReturn
-	checkBusinessHandler              func(*CheckBusinessResult) *CheckBusinessReturn
-	quotaGetHandler                   func(*QuotaGetResult) *QuotaGetReturn
+	expressOrderCancelHandler         func(*CancelExpressOrderResult) *CancelExpressOrderReturn
+	checkExpressBusinessHandler       func(*CheckExpressBusinessResult) *CheckExpressBusinessReturn
+	quotaGetHandler                   func(*GetExpressQuotaResult) *GetExpressQuotaReturn
 	deliveryOrderStatusUpdateHandler  func(*DeliveryOrderStatusUpdateResult) *DeliveryOrderStatusUpdateReturn
 	agentPosQueryHandler              func(*AgentPosQueryResult) *AgentPosQueryReturn
 	authInfoGetHandler                func(*AuthInfoGetResult) *AuthInfoGetReturn
-	authAccountCancelHandler          func(*AuthAccountCancelResult) *AuthAccountCancelReturn
+	authAccountCancelHandler          func(*CancelAuthResult) *CancelAuthReturn
 	deliveryOrderAddHandler           func(*DeliveryOrderAddResult) *DeliveryOrderAddReturn
-	deliveryOrderTipsAddHandler       func(*DeliveryOrderTipsAddResult) *DeliveryOrderTipsAddReturn
+	deliveryOrderTipsAddHandler       func(*DeliveryOrderAddTipsResult) *DeliveryOrderAddTipsReturn
 	deliveryOrderCancelHandler        func(*DeliveryOrderCancelResult) *DeliveryOrderCancelReturn
 	deliveryOrderReturnConfirmHandler func(*DeliveryOrderReturnConfirmResult) *DeliveryOrderReturnConfirmReturn
 	deliveryOrderPreAddHandler        func(*DeliveryOrderPreAddResult) *DeliveryOrderPreAddReturn
@@ -111,38 +111,38 @@ func (srv *Server) OnUserTempsessionEnter(fn func(*UserTempsessionEnterResult)) 
 	srv.userTempsessionEnterHandler = fn
 }
 
-// OnMediaCheckAsyncRequest add handler to handle MediaCheckAsync.
-func (srv *Server) OnMediaCheckAsyncRequest(fn func(*MediaCheckAsyncResult)) {
+// OnMediaCheckAsync add handler to handle MediaCheckAsync.
+func (srv *Server) OnMediaCheckAsync(fn func(*MediaCheckAsyncResult)) {
 	srv.mediaCheckAsyncHandler = fn
 }
 
-// OnExpressPathUpdateRequest add handler to handle ExpressPathUpdate.
-func (srv *Server) OnExpressPathUpdateRequest(fn func(*ExpressPathUpdateResult)) {
+// OnExpressPathUpdate add handler to handle ExpressPathUpdate.
+func (srv *Server) OnExpressPathUpdate(fn func(*ExpressPathUpdateResult)) {
 	srv.expressPathUpdateHandler = fn
 }
 
-// OnAddNearbyPoiAuditRequest add handler to handle AddNearbyPoiAudit.
-func (srv *Server) OnAddNearbyPoiAuditRequest(fn func(*AddNearbyPoiAuditResult)) {
+// OnAddNearbyPoi add handler to handle AddNearbyPoiAudit.
+func (srv *Server) OnAddNearbyPoi(fn func(*AddNearbyPoiResult)) {
 	srv.addNearbyPoiAuditHandler = fn
 }
 
-// OnAddExpressOrderRequest add handler to handle AddExpressOrder.
-func (srv *Server) OnAddExpressOrderRequest(fn func(*AddExpressOrderResult) *AddExpressOrderReturn) {
+// OnAddExpressOrder add handler to handle AddExpressOrder.
+func (srv *Server) OnAddExpressOrder(fn func(*AddExpressOrderResult) *AddExpressOrderReturn) {
 	srv.addExpressOrderHandler = fn
 }
 
-// OnCheckBusinessRequest cancel handler to handle CheckBusiness.
-func (srv *Server) OnCheckBusinessRequest(fn func(*CheckBusinessResult) *CheckBusinessReturn) {
-	srv.checkBusinessHandler = fn
+// OnCheckExpressBusiness add handler to handle CheckBusiness.
+func (srv *Server) OnCheckExpressBusiness(fn func(*CheckExpressBusinessResult) *CheckExpressBusinessReturn) {
+	srv.checkExpressBusinessHandler = fn
 }
 
-// OnExpressOrderCancelRequest cancel handler to handle ExpressOrderCancel.
-func (srv *Server) OnExpressOrderCancelRequest(fn func(*ExpressOrderCancelResult) *ExpressOrderCancelReturn) {
+// OnCancelExpressOrder add handler to handle ExpressOrderCancel.
+func (srv *Server) OnCancelExpressOrder(fn func(*CancelExpressOrderResult) *CancelExpressOrderReturn) {
 	srv.expressOrderCancelHandler = fn
 }
 
-// OnQuotaGetRequest add handler to handle QuotaGet.
-func (srv *Server) OnQuotaGetRequest(fn func(*QuotaGetResult) *QuotaGetReturn) {
+// OnGetExpressQuota add handler to handle QuotaGet.
+func (srv *Server) OnGetExpressQuota(fn func(*GetExpressQuotaResult) *GetExpressQuotaReturn) {
 	srv.quotaGetHandler = fn
 }
 
@@ -162,8 +162,8 @@ func (srv *Server) OnAuthInfoGet(fn func(*AuthInfoGetResult) *AuthInfoGetReturn)
 	srv.authInfoGetHandler = fn
 }
 
-// OnAuthAccountCancel add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) OnAuthAccountCancel(fn func(*AuthAccountCancelResult) *AuthAccountCancelReturn) {
+// OnCancelAuth add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnCancelAuth(fn func(*CancelAuthResult) *CancelAuthReturn) {
 	srv.authAccountCancelHandler = fn
 }
 
@@ -172,8 +172,8 @@ func (srv *Server) OnDeliveryOrderAdd(fn func(*DeliveryOrderAddResult) *Delivery
 	srv.deliveryOrderAddHandler = fn
 }
 
-// OnDeliveryOrderTipsAdd add handler to handle deliveryOrderStatusUpdate.
-func (srv *Server) OnDeliveryOrderTipsAdd(fn func(*DeliveryOrderTipsAddResult) *DeliveryOrderTipsAddReturn) {
+// OnDeliveryOrderAddTips add handler to handle deliveryOrderStatusUpdate.
+func (srv *Server) OnDeliveryOrderAddTips(fn func(*DeliveryOrderAddTipsResult) *DeliveryOrderAddTipsReturn) {
 	srv.deliveryOrderTipsAddHandler = fn
 }
 
@@ -356,7 +356,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				srv.userTempsessionEnterHandler(msg)
 			}
 		case EventQuotaGet:
-			msg := new(QuotaGetResult)
+			msg := new(GetExpressQuotaResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}
@@ -380,7 +380,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				return srv.addExpressOrderHandler(msg), nil
 			}
 		case EventExpressOrderCancel:
-			msg := new(ExpressOrderCancelResult)
+			msg := new(CancelExpressOrderResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}
@@ -388,12 +388,12 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				return srv.expressOrderCancelHandler(msg), nil
 			}
 		case EventCheckBusiness:
-			msg := new(CheckBusinessResult)
+			msg := new(CheckExpressBusinessResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}
-			if srv.checkBusinessHandler != nil {
-				return srv.checkBusinessHandler(msg), nil
+			if srv.checkExpressBusinessHandler != nil {
+				return srv.checkExpressBusinessHandler(msg), nil
 			}
 		case EventDeliveryOrderStatusUpdate:
 			msg := new(DeliveryOrderStatusUpdateResult)
@@ -420,7 +420,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				return srv.authInfoGetHandler(msg), nil
 			}
 		case EventAuthAccountCancel:
-			msg := new(AuthAccountCancelResult)
+			msg := new(CancelAuthResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}
@@ -436,7 +436,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				return srv.deliveryOrderAddHandler(msg), nil
 			}
 		case EventDeliveryOrderTipsAdd:
-			msg := new(DeliveryOrderTipsAddResult)
+			msg := new(DeliveryOrderAddTipsResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}
@@ -516,7 +516,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 				srv.expressPathUpdateHandler(msg)
 			}
 		case EventNearbyPoiAuditInfoAdd:
-			msg := new(AddNearbyPoiAuditResult)
+			msg := new(AddNearbyPoiResult)
 			if err := unmarshal(raw, tp, msg); err != nil {
 				return nil, err
 			}

@@ -49,8 +49,8 @@ func getContact(api, accessToken, token, watBillID string) (*GetContactResponse,
 	return res, nil
 }
 
-// TemplatePreviewer 面单模板预览器
-type TemplatePreviewer struct {
+// ExpressTemplatePreviewer 面单模板预览器
+type ExpressTemplatePreviewer struct {
 	WaybillID       string       `json:"waybill_id"`       // 运单 ID
 	WaybillTemplate string       `json:"waybill_template"` // 面单 HTML 模板内容（需经 Base64 编码）
 	WaybillData     string       `json:"waybill_data"`     // 面单数据。详情参考下单事件返回值中的 WaybillData
@@ -66,12 +66,12 @@ type PreviewTemplateResponse struct {
 
 // Preview 预览面单模板。用于调试面单模板使用。
 // token 接口调用凭证
-func (previewer *TemplatePreviewer) Preview(token string) (*PreviewTemplateResponse, error) {
+func (previewer *ExpressTemplatePreviewer) Preview(token string) (*PreviewTemplateResponse, error) {
 	api := baseURL + apiPreviewTemplate
 	return previewer.preview(api, token)
 }
 
-func (previewer *TemplatePreviewer) preview(api, token string) (*PreviewTemplateResponse, error) {
+func (previewer *ExpressTemplatePreviewer) preview(api, token string) (*PreviewTemplateResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -94,8 +94,8 @@ const (
 	ResultFailed                     = 1 // 审核失败
 )
 
-// BusinnessUpdater 商户审核结果更新器
-type BusinnessUpdater struct {
+// BusinessUpdater 商户审核结果更新器
+type BusinessUpdater struct {
 	ShopAppID  string             `json:"shop_app_id"`          // 商户的小程序AppID，即审核商户事件中的 ShopAppID
 	BizID      string             `json:"biz_id"`               // 商户账户
 	ResultCode BusinessResultCode `json:"result_code"`          // 审核结果，0 表示审核通过，其他表示审核失败
@@ -104,12 +104,12 @@ type BusinnessUpdater struct {
 
 // Update 更新商户审核结果
 // token 接口调用凭证
-func (updater *BusinnessUpdater) Update(token string) (*CommonError, error) {
+func (updater *BusinessUpdater) Update(token string) (*CommonError, error) {
 	api := baseURL + apiUpdateBusiness
 	return updater.update(api, token)
 }
 
-func (updater *BusinnessUpdater) update(api, token string) (*CommonError, error) {
+func (updater *BusinessUpdater) update(api, token string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err

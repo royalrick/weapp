@@ -81,8 +81,8 @@ type MediaCheckAsyncResult struct {
 	StatusCode    int    `json:"status_code"`     // 默认为：0，4294966288(-1008)为链接无法下载
 }
 
-// AddNearbyPoiAuditResult 附近小程序添加地点审核状态通知数据
-type AddNearbyPoiAuditResult struct {
+// AddNearbyPoiResult 附近小程序添加地点审核状态通知数据
+type AddNearbyPoiResult struct {
 	CommonServerResult
 	AuditID uint   `xml:"audit_id"` // 审核单id
 	Status  uint8  `xml:"status"`   // 审核状态（3：审核通过，2：审核失败）
@@ -165,23 +165,23 @@ type AddExpressOrderResult struct {
 	} `json:"Service" xml:"Service"` // 服务类型
 }
 
-// QuotaGetReturn 查询商户余额事件需要返回的数据
-type QuotaGetReturn struct {
+// GetExpressQuotaReturn 查询商户余额事件需要返回的数据
+type GetExpressQuotaReturn struct {
 	CommonServerReturn
 	BizID string  `json:"BizID" xml:"BizID"` // 	商户ID
 	Quota float64 `json:"Quota" xml:"Quota"` // 	商户可用余额，0 表示无可用余额
 }
 
-// QuotaGetResult 查询商户余额事件参数
-type QuotaGetResult struct {
+// GetExpressQuotaResult 查询商户余额事件参数
+type GetExpressQuotaResult struct {
 	CommonServerResult
 	BizID     string `json:"BizID" xml:"BizID"`         // 商户ID，即商户在快递注册的客户编码或月结账户名
 	BizPwd    string `json:"BizPwd" xml:"BizPwd"`       // BizID 对应的密码
 	ShopAppID string `json:"ShopAppID" xml:"ShopAppID"` // 商户小程序的 AppID
 }
 
-// ExpressOrderCancelResult 取消订单事件参数
-type ExpressOrderCancelResult struct {
+// CancelExpressOrderResult 取消订单事件参数
+type CancelExpressOrderResult struct {
 	CommonServerResult
 	OrderID   string `json:"OrderID" xml:"OrderID"`     // 唯一标识订单的 ID，由商户生成
 	BizID     string `json:"BizID" xml:"BizID"`         // 商户 ID
@@ -190,16 +190,16 @@ type ExpressOrderCancelResult struct {
 	WayBillID string `json:"WayBillID" xml:"WayBillID"` // 运单 ID，从微信号段中生成
 }
 
-// ExpressOrderCancelReturn 取消订单事件需要返回的数据
-type ExpressOrderCancelReturn struct {
+// CancelExpressOrderReturn 取消订单事件需要返回的数据
+type CancelExpressOrderReturn struct {
 	CommonServerReturn
 	BizID     string `json:"BizID" xml:"BizID"`         // 商户ID，请原样返回
 	OrderID   string `json:"OrderID" xml:"OrderID"`     // 唯一标识订单的ID，由商户生成。请原样返回
 	WayBillID string `json:"WayBillID" xml:"WayBillID"` // 运单ID，请原样返回
 }
 
-// CheckBusinessResult 审核商户事件参数
-type CheckBusinessResult struct {
+// CheckExpressBusinessResult 审核商户事件参数
+type CheckExpressBusinessResult struct {
 	CommonServerResult
 	BizID         string `json:"BizID" xml:"BizID"`                 // 商户ID，即商户在快递注册的客户编码或月结账户名
 	BizPwd        string `json:"BizPwd" xml:"BizPwd"`               // BizID 对应的密码
@@ -211,8 +211,8 @@ type CheckBusinessResult struct {
 	SenderAddress string `json:"SenderAddress" xml:"SenderAddress"` // 商户发货地址（仅EMS可用）
 }
 
-// CheckBusinessReturn 审核商户事件需要需要返回的数据
-type CheckBusinessReturn struct {
+// CheckExpressBusinessReturn 审核商户事件需要需要返回的数据
+type CheckExpressBusinessReturn struct {
 	CommonServerReturn
 	BizID string  `json:"BizID" xml:"BizID"` //	商户ID
 	Quota float64 `json:"Quota" xml:"Quota"` //	商户可用余额，0 表示无可用余额
@@ -270,11 +270,11 @@ type AuthInfoGetResult struct {
 	Code    string `json:"code" xml:"code"`         // 	授权码
 }
 
-// AuthAccountCancelReturn 需要返回的数据
-type AuthAccountCancelReturn CommonServerReturn
+// CancelAuthReturn 需要返回的数据
+type CancelAuthReturn CommonServerReturn
 
-// AuthAccountCancelResult 服务器携带的参数
-type AuthAccountCancelResult struct {
+// CancelAuthResult 服务器携带的参数
+type CancelAuthResult struct {
 	CommonServerResult
 	ShopID  string `json:"shopid" xml:"shopid"`     // 	商家id， 配送公司唯一标识
 	WxAppID string `json:"wx_appid" xml:"wx_appid"` // 	发起授权的商户小程序appid
@@ -368,11 +368,11 @@ type DeliveryOrderAddResult struct {
 	} `json:"order_info" xml:"order_info"` // 订单信息
 }
 
-// DeliveryOrderTipsAddReturn 需要返回的数据
-type DeliveryOrderTipsAddReturn CommonServerReturn
+// DeliveryOrderAddTipsReturn 需要返回的数据
+type DeliveryOrderAddTipsReturn CommonServerReturn
 
-// DeliveryOrderTipsAddResult 服务器携带的参数
-type DeliveryOrderTipsAddResult struct {
+// DeliveryOrderAddTipsResult 服务器携带的参数
+type DeliveryOrderAddTipsResult struct {
 	CommonServerResult
 	ShopID       string  `json:"shopid" xml:"shopid"`               // 商家id， 由配送公司分配，可以是dev_id或者appkey
 	ShopOrderID  string  `json:"shop_order_id" xml:"shop_order_id"` // 唯一标识订单的 ID，由商户生成

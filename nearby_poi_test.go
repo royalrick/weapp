@@ -19,7 +19,7 @@ func TestAddNearbyPoi(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnAddNearbyPoiAuditRequest(func(mix *AddNearbyPoiAuditResult) {
+		srv.OnAddNearbyPoi(func(mix *AddNearbyPoiResult) {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}

@@ -65,7 +65,7 @@ func TestMediaCheckAsync(t *testing.T) {
 			t.Fatal(err)
 		}
 
-		srv.OnMediaCheckAsyncRequest(func(mix *MediaCheckAsyncResult) {
+		srv.OnMediaCheckAsync(func(mix *MediaCheckAsyncResult) {
 			if mix.ToUserName == "" {
 				t.Error("ToUserName can not be empty")
 			}
