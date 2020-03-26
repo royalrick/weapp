@@ -6,11 +6,11 @@ const (
 
 // SearchSubmitPages 小程序页面收录请求
 type SearchSubmitPages struct {
-	Pages []SearchedPage `json:"pages"`
+	Pages []SearchSubmitPage `json:"pages"`
 }
 
-// SearchedPage 请求收录的页面
-type SearchedPage struct {
+// SearchSubmitPage 请求收录的页面
+type SearchSubmitPage struct {
 	Path  string `json:"path"`
 	Query string `json:"query"`
 }

@@ -54,7 +54,7 @@ func TestSearchSubmitPages(t *testing.T) {
 	defer ts.Close()
 
 	sender := SearchSubmitPages{
-		[]SearchedPage{
+		[]SearchSubmitPage{
 			{
 				Path:  "/pages/index/index",
 				Query: "id=test",

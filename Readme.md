@@ -2626,7 +2626,7 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp/v2"
 
 sender := weapp.SearchSubmitPages{
-    []weapp.SearchedPage{
+    []weapp.SearchSubmitPage{
         {
             Path:  "pages/index/index",
             Query: "id=test",
