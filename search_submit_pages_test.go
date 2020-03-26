@@ -54,13 +54,12 @@ func TestSearchSubmitPages(t *testing.T) {
 	defer ts.Close()
 
 	sender := SearchSubmitPages{
-		Pages: []struct {
-			Path  string `json:"path"`
-			Query string `json:"query"`
-		}{{
-			Path:  "/pages/index/index",
-			Query: "id=test",
-		}},
+		[]SearchedPage{
+			{
+				Path:  "/pages/index/index",
+				Query: "id=test",
+			},
+		},
 	}
 
 	_, err := sender.send(ts.URL+apiSearchSubmitPages, "mock-access-token")

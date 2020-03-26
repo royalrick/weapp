@@ -135,6 +135,9 @@ go get -u github.com/medivhzhan/weapp/v2
   - [vehicleLicense](#vehicleLicense) ✅
 - [运维中心](#运维中心) ⚠️
   - [realTimeLogSearch](#realTimeLogSearch)
+- [小程序搜索](#小程序搜索) ⚠️
+  - [siteSearch](#siteSearch)
+  - [submitPages](#submitPages)
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
 - [订阅消息](#订阅消息)
@@ -2594,6 +2597,44 @@ import "github.com/medivhzhan/weapp/v2"
 res, err := weapp.VehicleLicense("access-token", "file-path", weapp.RecognizeModeScan)
 // 或者
 res, err := weapp.VehicleLicenseByURL("access-token", "card-url", weapp.RecognizeModePhoto)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## 小程序搜索
+
+### siteSearch
+
+### submitPages
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/search/search.submitPages.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v2"
+
+sender := weapp.SearchSubmitPages{
+    []weapp.SearchedPage{
+        {
+            Path:  "pages/index/index",
+            Query: "id=test",
+        },
+    },
+}
+
+_, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return

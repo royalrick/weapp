@@ -6,10 +6,13 @@ const (
 
 // SearchSubmitPages 小程序页面收录请求
 type SearchSubmitPages struct {
-	Pages []struct {
-		Path  string `json:"path"`
-		Query string `json:"query"`
-	} `json:"pages"`
+	Pages []SearchedPage `json:"pages"`
+}
+
+// SearchedPage 请求收录的页面
+type SearchedPage struct {
+	Path  string `json:"path"`
+	Query string `json:"query"`
 }
 
 // Send 提交收录请求
@@ -23,7 +26,7 @@ func (s *SearchSubmitPages) send(api, token string) (*CommonError, error) {
 		return nil, err
 	}
 
-	res := &CommonError{}
+	res := new(CommonError)
 	if err := postJSON(api, s, res); err != nil {
 		return nil, err
 	}
