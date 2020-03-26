@@ -33,9 +33,11 @@ type Portrait struct {
 
 // Attribute 描述内容
 type Attribute struct {
-	ID                  uint   `json:"id"`                     // 属性值id
-	Name                string `json:"name"`                   // 属性值名称，与id对应。如属性为 province 时，返回的属性值名称包括「广东」等。
-	AccessSourceVisitUV uint   `json:"access_source_visit_uv"` // 属性值id
+	ID    uint   `json:"id"`   // 属性值id
+	Name  string `json:"name"` // 属性值名称，与id对应。如属性为 province 时，返回的属性值名称包括「广东」等。
+	Value uint   `json:"value"`
+	// TODO: 确认后删除该字段
+	AccessSourceVisitUV uint `json:"access_source_visit_uv"` // 该场景访问uv
 }
 
 // GetUserPortrait 获取小程序新增或活跃用户的画像分布数据。
@@ -87,8 +89,9 @@ type Distribution struct {
 
 // DistributionItem 分布数据项
 type DistributionItem struct {
-	Key                 uint `json:"key"`                    // 场景 id，定义在各个 index 下不同，具体参见下方表格
-	Value               uint `json:"value"`                  // 该场景 id 访问 pv
+	Key   uint `json:"key"`   // 场景 id，定义在各个 index 下不同，具体参见下方表格
+	Value uint `json:"value"` // 该场景 id 访问 pv
+	// TODO: 确认后删除该字段
 	AccessSourceVisitUV uint `json:"access_source_visit_uv"` // 该场景 id 访问 uv
 }
 
