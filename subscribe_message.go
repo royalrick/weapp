@@ -6,10 +6,11 @@ const (
 
 // SubscribeMessage 订阅消息
 type SubscribeMessage struct {
-	ToUser     string               `json:"touser"`
-	TemplateID string               `json:"template_id"`
-	Page       string               `json:"page,omitempty"`
-	Data       SubscribeMessageData `json:"data"`
+	ToUser           string               `json:"touser"`
+	TemplateID       string               `json:"template_id"`
+	Page             string               `json:"page,omitempty"`
+	MiniprogramState string               `json:"miniprogram_state,omitempty"`
+	Data             SubscribeMessageData `json:"data"`
 }
 
 // SubscribeMessageData 订阅消息模板数据
