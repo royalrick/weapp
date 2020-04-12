@@ -9,9 +9,19 @@ type SubscribeMessage struct {
 	ToUser           string               `json:"touser"`
 	TemplateID       string               `json:"template_id"`
 	Page             string               `json:"page,omitempty"`
-	MiniprogramState string               `json:"miniprogram_state,omitempty"`
+	MiniprogramState MiniprogramState     `json:"miniprogram_state,omitempty"`
 	Data             SubscribeMessageData `json:"data"`
 }
+
+// MiniprogramState 跳转小程序类型
+type MiniprogramState = string
+
+// developer为开发版；trial为体验版；formal为正式版；默认为正式版
+const (
+	MiniprogramStateDeveloper = "developer"
+	MiniprogramStateTrial     = "trial"
+	MiniprogramStateFormal    = "formal"
+)
 
 // SubscribeMessageData 订阅消息模板数据
 type SubscribeMessageData map[string]struct {
