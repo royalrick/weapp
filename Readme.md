@@ -2692,6 +2692,7 @@ sender := weapp.SubscribeMessage{
     ToUser:     mpOpenID,
     TemplateID: "template-id",
     Page:       "mock/page/path",
+    MiniprogramState: weapp.MiniprogramStateDeveloper, // 或者: "developer"
     Data: weapp.SubscribeMessageData{
         "first-key": {
             Value: "value",

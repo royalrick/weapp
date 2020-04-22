@@ -57,9 +57,10 @@ func TestSendSubscribeMessage(t *testing.T) {
 	defer ts.Close()
 
 	sender := SubscribeMessage{
-		ToUser:     "mock-open-id",
-		TemplateID: "mock-template-id",
-		Page:       "mock-page",
+		ToUser:           "mock-open-id",
+		TemplateID:       "mock-template-id",
+		Page:             "mock-page",
+		MiniprogramState: MiniprogramStateDeveloper,
 		Data: SubscribeMessageData{
 			"mock01.DATA": {
 				Value: "mock-value",
