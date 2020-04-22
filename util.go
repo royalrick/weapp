@@ -86,17 +86,17 @@ func getJSON(url string, response interface{}) error {
 
 // postJSONWithBody return with http body.
 func postJSONWithBody(url string, params interface{}) (*http.Response, error) {
-	reader := new(bytes.Reader)
+	b := &bytes.Buffer{}
 	if params != nil {
-		raw, err := json.Marshal(params)
+		enc := json.NewEncoder(b)
+		enc.SetEscapeHTML(false)
+		err := enc.Encode(params)
 		if err != nil {
 			return nil, err
 		}
-
-		reader = bytes.NewReader(raw)
 	}
 
-	return http.Post(url, "application/json; charset=utf-8", reader)
+	return http.Post(url, "application/json; charset=utf-8", b)
 }
 
 func postFormByFile(url, field, filename string, response interface{}) error {
