@@ -39,15 +39,6 @@ func encodeURL(api string, params requestQueries) (string, error) {
 	return url.String(), nil
 }
 
-// getQuery returns url query value
-func getQuery(req *http.Request, key string) string {
-	if values, ok := req.URL.Query()[key]; ok && len(values) > 0 {
-		return values[0]
-	}
-
-	return ""
-}
-
 // randomString random string generator
 //
 // ln length of return string
