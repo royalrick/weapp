@@ -59,6 +59,7 @@ const (
 type Server struct {
 	appID    string // 小程序 ID
 	mchID    string // 商户号
+	apiKey   string // 商户签名密钥
 	token    string // 微信服务器验证令牌
 	aesKey   []byte // base64 解码后的消息加密密钥
 	validate bool   // 是否验证请求来自微信服务器
@@ -220,11 +221,11 @@ type dataType = string
 
 const (
 	dataTypeJSON dataType = "application/json"
-	dataTypeXML           = "application/xml"
+	dataTypeXML           = "text/xml"
 )
 
 // NewServer 返回经过初始化的Server
-func NewServer(appID, token, aesKey, mchID string, validate bool) (*Server, error) {
+func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Server, error) {
 
 	key, err := base64.RawStdEncoding.DecodeString(aesKey)
 	if err != nil {
@@ -234,6 +235,7 @@ func NewServer(appID, token, aesKey, mchID string, validate bool) (*Server, erro
 	server := Server{
 		appID:    appID,
 		mchID:    mchID,
+		apiKey:   apiKey,
 		token:    token,
 		aesKey:   key,
 		validate: validate,
@@ -558,34 +560,35 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 				}
 			}
 
-			w.WriteHeader(200)
+			w.WriteHeader(http.StatusOK)
 			w.Header().Set("Content-Type", tp)
 			if _, err := w.Write(raw); err != nil {
+				return err
+			}
+		} else {
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8") // normal header
+			w.WriteHeader(http.StatusOK)
+			_, err = io.WriteString(w, "success")
+			if err != nil {
 				return err
 			}
 		}
 
 		return nil
 	case "GET":
-		echostr := r.URL.Query().Get("echostr")
-		if srv.validate {
-
-			// 请求来自微信验证成功后原样返回 echostr 参数内容
-			if srv.validateServer(r) {
-				_, err := io.WriteString(w, echostr)
-				if err != nil {
-					return err
-				}
-
-				return nil
+		if srv.validate { // 请求来自微信验证成功后原样返回 echostr 参数内容
+			if !srv.validateServer(r) {
+				return errors.New("验证消息来自微信服务器失败")
 			}
 
-			return errors.New("request server is invalid")
-		}
+			w.Header().Set("Content-Type", "text/plain; charset=utf-8") // normal header
+			w.WriteHeader(http.StatusOK)
 
-		_, err := io.WriteString(w, echostr)
-		if err != nil {
-			return err
+			echostr := r.URL.Query().Get("echostr")
+			_, err := io.WriteString(w, echostr)
+			if err != nil {
+				return err
+			}
 		}
 
 		return nil

@@ -70,7 +70,7 @@ go get -u github.com/medivhzhan/weapp/v2
   - [getUnlimited](#getUnlimited) ✅
 - [内容安全](#内容安全)
   - [imgSecCheck](#imgSecCheck) ✅
-  - [mediaCheckAsync](#mediaCheckAsync)
+  - [mediaCheckAsync](#mediaCheckAsync)✅
   - [msgSecCheck](#msgSecCheck) ✅
 - [图像处理](#图像处理)
   - [aiCrop](#aiCrop) ✅
@@ -865,7 +865,7 @@ if err := res.GetResponseError(); err !=nil {
 fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1115,7 +1115,7 @@ if err := res.GetResponseError(); err !=nil {
 fmt.Printf("返回结果: %#v", res)
 
 // 接收并处理异步结果
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1275,7 +1275,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1304,7 +1304,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1333,7 +1333,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1362,7 +1362,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1391,7 +1391,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1420,7 +1420,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1449,7 +1449,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1478,7 +1478,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1507,7 +1507,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1536,7 +1536,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1565,7 +1565,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1594,7 +1594,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1623,7 +1623,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -1867,7 +1867,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -2164,7 +2164,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -2268,7 +2268,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -2297,7 +2297,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -2326,7 +2326,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return
@@ -2355,7 +2355,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v2"
 
-srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", "api-key", false)
+srv, err := weapp.NewServer("app-id", "access-token", "aes-key", "mch-id", true)
 if err != nil {
     // 处理微信返回错误信息
     return

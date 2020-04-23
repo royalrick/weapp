@@ -74,11 +74,11 @@ type CardMessageResult struct {
 // MediaCheckAsyncResult 异步校验的图片/音频结果
 type MediaCheckAsyncResult struct {
 	CommonServerResult
-	IsRisky       uint8  `json:"isrisky"`         // 检测结果，0：暂未检测到风险，1：风险
-	ExtraInfoJSON string `json:"extra_info_json"` // 附加信息，默认为空
-	AppID         string `json:"appid"`           // 小程序的appid
-	TraceID       string `json:"trace_id"`        // 任务id
-	StatusCode    int    `json:"status_code"`     // 默认为：0，4294966288(-1008)为链接无法下载
+	IsRisky       uint8  `json:"isrisky" xml:"isrisky"`                 // 检测结果，0：暂未检测到风险，1：风险
+	ExtraInfoJSON string `json:"extra_info_json" xml:"extra_info_json"` // 附加信息，默认为空
+	AppID         string `json:"appid" xml:"appid"`                     // 小程序的appid
+	TraceID       string `json:"trace_id" xml:"trace_id"`               // 任务id
+	StatusCode    int    `json:"status_code" xml:"status_code"`         // 默认为：0，4294966288(-1008)为链接无法下载
 }
 
 // AddNearbyPoiResult 附近小程序添加地点审核状态通知数据
