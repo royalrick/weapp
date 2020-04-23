@@ -159,7 +159,7 @@ func TestAddNearbyPoi(t *testing.T) {
 					<poi_id>111111</poi_id>
 				</xml>`
 		reader := strings.NewReader(raw)
-		http.Post(tls.URL+"/notify", "application/xml", reader)
+		http.Post(tls.URL+"/notify", "text/xml", reader)
 	})
 	trs := httptest.NewServer(remoteServer)
 	defer trs.Close()

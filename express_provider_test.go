@@ -290,7 +290,7 @@ func TestOnAddExpressOrder(t *testing.T) {
 		<ServiceName><![CDATA[标准快递]]></ServiceName>
 	</Service>
   </xml>`
-	xmlResp, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	xmlResp, err := http.Post(ts.URL, "text/xml", strings.NewReader(xmlData))
 	if err != nil {
 		t.Error(err)
 	}
@@ -516,7 +516,7 @@ func TestOnCancelExpressOrder(t *testing.T) {
     <OrderID><![CDATA[012345678901234567890123456789]]></OrderID>
     <WayBillID><![CDATA[123456789]]></WayBillID>
 </xml>`
-	xmlResp, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	xmlResp, err := http.Post(ts.URL, "text/xml", strings.NewReader(xmlData))
 	if err != nil {
 		t.Error(err)
 	}
@@ -690,7 +690,7 @@ func TestOnCheckBusiness(t *testing.T) {
     <ServiceName><![CDATA[标准快递]]></ServiceName>
     <SenderAddress><![CDATA[广东省广州市海珠区新港中路397号]]></SenderAddress>
 </xml>`
-	xmlResp, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	xmlResp, err := http.Post(ts.URL, "text/xml", strings.NewReader(xmlData))
 	if err != nil {
 		t.Error(err)
 	}
@@ -838,7 +838,7 @@ func TestOnGetExpressQuota(t *testing.T) {
     <BizPwd><![CDATA[xyz123]]></BizPwd>
     <ShopAppID><![CDATA[wxABCD]]></ShopAppID>
 </xml>`
-	xmlResp, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	xmlResp, err := http.Post(ts.URL, "text/xml", strings.NewReader(xmlData))
 	if err != nil {
 		t.Error(err)
 	}

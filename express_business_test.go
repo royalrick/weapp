@@ -757,7 +757,7 @@ func TestOnPathUpdate(t *testing.T) {
 		<ActionMsg><![CDATA[运往目的地]]></ActionMsg>
 		</Actions>
 	</xml>`
-	res, err := http.Post(ts.URL, "application/xml", strings.NewReader(xmlData))
+	res, err := http.Post(ts.URL, "text/xml", strings.NewReader(xmlData))
 	if err != nil {
 		t.Fatal(err)
 	}
