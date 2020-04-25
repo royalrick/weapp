@@ -2768,4 +2768,17 @@ if err != nil {
 fmt.Printf("返回结果: %#v", res)
 ```
 
+### 解密微信运动
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+res, err := weapp.DecryptRunData("session-key", "encrypted-date", "iv" )
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+```
 ---

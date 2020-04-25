@@ -103,3 +103,33 @@ func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (
 
 	return info, nil
 }
+
+// RunData 解密后的最近30天微信运动步数
+type RunData struct {
+	StepInfoList []SetpInfo `json:"stepInfoList"`
+}
+
+// SetpInfo 运动步数
+type SetpInfo struct {
+	Step      int   `json:"step"`
+	Timestamp int64 `json:"timestamp"`
+}
+
+// DecryptRunData 解密微信运动的加密数据
+//
+// sessionKey 通过 Login 向微信服务端请求得到的 session_key
+// encryptedData 小程序通过 api 得到的加密数据(encryptedData)
+// iv 小程序通过 api 得到的初始向量(iv)
+func DecryptRunData(sessionKey, encryptedData, iv string) (*RunData, error) {
+	raw, err := decryptUserData(sessionKey, encryptedData, iv)
+	if err != nil {
+		return nil, err
+	}
+
+	info := new(RunData)
+	if err := json.Unmarshal(raw, info); err != nil {
+		return nil, err
+	}
+
+	return info, nil
+}
