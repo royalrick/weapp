@@ -23,7 +23,7 @@ type CommonServerResult struct {
 	XMLName      xml.Name  `xml:"xml" json:"-"`
 	ToUserName   string    `json:"ToUserName" xml:"ToUserName"`     // 小程序的原始ID
 	FromUserName string    `json:"FromUserName" xml:"FromUserName"` // 发送者的 openID | 平台推送服务UserName
-	CreateTime   uint64    `json:"CreateTime" xml:"CreateTime"`     // 消息创建时间(整型）
+	CreateTime   uint      `json:"CreateTime" xml:"CreateTime"`     // 消息创建时间(整型）
 	MsgType      MsgType   `json:"MsgType" xml:"MsgType"`           // 消息类型
 	Event        EventType `json:"Event" xml:"Event"`               // 事件类型
 }
@@ -112,6 +112,19 @@ type AddExpressOrderReturn struct {
 	BizID       string `json:"BizID" xml:"BizID"`             // 	商户 ID，原样返回
 	WayBillID   string `json:"WayBillID" xml:"WayBillID"`     // 	运单 ID
 	WaybillData string `json:"WaybillData" xml:"WaybillData"` // 	集包地、三段码、大头笔等信息，用于生成面单信息。详见后文返回值说明
+}
+
+// TransferCustomerMessage 需要转发的客服消息
+type TransferCustomerMessage struct {
+	XMLName xml.Name `xml:"xml"`
+	// 接收方帐号（收到的OpenID）
+	ToUserName string `json:"ToUserName" xml:"ToUserName"`
+	// 开发者微信号
+	FromUserName string `json:"FromUserName" xml:"FromUserName"`
+	// 消息创建时间 （整型）
+	CreateTime uint `json:"CreateTime" xml:"CreateTime"`
+	// 转发消息类型
+	MsgType MsgType `json:"MsgType" xml:"MsgType"`
 }
 
 // AddExpressOrderResult 请求下单事件参数

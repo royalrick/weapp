@@ -20,10 +20,11 @@ type MsgType = string
 
 // 所有消息类型
 const (
-	MsgText  MsgType = "text"            // 文本消息类型
-	MsgImg           = "image"           // 图片消息类型
-	MsgCard          = "miniprogrampage" // 小程序卡片消息类型
-	MsgEvent         = "event"           // 事件类型
+	MsgText  MsgType = "text"                      // 文本消息类型
+	MsgImg           = "image"                     // 图片消息类型
+	MsgCard          = "miniprogrampage"           // 小程序卡片消息类型
+	MsgEvent         = "event"                     // 事件类型
+	MsgTrans         = "transfer_customer_service" // 转发客服消息
 )
 
 // EventType 事件类型
@@ -64,9 +65,9 @@ type Server struct {
 	aesKey   []byte // base64 解码后的消息加密密钥
 	validate bool   // 是否验证请求来自微信服务器
 
-	textMessageHandler                func(*TextMessageResult)
-	imageMessageHandler               func(*ImageMessageResult)
-	cardMessageHandler                func(*CardMessageResult)
+	textMessageHandler                func(*TextMessageResult) *TransferCustomerMessage
+	imageMessageHandler               func(*ImageMessageResult) *TransferCustomerMessage
+	cardMessageHandler                func(*CardMessageResult) *TransferCustomerMessage
 	userTempsessionEnterHandler       func(*UserTempsessionEnterResult)
 	mediaCheckAsyncHandler            func(*MediaCheckAsyncResult)
 	expressPathUpdateHandler          func(*ExpressPathUpdateResult)
@@ -92,17 +93,17 @@ type Server struct {
 }
 
 // OnCustomerServiceTextMessage add handler to handle customer text service message.
-func (srv *Server) OnCustomerServiceTextMessage(fn func(*TextMessageResult)) {
+func (srv *Server) OnCustomerServiceTextMessage(fn func(*TextMessageResult) *TransferCustomerMessage) {
 	srv.textMessageHandler = fn
 }
 
 // OnCustomerServiceImageMessage add handler to handle customer image service message.
-func (srv *Server) OnCustomerServiceImageMessage(fn func(*ImageMessageResult)) {
+func (srv *Server) OnCustomerServiceImageMessage(fn func(*ImageMessageResult) *TransferCustomerMessage) {
 	srv.imageMessageHandler = fn
 }
 
 // OnCustomerServiceCardMessage add handler to handle customer card service message.
-func (srv *Server) OnCustomerServiceCardMessage(fn func(*CardMessageResult)) {
+func (srv *Server) OnCustomerServiceCardMessage(fn func(*CardMessageResult) *TransferCustomerMessage) {
 	srv.cardMessageHandler = fn
 }
 
@@ -326,7 +327,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			return nil, err
 		}
 		if srv.textMessageHandler != nil {
-			srv.textMessageHandler(msg)
+			return srv.textMessageHandler(msg), nil
 		}
 
 	case MsgImg:
@@ -335,7 +336,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			return nil, err
 		}
 		if srv.imageMessageHandler != nil {
-			srv.imageMessageHandler(msg)
+			return srv.imageMessageHandler(msg), nil
 		}
 
 	case MsgCard:
@@ -344,7 +345,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			return nil, err
 		}
 		if srv.cardMessageHandler != nil {
-			srv.cardMessageHandler(msg)
+			return srv.cardMessageHandler(msg), nil
 		}
 	case MsgEvent:
 		switch res.Event {
