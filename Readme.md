@@ -154,6 +154,7 @@ go get -u github.com/medivhzhan/weapp/v2
   - [解密分享内容](#解密分享内容)
   - [解密用户信息](#解密用户信息) ✅
   - [解密微信运动](#解密微信运动)
+- [人脸识别](#人脸识别)
 
 ---
 
@@ -2929,6 +2930,29 @@ if err != nil {
     return
 }
 
+fmt.Printf("返回结果: %#v", res)
+```
+
+---
+
+## 人脸识别
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// FaceIdentify 获取人脸识别结果
+//
+// token 微信 access_token
+// key 小程序 verify_result
+res, err := weapp.FaceIdentify("access_token", "verify_result")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
 fmt.Printf("返回结果: %#v", res)
 ```
 
