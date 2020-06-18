@@ -630,7 +630,7 @@ sender := weapp.UniformMsgSender{
     },
 }
 
-_, err := sender.Send("access-token")
+res, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2636,7 +2636,7 @@ sender := weapp.SearchSubmitPages{
     },
 }
 
-_, err := sender.Send("access-token")
+res, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2705,7 +2705,7 @@ sender := weapp.SubscribeMessage{
     },
 }
 
-_, err := sender.Send("access-token")
+res, err := sender.Send("access-token")
 if err != nil {
     // 处理一般错误信息
     return
