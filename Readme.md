@@ -48,7 +48,6 @@ go get -u github.com/medivhzhan/weapp/v2
   - [sendCustomerServiceMessage](#sendCustomerServiceMessage) ✅
   - [setTyping](#setTyping) ✅
   - [uploadTempMedia](#uploadTempMedia) ✅
-- [模板消息](#模板消息)(腾讯将于 2020 年 1 月 10 日下线该接口，请使用 [`订阅消息`](#订阅消息))
 - [统一服务消息](#统一服务消息)
   - [sendUniformMessage](#sendUniformMessage) ✅
 - [动态消息](#动态消息)
@@ -2688,8 +2687,6 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 订阅消息
-
-## 模板消息
 
 ### addTemplate
 
