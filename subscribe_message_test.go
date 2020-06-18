@@ -15,8 +15,8 @@ func TestSendSubscribeMessage(t *testing.T) {
 		}
 
 		path := r.URL.EscapedPath()
-		if path != apiSubscribeMessage {
-			t.Fatalf("Except to path '%s',get '%s'", apiSubscribeMessage, path)
+		if path != "/cgi-bin/message/subscribe/send" {
+			t.Fatalf("Except path '/cgi-bin/message/subscribe/send' got '%s'", path)
 		}
 
 		if err := r.ParseForm(); err != nil {
@@ -68,7 +68,7 @@ func TestSendSubscribeMessage(t *testing.T) {
 		},
 	}
 
-	_, err := sender.send(ts.URL+apiSubscribeMessage, "mock-access-token")
+	_, err := sender.send(ts.URL+apiSendSubscribeMessage, "mock-access-token")
 	if err != nil {
 		t.Fatal(err)
 	}

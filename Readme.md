@@ -141,7 +141,13 @@ go get -u github.com/medivhzhan/weapp/v2
   - [submitPages](#submitPages)
 - [生物认证](#生物认证)
   - [verifySignature](#verifySignature)
-- [订阅消息](#订阅消息)
+- [订阅消息](#订阅消息) ✅
+  - [addTemplate](#addTemplate) ✅
+  - [deleteTemplate](#deleteTemplate) ✅
+  - [getCategory](#getCategory) ✅
+  - [getPubTemplateKeyWordsById](#getPubTemplateKeyWordsById)✅
+  - [getPubTemplateTitleList](#getPubTemplateTitleList) ✅
+  - [getTemplateList](#getTemplateList) ✅
   - [sendSubscribeMessage](#sendSubscribeMessage) ✅
 - [解密](#解密)
   - [解密手机号码](#解密手机号码) ✅
@@ -2681,6 +2687,148 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 订阅消息
+
+## 模板消息
+
+### addTemplate
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.addTemplate.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// AddTemplate 组合模板并添加至帐号下的个人模板库
+//
+// token 微信 access_token
+// tid 模板ID
+// desc 服务场景描述，15个字以内
+// keywordIDList 关键词 ID 列表
+res, err := weapp.AddTemplate("access_token", "tid", "desc", []int32{1, 2, 3})
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
+
+### deleteTemplate
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.deleteTemplate.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// DeleteTemplate 删除帐号下的某个模板
+//
+// token 微信 access_token
+// pid 模板ID
+res, err := weapp.DeleteTemplate("access_token", "pid")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
+
+### getCategory
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.getCategory.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// GetTemplateCategory 删除帐号下的某个模板
+//
+// token 微信 access_token
+res, err := weapp.GetTemplateCategory("access_token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
+
+### getPubTemplateKeyWordsById
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.getPubTemplateKeyWordsById.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// GetPubTemplateKeyWordsById 获取模板标题下的关键词列表
+//
+// token 微信 access_token
+// tid 模板ID
+res, err := weapp.GetPubTemplateKeyWordsById("access_token", "tid")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
+
+### getPubTemplateTitleList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.getPubTemplateTitleList.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// GetPubTemplateTitleList 获取帐号所属类目下的公共模板标题
+//
+// token 微信 access_token
+// ids 类目 id，多个用逗号隔开
+// start 用于分页，表示从 start 开始。从 0 开始计数。
+// limit 用于分页，表示拉取 limit 条记录。最大为 30
+res, err := weapp.GetPubTemplateTitleList("access_token", "1,2,3", 0, 10)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
+
+### getTemplateList
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/subscribe-message/subscribeMessage.getTemplateList.html)
+
+```go
+import "github.com/medivhzhan/weapp/v2"
+
+// GetTemplateList 获取帐号下已存在的模板列表
+//
+// token 微信 access_token
+res, err := weapp.GetTemplateList("access_token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+fmt.Printf("返回结果: %#v", res)
+```
 
 ### sendSubscribeMessage
 
