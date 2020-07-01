@@ -293,20 +293,20 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 		return nil, err
 	}
 	if isEncrpt { // 处理加密消息
+
+		query := r.URL.Query()
+		nonce, signature, timestamp := query.Get("nonce"), query.Get("signature"), query.Get("timestamp")
+
+		// 检验消息是否来自微信服务器
+		if !validateSignature(signature, srv.token, timestamp, nonce) {
+			return nil, errors.New("failed to validate signature")
+		}
+
 		res := new(EncryptedResult)
 		if err := unmarshal(raw, tp, res); err != nil {
 			return nil, err
 		}
 
-		query := r.URL.Query()
-		nonce := query.Get("nonce")
-		signature := query.Get("signature")
-		timestamp := query.Get("timestamp")
-
-		// 检验消息的真实性
-		if !validateSignature(signature, srv.token, timestamp, nonce, res.Encrypt) {
-			return nil, errors.New("invalid signature")
-		}
 		body, err := srv.decryptMsg(res.Encrypt)
 		if err != nil {
 			return nil, err
