@@ -523,7 +523,7 @@ if err != nil {
 }
 
 // 文本消息
-srv.OnCustomerServiceTextMessage(func(msg *v2.TextMessageResult) *v2.TransferCustomerMessage {
+srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
     msg := weapp.CSMsgText{
         Content: "content",
@@ -550,7 +550,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 
 // 图片消息
-srv.OnCustomerServiceImageMessage(func(msg *v2.TextMessageResult) *v2.TransferCustomerMessage {
+srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
     msg := weapp.CSMsgImage{
         MediaID: "media-id",
@@ -577,7 +577,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 
 // 小程序卡片消息
-srv.OnCustomerServiceCardMessage(func(msg *v2.TextMessageResult) *v2.TransferCustomerMessage {
+srv.OnCustomerServiceCardMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
     msg := weapp.CSMsgMPCard{
         Title:        "title",
