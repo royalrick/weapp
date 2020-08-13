@@ -2,6 +2,7 @@ package weapp
 
 import (
 	"bytes"
+	"crypto/tls"
 	"encoding/json"
 	"io"
 	"math/rand"
@@ -66,7 +67,7 @@ func postJSON(url string, params interface{}, response interface{}) error {
 
 func getJSON(url string, response interface{}) error {
 
-	resp, err := http.Get(url)
+	resp, err := httpClient().Get(url)
 	if err != nil {
 		return err
 	}
@@ -87,7 +88,7 @@ func postJSONWithBody(url string, params interface{}) (*http.Response, error) {
 		}
 	}
 
-	return http.Post(url, "application/json; charset=utf-8", b)
+	return httpClient().Post(url, "application/json; charset=utf-8", b)
 }
 
 func postFormByFile(url, field, filename string, response interface{}) error {
@@ -127,7 +128,8 @@ func postForm(url, field, filename string, reader io.Reader, response interface{
 	req.Header.Set("Content-Type", w.FormDataContentType())
 
 	// Submit the request
-	client := &http.Client{}
+	client := httpClient()
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return err
@@ -135,4 +137,13 @@ func postForm(url, field, filename string, reader io.Reader, response interface{
 	defer resp.Body.Close()
 
 	return json.NewDecoder(resp.Body).Decode(response)
+}
+
+func httpClient() *http.Client {
+	return &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
 }
