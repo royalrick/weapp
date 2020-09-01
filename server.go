@@ -10,6 +10,7 @@ import (
 	"io"
 	"io/ioutil"
 	"net/http"
+	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -534,6 +535,16 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 	return nil, nil
 }
 
+// 判断 interface{} 是否为空
+func isNil(i interface{}) bool {
+	defer func() {
+		recover()
+	}()
+
+	vi := reflect.ValueOf(i)
+	return vi.IsNil()
+}
+
 // Serve 接收并处理微信通知服务
 func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
@@ -545,7 +556,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 			return fmt.Errorf("handle request content error: %s", err)
 		}
 
-		if res != nil {
+		if !isNil(res) {
 			raw, err := marshal(res, tp)
 			if err != nil {
 				return err
