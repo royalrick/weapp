@@ -525,74 +525,62 @@ if err != nil {
 // 文本消息
 srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    msg := weapp.CSMsgText{
+    reply := weapp.CSMsgText{
         Content: "content",
     }
 
-    res, err := msg.SendTo("open-id", "access-token")
+    res, err := reply.SendTo("open-id", "access-token")
     if err != nil {
         // 处理一般错误信息
-        return
+        return nil
     }
 
     if err := res.GetResponseError(); err !=nil {
         // 处理微信返回错误信息
-        return
+        return nil
     }
 
     return nil
 })
-
-if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
-    // 处理微信返回错误信息
-    return
-}
-
 
 // 图片消息
 srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    msg := weapp.CSMsgImage{
+    reply := weapp.CSMsgImage{
         MediaID: "media-id",
     }
 
-    res, err := msg.SendTo("open-id", "access-token")
+    res, err := reply.SendTo("open-id", "access-token")
     if err != nil {
         // 处理一般错误信息
-        return
+        return nil
     }
 
     if err := res.GetResponseError(); err !=nil {
         // 处理微信返回错误信息
-        return
+        return nil
     }
 
     return nil
 })
 
-if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
-    // 处理微信返回错误信息
-    return
-}
-
-
 // 小程序卡片消息
 srv.OnCustomerServiceCardMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    msg := weapp.CSMsgMPCard{
+    reply := weapp.CSMsgMPCard{
         Title:        "title",
         PagePath:     "page-path",
         ThumbMediaID: "thumb-media-id",
     }
-    res, err := msg.SendTo("open-id", "access-token")
+    res, err := reply.SendTo("open-id", "access-token")
     if err != nil {
         // 处理一般错误信息
-        return
+        return nil
     }
 
     if err := res.GetResponseError(); err !=nil {
         // 处理微信返回错误信息
-        return
+        return nil
     }
 
     return nil
