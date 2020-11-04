@@ -1,9 +1,30 @@
 package weapp
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 )
+
+// DecryptUserData 解密用户数据
+func DecryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
+	key, err := base64.StdEncoding.DecodeString(ssk)
+	if err != nil {
+		return nil, err
+	}
+
+	cipher, err := base64.StdEncoding.DecodeString(ciphertext)
+	if err != nil {
+		return nil, err
+	}
+
+	rawIV, err := base64.StdEncoding.DecodeString(iv)
+	if err != nil {
+		return nil, err
+	}
+
+	return cbcDecrypt(key, cipher, rawIV)
+}
 
 type watermark struct {
 	AppID     string `json:"appid"`
@@ -24,7 +45,7 @@ type Mobile struct {
 // encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
 func DecryptMobile(sessionKey, encryptedData, iv string) (*Mobile, error) {
-	raw, err := decryptUserData(sessionKey, encryptedData, iv)
+	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +72,7 @@ type ShareInfo struct {
 // gid 小程序唯一群号
 func DecryptShareInfo(sessionKey, encryptedData, iv string) (*ShareInfo, error) {
 
-	raw, err := decryptUserData(sessionKey, encryptedData, iv)
+	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -91,7 +112,7 @@ func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (
 		return nil, errors.New("failed to validate signature")
 	}
 
-	raw, err := decryptUserData(sessionKey, encryptedData, iv)
+	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -121,7 +142,7 @@ type SetpInfo struct {
 // encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
 func DecryptRunData(sessionKey, encryptedData, iv string) (*RunData, error) {
-	raw, err := decryptUserData(sessionKey, encryptedData, iv)
+	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}

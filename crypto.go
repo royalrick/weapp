@@ -6,7 +6,6 @@ import (
 	"crypto/cipher"
 	"crypto/rand"
 	"crypto/sha1"
-	"encoding/base64"
 	"encoding/hex"
 	"errors"
 	"io"
@@ -112,24 +111,4 @@ func cbcDecrypt(key, ciphertext, iv []byte) ([]byte, error) {
 	mode.CryptBlocks(ciphertext, ciphertext)
 
 	return pkcs7decode(ciphertext), nil
-}
-
-// decryptUserData 解密用户数据
-func decryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
-	key, err := base64.StdEncoding.DecodeString(ssk)
-	if err != nil {
-		return nil, err
-	}
-
-	cipher, err := base64.StdEncoding.DecodeString(ciphertext)
-	if err != nil {
-		return nil, err
-	}
-
-	rawIV, err := base64.StdEncoding.DecodeString(iv)
-	if err != nil {
-		return nil, err
-	}
-
-	return cbcDecrypt(key, cipher, rawIV)
 }
