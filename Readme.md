@@ -2915,7 +2915,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v2"
 
-res, err := weapp.DecryptMobile("session-key", "encrypted-date", "iv" )
+res, err := weapp.DecryptMobile("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
@@ -2929,7 +2929,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v2"
 
-res, err := weapp.DecryptShareInfo("session-key", "encrypted-date", "iv" )
+res, err := weapp.DecryptShareInfo("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
@@ -2943,7 +2943,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v2"
 
-res, err := weapp.DecryptUserInfo( "session-key", "raw-data", "encrypted-date", "signature", "iv")
+res, err := weapp.DecryptUserInfo( "session-key", "raw-data", "encrypted-data", "signature", "iv")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2957,7 +2957,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v2"
 
-res, err := weapp.DecryptRunData("session-key", "encrypted-date", "iv" )
+res, err := weapp.DecryptRunData("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
