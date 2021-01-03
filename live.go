@@ -2,9 +2,15 @@ package weapp
 
 const (
 	// 创建直播间
-	apiCreateLiveRoom = "/wxaapi/broadcast/room/create"
+	apiCreateLiveRoom    = "/wxaapi/broadcast/room/create"
+	apiFetchLiveRoomList = "/wxa/business/getliveinfo"
 )
 
+// 分页器
+type PageAble struct {
+	Start int `json:"start"`
+	Limit int `json:"limit"`
+}
 type createLiveRoomRequest struct {
 	Name            string `json:"name"`                      // 房间名字
 	CoverImg        string `json:"coverImg"`                  // 通过 uploadfile 上传，填写 mediaID
@@ -100,6 +106,121 @@ func createLiveRoom(api, token string, info *createLiveRoomRequest) (*CreateLive
 
 	rsp := new(CreateLiveRoomResponse)
 	if err := postJSON(api, nil, rsp); err != nil {
+		return nil, err
+	}
+
+	return rsp, nil
+}
+
+type PriceType uint8
+
+const (
+	_                 PriceType = iota
+	PriceTypeOne                // 一口价
+	PriceTypeRange              // 区间价格
+	PriceTypeDiscount           // 折扣价格
+)
+
+type LiveRoomGoods struct {
+	// 商品封面图链接
+	CoverIMG string `json:"cover_img"`
+	// 商品小程序路径
+	URL string `json:"url"`
+	// 商品名称
+	Name string `json:"name"`
+	// 商品价格（分）
+	Price int64 `json:"price"`
+	// 商品价格（参考价格类型）
+	Price2 int64 `json:"price2"`
+	// 价格类型，1：一口价（只需要传入price，price2不传） 2：价格区间（price字段为左边界，price2字段为右边界，price和price2必传） 3：显示折扣价（price字段为原价，price2字段为现价， price和price2必传）
+	Price_type PriceType `json:"price_type"`
+	// 商品id
+	GoodsID int `json:"goods_id"`
+	//第三方商品appid ,当前小程序商品则为空
+	ThirdPartyAppID string `json:"third_party_appid"`
+}
+
+// 直播间状态
+type LiveStatus uint8
+
+const (
+	_                   LiveStatus = iota + 100
+	LiveStatusLiving               // 直播中
+	LiveStatusNotStated            // 未开始
+	LiveStatusFinished             // 已结束
+	LiveStatusBan                  // 禁播
+	LiveStatusPause                // 暂停
+	LiveStatusException            // 异常
+	LiveStatusExpired              // 已过期
+)
+
+type LiveRoomItem struct {
+	// 直播间名称
+	Name string `json:"name"`
+	// 直播间ID
+	RoomID int `json:"roomid"`
+	// 直播间背景图链接
+	CoverIMG string `json:"cover_img"`
+	// 直播间分享图链接
+	ShareIMG string `json:"share_img"`
+	// 直播间状态
+	LiveStatus LiveStatus `json:"live_status"`
+	// 直播间开始时间
+	StartTime int `json:"start_time"`
+	// 直播计划结束时间
+	EndTime int `json:"end_time"`
+	// 主播名
+	AnchorName string           `json:"anchor_name"`
+	Goods      []*LiveRoomGoods `json:"goods"`
+	// 直播类型
+	LiveType LiveType `json:"live_type"`
+	// 是否关闭点赞
+	CloseLike int `json:"close_like"`
+	// 是否关闭货架
+	CloseGoods int `json:"close_goods"`
+	// 是否关闭评论
+	CloseComment int `json:"close_comment"`
+	// 是否关闭客服
+	CloseKF int `json:"close_kf"`
+	// 是否关闭回放
+	CloseReplay int `json:"close_replay"`
+	// 是否开启官方收录
+	IsFeedsPublic int `json:"is_feeds_public"`
+	// 创建者openid
+	CreatorOpenID string `json:"creater_openid"`
+	// 官方收录封面
+	FeedsIMG int `json:"feeds_img"`
+}
+type FetchLiveRoomListResponse struct {
+	CommonError
+	// 拉取房间总数
+	Total int             `json:"total"`
+	List  []*LiveRoomItem `json:"room_info"`
+}
+
+// 获取直播间列表及直播间信息
+//
+// @start: 起始拉取房间，start = 0 表示从第 1 个房间开始拉取
+// @limit: 每次拉取的个数上限，不要设置过大，建议 100 以内
+func FetchLiveRoomList(accessToken string, start, limit int) (*FetchLiveRoomListResponse, error) {
+	api := baseURL + apiFetchLiveRoomList
+
+	return fetchLiveRoomList(api, accessToken, start, limit)
+}
+
+func fetchLiveRoomList(api, token string, start, limit int) (*FetchLiveRoomListResponse, error) {
+	api, err := tokenAPI(api, token)
+	if err != nil {
+		return nil, err
+	}
+
+	params := PageAble{
+		Start: start,
+		Limit: limit,
+	}
+
+	rsp := new(FetchLiveRoomListResponse)
+	if err := postJSON(api, params, rsp); err != nil {
 		return nil, err
 	}
 
