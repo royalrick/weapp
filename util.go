@@ -147,3 +147,13 @@ func httpClient() *http.Client {
 		},
 	}
 }
+
+// convert bool to int
+func bool2int(ok bool) uint8 {
+
+	if ok {
+		return 1
+	}
+
+	return 0
+}
