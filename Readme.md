@@ -68,6 +68,8 @@ go get -u github.com/medivhzhan/weapp/v2
   - [createQRCode](#createQRCode) ✅
   - [get](#get) ✅
   - [getUnlimited](#getUnlimited) ✅
+- [URL-Scheme](#URL-Scheme)
+  - [generate](#generate)
 - [内容安全](#内容安全)
   - [imgSecCheck](#imgSecCheck) ✅
   - [mediaCheckAsync](#mediaCheckAsync)✅
@@ -1107,6 +1109,46 @@ defer resp.Body.Close()
 
 content, err := ioutil.ReadAll(resp.Body)
 // 处理图片内容
+
+```
+
+---
+
+## URL-Scheme
+
+### generate
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp/v2"
+)
+
+
+scheme := weapp.URLScheme{
+    SchemedInfo:  &weapp.SchemedInfo{
+        Path:  "mock/path",
+        Query:  "",
+    },
+    IsExpire: true,
+    ExpireTime: 1234567890,
+}
+
+resp, res, err := scheme.Generate("access-token")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
 
 ```
 
