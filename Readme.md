@@ -1,4 +1,4 @@
-# ![title](title.png)
+# ![微信小程序服务端 SDK (for Golang)](title.png)
 
 ## `注意` ⚠️
 
