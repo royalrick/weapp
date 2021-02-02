@@ -1118,7 +1118,7 @@ content, err := ioutil.ReadAll(resp.Body)
 
 ### generate
 
-[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/qr-code/wxacode.createQRCode.html)
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/url-scheme.html)
 
 ```go
 
