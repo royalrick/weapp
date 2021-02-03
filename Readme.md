@@ -69,7 +69,7 @@ go get -u github.com/medivhzhan/weapp/v2
   - [get](#get) ✅
   - [getUnlimited](#getUnlimited) ✅
 - [URL-Scheme](#URL-Scheme)
-  - [generate](#generate)
+  - [generate](#generate) ✅
 - [内容安全](#内容安全)
   - [imgSecCheck](#imgSecCheck) ✅
   - [mediaCheckAsync](#mediaCheckAsync)✅

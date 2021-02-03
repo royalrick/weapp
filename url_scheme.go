@@ -10,7 +10,7 @@ type URLScheme struct {
 	// 成的scheme码类型，到期失效：true，永久有效：false。
 	IsExpire bool `json:"is_expire,omitempty"`
 	// 到期失效的scheme码的失效时间，为Unix时间戳。生成的到期失效scheme码在该时间前有效。最长有效期为1年。生成到期失效的scheme时必填。
-	ExpireTime bool `json:"expire_time,omitempty"`
+	ExpireTime int64 `json:"expire_time,omitempty"`
 }
 
 type SchemedInfo struct {
