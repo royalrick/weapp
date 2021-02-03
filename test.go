@@ -5,5 +5,5 @@ type (
 )
 
 const (
-	testIMGName = "title.png"
+	testIMGName = "weapp.png"
 )
