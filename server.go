@@ -7,7 +7,6 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"net/http"
 	"reflect"
@@ -222,8 +221,9 @@ func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetR
 type dataType = string
 
 const (
-	dataTypeJSON dataType = "application/json"
-	dataTypeXML           = "text/xml"
+	dataTypeJSON  dataType = "application/json"
+	dataTypeXML            = "text/xml"
+	dataTypePlain          = "text/plain; charset=utf-8"
 )
 
 // NewServer 返回经过初始化的Server
@@ -247,15 +247,15 @@ func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Serv
 }
 
 func getDataType(req *http.Request) dataType {
-	content := req.Header.Get("Content-Type")
+	ctp := req.Header.Get("Content-Type")
 
 	switch {
-	case strings.Contains(content, dataTypeJSON):
+	case strings.Contains(ctp, dataTypeJSON):
 		return dataTypeJSON
-	case strings.Contains(content, dataTypeXML):
+	case strings.Contains(ctp, dataTypeXML):
 		return dataTypeXML
 	default:
-		return content
+		return dataTypePlain
 	}
 }
 
@@ -550,18 +550,19 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case "POST":
 		tp := getDataType(r)
-		isEncrpt := isEncrypted(r)
-		res, err := srv.handleRequest(w, r, isEncrpt, tp)
+		isEncrypted := isEncrypted(r)
+		res, err := srv.handleRequest(w, r, isEncrypted, tp)
 		if err != nil {
 			return fmt.Errorf("handle request content error: %s", err)
 		}
 
+		var raw []byte
 		if !isNil(res) {
-			raw, err := marshal(res, tp)
+			raw, err = marshal(res, tp)
 			if err != nil {
 				return err
 			}
-			if isEncrpt {
+			if isEncrypted {
 				res, err := srv.encryptMsg(string(raw), time.Now().Unix())
 				if err != nil {
 					return err
@@ -572,18 +573,26 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 				}
 			}
 
-			w.WriteHeader(http.StatusOK)
-			w.Header().Set("Content-Type", tp)
-			if _, err := w.Write(raw); err != nil {
-				return err
-			}
 		} else {
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8") // normal header
-			w.WriteHeader(http.StatusOK)
-			_, err = io.WriteString(w, "success")
-			if err != nil {
-				return err
+			raw = []byte("success")
+
+			if isEncrypted {
+				res, err := srv.encryptMsg(string(raw), time.Now().Unix())
+				if err != nil {
+					return err
+				}
+				raw, err = marshal(res, tp)
+				if err != nil {
+					return err
+				}
 			}
+
+		}
+
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", tp)
+		if _, err := w.Write(raw); err != nil {
+			return err
 		}
 
 		return nil
@@ -593,12 +602,11 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 				return errors.New("验证消息来自微信服务器失败")
 			}
 
-			w.Header().Set("Content-Type", "text/plain; charset=utf-8") // normal header
-			w.WriteHeader(http.StatusOK)
+			raw := []byte(r.URL.Query().Get("echostr"))
 
-			echostr := r.URL.Query().Get("echostr")
-			_, err := io.WriteString(w, echostr)
-			if err != nil {
+			w.WriteHeader(http.StatusOK)
+			w.Header().Set("Content-Type", dataTypePlain)
+			if _, err := w.Write(raw); err != nil {
 				return err
 			}
 		}
