@@ -2,7 +2,6 @@ package weapp
 
 import (
 	"bytes"
-	"crypto/tls"
 	"encoding/json"
 	"io"
 	"math/rand"
@@ -140,12 +139,7 @@ func postForm(url, field, filename string, reader io.Reader, response interface{
 }
 
 func httpClient() *http.Client {
-	return &http.Client{
-		Timeout: 10 * time.Second,
-		Transport: &http.Transport{
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-	}
+	return http.DefaultClient
 }
 
 // convert bool to int
