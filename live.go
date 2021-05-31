@@ -189,7 +189,7 @@ type LiveRoomItem struct {
 	// 创建者openid
 	CreatorOpenID string `json:"creater_openid"`
 	// 官方收录封面
-	FeedsIMG int `json:"feeds_img"`
+	FeedsIMG string `json:"feeds_img"`
 }
 type FetchLiveRoomListResponse struct {
 	CommonError
