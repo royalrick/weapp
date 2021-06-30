@@ -4,19 +4,12 @@ import (
 	"net/http"
 
 	"github.com/medivhzhan/weapp/v3/cache"
+	"github.com/medivhzhan/weapp/v3/request"
 )
 
 type Client interface {
 	Login(code string) (*LoginResponse, error)
 }
-
-// 消息返回数据类型
-type ContentType string
-
-const (
-	ContentTypeXML  = "XML"
-	ContentTypeJSON = "JSON"
-)
 
 // 小程序账号信息
 type AccountInfo struct {
@@ -29,20 +22,20 @@ type AccountInfo struct {
 	// 小程序后台配置: 消息加密密钥
 	EncodingAESKey string
 	// 小程序后台配置: 消息返回数据类型
-	ContentType ContentType
+	ContentType request.ContentType
 	// 小程序后台配置: 消息是否加密
 	IsEncrypted string
 }
 
 type client struct {
 	// HTTP请求客户端
-	httpClient *http.Client
-
+	request *request.Request
 	// 数据缓存器
 	cache cache.Cache
 	// 缓存前缀
 	cachePrefix string
-
+	// 小程序后台配置: 消息返回数据类型
+	contentType request.ContentType
 	// 微信账号信息
 	account AccountInfo
 }
@@ -53,19 +46,19 @@ func newClient(info AccountInfo) *client {
 		account:     info,
 		cache:       cache.NewMemoryCache(),
 		cachePrefix: "weapp",
-		httpClient:  http.DefaultClient,
+		contentType: info.ContentType,
+		request:     request.NewRequest(http.DefaultClient, info.ContentType),
 	}
 
 	return &cli
 }
 
 // 初始化客户端并用自定义配置替换默认配置
-func NewClient(info AccountInfo, fns ...func(Client)) Client {
-
+func NewClient(info AccountInfo, opts ...func(Client)) Client {
 	cli := newClient(info)
 
 	// 执行额外的配置函数
-	for _, fn := range fns {
+	for _, fn := range opts {
 		fn(cli)
 	}
 
@@ -74,19 +67,13 @@ func NewClient(info AccountInfo, fns ...func(Client)) Client {
 
 func WithHttpClient(c *http.Client) func(client) {
 	return func(cli client) {
-		cli.httpClient = c
+		cli.request = request.NewRequest(c, cli.contentType)
 	}
 }
 
-func WithCache(c cache.Cache) func(client) {
+func WithCache(c cache.Cache, prefix string) func(client) {
 	return func(cli client) {
 		cli.cache = c
-	}
-}
-
-// 配置缓存器前缀
-func WithCachePrefix(s string) func(client) {
-	return func(cli client) {
-		cli.cachePrefix = s
+		cli.cachePrefix = prefix
 	}
 }

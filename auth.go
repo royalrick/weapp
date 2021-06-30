@@ -42,7 +42,7 @@ func (cli *client) login(code, api string) (*LoginResponse, error) {
 	}
 
 	res := new(LoginResponse)
-	if err := cli.getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -100,7 +100,7 @@ func (cli *client) getAccessToken() (*TokenResponse, error) {
 	}
 
 	res := new(TokenResponse)
-	if err := cli.getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -163,7 +163,7 @@ func (cli *client) getPaidUnionIDRequest(api string, queries requestQueries) (*G
 	}
 
 	res := new(GetPaidUnionIDResponse)
-	if err := cli.getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
