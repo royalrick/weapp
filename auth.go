@@ -1,5 +1,7 @@
 package weapp
 
+import "time"
+
 const (
 	apiLogin          = "/sns/jscode2session"
 	apiGetAccessToken = "/cgi-bin/token"
@@ -21,16 +23,15 @@ type LoginResponse struct {
 // appID 小程序 appID
 // secret 小程序的 app secret
 // code 小程序登录时获取的 code
-func Login(appID, secret, code string) (*LoginResponse, error) {
+func (cli *client) Login(code string) (*LoginResponse, error) {
 	api := baseURL + apiLogin
-
-	return login(appID, secret, code, api)
+	return cli.login(code, api)
 }
 
-func login(appID, secret, code, api string) (*LoginResponse, error) {
+func (cli *client) login(code, api string) (*LoginResponse, error) {
 	queries := requestQueries{
-		"appid":      appID,
-		"secret":     secret,
+		"appid":      cli.account.AppID,
+		"secret":     cli.account.AppSecret,
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
@@ -41,7 +42,7 @@ func login(appID, secret, code, api string) (*LoginResponse, error) {
 	}
 
 	res := new(LoginResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.getJSON(url, res); err != nil {
 		return nil, err
 	}
 
@@ -55,28 +56,51 @@ type TokenResponse struct {
 	ExpiresIn   uint   `json:"expires_in"`   // 凭证有效时间，单位：秒。目前是7200秒之内的值。
 }
 
-// GetAccessToken 获取小程序全局唯一后台接口调用凭据（access_token）。
-// 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
-func GetAccessToken(appID, secret string) (*TokenResponse, error) {
-	api := baseURL + apiGetAccessToken
-	return getAccessToken(appID, secret, api)
+// access_token 缓存 KEY
+func (cli *client) tokenCacheKey() string {
+	return cli.cachePrefix + "." + "access_token"
 }
 
-func getAccessToken(appID, secret, api string) (*TokenResponse, error) {
+// 获取小程序全局唯一后台接口调用凭据（access_token）。
+// 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
+func (cli *client) accessToken() (string, error) {
+
+	key := cli.tokenCacheKey()
+	data, ok := cli.cache.Get(key)
+	if ok {
+		return data.(string), nil
+	}
+
+	rsp, err := cli.getAccessToken()
+	if err != nil {
+		return "", err
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		return "", err
+	}
+
+	cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn))
+
+	return rsp.AccessToken, nil
+}
+
+func (cli *client) getAccessToken() (*TokenResponse, error) {
 
 	queries := requestQueries{
-		"appid":      appID,
-		"secret":     secret,
+		"appid":      cli.account.AppID,
+		"secret":     cli.account.AppSecret,
 		"grant_type": "client_credential",
 	}
 
+	api := baseURL + apiGetAccessToken
 	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(TokenResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.getJSON(url, res); err != nil {
 		return nil, err
 	}
 
@@ -90,28 +114,38 @@ type GetPaidUnionIDResponse struct {
 }
 
 // GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
-func GetPaidUnionID(accessToken, openID, transactionID string) (*GetPaidUnionIDResponse, error) {
+func (cli *client) GetPaidUnionID(openID, transactionID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
-	return getPaidUnionID(accessToken, openID, transactionID, api)
+	accessToken, err := cli.accessToken()
+	if err != nil {
+		return nil, err
+	}
+	return cli.getPaidUnionID(accessToken, openID, transactionID, api)
 }
 
-func getPaidUnionID(accessToken, openID, transactionID, api string) (*GetPaidUnionIDResponse, error) {
+func (cli *client) getPaidUnionID(accessToken, openID, transactionID, api string) (*GetPaidUnionIDResponse, error) {
 	queries := requestQueries{
 		"openid":         openID,
 		"access_token":   accessToken,
 		"transaction_id": transactionID,
 	}
 
-	return getPaidUnionIDRequest(api, queries)
+	return cli.getPaidUnionIDRequest(api, queries)
 }
 
 // GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
-func GetPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
+func (cli *client) GetPaidUnionIDWithMCH(openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
-	return getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api)
+
+	accessToken, err := cli.accessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api)
 }
 
-func getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api string) (*GetPaidUnionIDResponse, error) {
+func (cli *client) getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api string) (*GetPaidUnionIDResponse, error) {
 	queries := requestQueries{
 		"openid":       openID,
 		"mch_id":       mchID,
@@ -119,17 +153,17 @@ func getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api string) (
 		"access_token": accessToken,
 	}
 
-	return getPaidUnionIDRequest(api, queries)
+	return cli.getPaidUnionIDRequest(api, queries)
 }
 
-func getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDResponse, error) {
+func (cli *client) getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDResponse, error) {
 	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetPaidUnionIDResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.getJSON(url, res); err != nil {
 		return nil, err
 	}
 

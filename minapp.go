@@ -2,10 +2,12 @@ package weapp
 
 import (
 	"net/http"
-	"time"
+
+	"github.com/medivhzhan/weapp/v3/cache"
 )
 
 type Client interface {
+	Login(code string) (*LoginResponse, error)
 }
 
 // 消息返回数据类型
@@ -33,30 +35,41 @@ type AccountInfo struct {
 }
 
 type client struct {
+	// HTTP请求客户端
 	httpClient *http.Client
-	cache      Cache
+
+	// 数据缓存器
+	cache cache.Cache
+	// 缓存前缀
+	cachePrefix string
 
 	// 微信账号信息
 	account AccountInfo
 }
 
-func (c *client) initialize() {
-	if c.httpClient == nil {
-		c.httpClient = http.DefaultClient
+// 初始化客户端
+func newClient(info AccountInfo) *client {
+	cli := client{
+		account:     info,
+		cache:       cache.NewMemoryCache(),
+		cachePrefix: "weapp",
+		httpClient:  http.DefaultClient,
 	}
+
+	return &cli
 }
 
+// 初始化客户端并用自定义配置替换默认配置
 func NewClient(info AccountInfo, fns ...func(Client)) Client {
-	c := &client{
-		account: info,
-	}
+
+	cli := newClient(info)
+
+	// 执行额外的配置函数
 	for _, fn := range fns {
-		fn(c)
+		fn(cli)
 	}
 
-	c.initialize()
-
-	return c
+	return cli
 }
 
 func WithHttpClient(c *http.Client) func(client) {
@@ -65,17 +78,15 @@ func WithHttpClient(c *http.Client) func(client) {
 	}
 }
 
-type Cache interface {
-	// 获取数据
-	Get(key string) (string, error)
-	// @exp为0时表示不设置有效期
-	Set(key string, val interface{}, exp time.Duration) error
-	// 判断数据是否存在
-	Exists(key string) (bool, error)
-}
-
-func WithCache(c Cache) func(client) {
+func WithCache(c cache.Cache) func(client) {
 	return func(cli client) {
 		cli.cache = c
+	}
+}
+
+// 配置缓存器前缀
+func WithCachePrefix(s string) func(client) {
+	return func(cli client) {
+		cli.cachePrefix = s
 	}
 }

@@ -232,11 +232,11 @@ func getTemplateList(api, token string) (*GetTemplateListResponse, error) {
 
 // SubscribeMessage 订阅消息
 type SubscribeMessage struct {
-	ToUser           string               `json:"touser"`
-	TemplateID       string               `json:"template_id"`
-	Page             string               `json:"page,omitempty"`
-	MiniprogramState MiniprogramState     `json:"miniprogram_state,omitempty"`
-	Data             SubscribeMessageData `json:"data"`
+	ToUser           string           `json:"touser"`
+	TemplateID       string           `json:"template_id"`
+	Page             string           `json:"page,omitempty"`
+	MiniprogramState MiniprogramState `json:"miniprogram_state,omitempty"`
+	Data             string           `json:"data"`
 }
 
 // MiniprogramState 跳转小程序类型
@@ -248,11 +248,6 @@ const (
 	MiniprogramStateTrial     = "trial"
 	MiniprogramStateFormal    = "formal"
 )
-
-// SubscribeMessageData 订阅消息模板数据
-type SubscribeMessageData map[string]struct {
-	Value string `json:"value"`
-}
 
 // Send 发送订阅消息
 //
