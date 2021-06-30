@@ -89,10 +89,10 @@ func (cli *Request) FormPostWithFile(url, field, filename string, response inter
 	}
 	defer file.Close()
 
-	return cli.postForm(url, field, filename, file, response)
+	return cli.FormPost(url, field, filename, file, response)
 }
 
-func (cli *Request) postForm(url, field, filename string, reader io.Reader, response interface{}) error {
+func (cli *Request) FormPost(url, field, filename string, reader io.Reader, response interface{}) error {
 	// Prepare a form that you will submit to that URL.
 	buf := new(bytes.Buffer)
 	w := multipart.NewWriter(buf)
