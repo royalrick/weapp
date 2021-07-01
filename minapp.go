@@ -32,8 +32,6 @@ type client struct {
 	request *request.Request
 	// 数据缓存器
 	cache cache.Cache
-	// 缓存前缀
-	cachePrefix string
 	// 小程序后台配置: 消息返回数据类型
 	contentType request.ContentType
 	// 微信账号信息
@@ -45,7 +43,6 @@ func newClient(info AccountInfo) *client {
 	cli := client{
 		account:     info,
 		cache:       cache.NewMemoryCache(),
-		cachePrefix: "weapp",
 		contentType: info.ContentType,
 		request:     request.NewRequest(http.DefaultClient, info.ContentType),
 	}
@@ -71,9 +68,8 @@ func WithHttpClient(c *http.Client) func(client) {
 	}
 }
 
-func WithCache(c cache.Cache, prefix string) func(client) {
+func WithCache(c cache.Cache) func(client) {
 	return func(cli client) {
 		cli.cache = c
-		cli.cachePrefix = prefix
 	}
 }

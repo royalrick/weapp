@@ -4,6 +4,8 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
+
+	"github.com/medivhzhan/weapp/v3/encrypt"
 )
 
 // DecryptUserData 解密用户数据
@@ -23,7 +25,7 @@ func DecryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
 		return nil, err
 	}
 
-	return cbcDecrypt(key, cipher, rawIV)
+	return encrypt.NewCBC(rawIV, key, cipher).Decrypt()
 }
 
 type watermark struct {
@@ -108,7 +110,7 @@ type UserInfo struct {
 // iv 加密算法的初始向量
 func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
 
-	if ok := validateUserInfo(signature, rawData, sessionKey); !ok {
+	if encrypt.NewSigner(false, rawData, sessionKey).CompareWith(signature) {
 		return nil, errors.New("failed to validate signature")
 	}
 

@@ -25,33 +25,48 @@ type VisitTrend struct {
 }
 
 // GetMonthlyVisitTrend 获取用户访问小程序数据月趋势
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
-func GetMonthlyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
+func (cli *client) GetMonthlyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetMonthlyVisitTrend
-	return getVisitTrend(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getVisitTrend(accessToken, begin, end, api)
 }
 
 // GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
-func GetWeeklyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
+func (cli *client) GetWeeklyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetWeeklyVisitTrend
-	return getVisitTrend(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getVisitTrend(accessToken, begin, end, api)
 }
 
 // GetDailyVisitTrend 获取用户访问小程序数据日趋势
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetDailyVisitTrend(accessToken, begin, end string) (*VisitTrend, error) {
+func (cli *client) GetDailyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetDailyVisitTrend
-	return getVisitTrend(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getVisitTrend(accessToken, begin, end, api)
 }
 
-func getVisitTrend(accessToken, begin, end, api string) (*VisitTrend, error) {
+func (cli *client) getVisitTrend(accessToken, begin, end, api string) (*VisitTrend, error) {
 	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err

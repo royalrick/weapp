@@ -13,6 +13,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/medivhzhan/weapp/v3/encrypt"
 )
 
 // MsgType 消息类型
@@ -299,7 +301,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 		nonce, signature, timestamp := query.Get("nonce"), query.Get("signature"), query.Get("timestamp")
 
 		// 检验消息是否来自微信服务器
-		if !validateSignature(signature, srv.token, timestamp, nonce) {
+		if encrypt.NewSigner(true, srv.token, timestamp, nonce).CompareWith(signature) {
 			return nil, errors.New("failed to validate signature")
 		}
 
@@ -631,8 +633,7 @@ func (srv *Server) validateServer(req *http.Request) bool {
 	nonce := query.Get("nonce")
 	signature := query.Get("signature")
 	timestamp := query.Get("timestamp")
-
-	return validateSignature(signature, nonce, timestamp, srv.token)
+	return encrypt.NewSigner(true, nonce, timestamp, srv.token).CompareWith(signature)
 }
 
 // 加密消息
@@ -643,22 +644,20 @@ func (srv *Server) encryptMsg(message string, timestamp int64) (*EncryptedMsgReq
 	//获得16位随机字符串，填充到明文之前
 	nonce := randomString(16)
 	text := nonce + strconv.Itoa(len(message)) + message + srv.appID
-	plaintext := pkcs7encode([]byte(text))
 
-	cipher, err := cbcEncrypt(key, plaintext, key)
+	data, err := encrypt.NewCBC(key, key, []byte(text)).Encrypt()
 	if err != nil {
 		return nil, err
 	}
 
-	encrypt := base64.StdEncoding.EncodeToString(cipher)
+	cipher := base64.StdEncoding.EncodeToString(data)
 	timestr := strconv.FormatInt(timestamp, 10)
 
 	//生成安全签名
-	signature := createSignature(srv.token, timestr, nonce, encrypt)
-
+	signature := encrypt.NewSigner(true, srv.token, timestr, nonce, cipher).Sign()
 	request := EncryptedMsgRequest{
 		Nonce:        nonce,
-		Encrypt:      encrypt,
+		Encrypt:      cipher,
 		TimeStamp:    timestr,
 		MsgSignature: signature,
 	}
@@ -676,7 +675,7 @@ func (srv *Server) decryptMsg(encrypted string) ([]byte, error) {
 		return nil, err
 	}
 
-	data, err := cbcDecrypt(key, ciphertext, key)
+	data, err := encrypt.NewCBC(key, ciphertext, key).Decrypt()
 	if err != nil {
 		return nil, err
 	}
