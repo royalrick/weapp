@@ -30,8 +30,8 @@ func (cli *Client) Login(code string) (*LoginResponse, error) {
 
 func (cli *Client) login(code, api string) (*LoginResponse, error) {
 	queries := requestQueries{
-		"appid":      cli.account.AppID,
-		"secret":     cli.account.AppSecret,
+		"appid":      cli.appid,
+		"secret":     cli.secret,
 		"js_code":    code,
 		"grant_type": "authorization_code",
 	}
@@ -88,8 +88,8 @@ func (cli *Client) AccessToken() (string, error) {
 func (cli *Client) GetAccessToken() (*TokenResponse, error) {
 
 	queries := requestQueries{
-		"appid":      cli.account.AppID,
-		"secret":     cli.account.AppSecret,
+		"appid":      cli.appid,
+		"secret":     cli.secret,
 		"grant_type": "client_credential",
 	}
 

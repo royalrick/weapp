@@ -1,4 +1,4 @@
-package weapp
+package server
 
 import "encoding/xml"
 
@@ -169,8 +169,8 @@ type AddExpressOrderResult struct {
 		Count  uint    `json:"Count" xml:"Count"`     // 包裹数量
 	} `json:"Cargo" xml:"Cargo"` // 包裹信息
 	Insured struct {
-		Used  InsureStatus `json:"UseInsured" xml:"UseInsured"`     // 是否保价，0 表示不保价，1 表示保价
-		Value uint         `json:"InsuredValue" xml:"InsuredValue"` // 保价金额，单位是分，比如: 10000 表示 100 元
+		Used  uint8 `json:"UseInsured" xml:"UseInsured"`     // 是否保价，0 表示不保价，1 表示保价
+		Value uint  `json:"InsuredValue" xml:"InsuredValue"` // 保价金额，单位是分，比如: 10000 表示 100 元
 	} `json:"Insured" xml:"Insured"` // 保价信息
 	Service struct {
 		Type uint8  `json:"ServiceType" xml:"ServiceType"` // 服务类型 ID

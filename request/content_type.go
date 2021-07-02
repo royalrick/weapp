@@ -4,7 +4,7 @@ package request
 type ContentType uint
 
 const (
-	Plaintext ContentType = iota
+	ContentTypePlain ContentType = iota
 	ContentTypeXML
 	ContentTypeJSON
 )
@@ -16,6 +16,6 @@ func (ctp ContentType) String() string {
 	case ContentTypeJSON:
 		return "application/json"
 	default:
-		return "plain/text"
+		return "text/plain"
 	}
 }

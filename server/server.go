@@ -1,4 +1,4 @@
-package weapp
+package server
 
 import (
 	"encoding/base64"
@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -15,47 +16,7 @@ import (
 	"time"
 
 	"github.com/medivhzhan/weapp/v3/encrypt"
-)
-
-// MsgType 消息类型
-type MsgType = string
-
-// 所有消息类型
-const (
-	MsgText  MsgType = "text"                      // 文本消息类型
-	MsgImg   MsgType = "image"                     // 图片消息类型
-	MsgCard  MsgType = "miniprogrampage"           // 小程序卡片消息类型
-	MsgEvent MsgType = "event"                     // 事件类型
-	MsgTrans MsgType = "transfer_customer_service" // 转发客服消息
-)
-
-// EventType 事件类型
-type EventType string
-
-// 所有事件类型
-const (
-	EventQuotaGet                   EventType = "get_quota"                       // 查询商户余额
-	EventCheckBusiness                        = "check_biz"                       // 取消订单事件
-	EventMediaCheckAsync                      = "wxa_media_check"                 // 异步校验图片/音频
-	EventAddExpressOrder                      = "add_waybill"                     // 请求下单事件
-	EventExpressPathUpdate                    = "add_express_path"                // 运单轨迹更新事件
-	EventExpressOrderCancel                   = "cancel_waybill"                  // 审核商户事件
-	EventUserTempsessionEnter                 = "user_enter_tempsession"          // 用户进入临时会话状态
-	EventNearbyPoiAuditInfoAdd                = "add_nearby_poi_audit_info"       // 附近小程序添加地点审核状态通知
-	EventDeliveryOrderStatusUpdate            = "update_waybill_status"           // 配送单配送状态更新通知
-	EventAgentPosQuery                        = "transport_get_agent_pos"         // 查询骑手当前位置信息
-	EventAuthInfoGet                          = "get_auth_info"                   // 使用授权码拉取授权信息
-	EventAuthAccountCancel                    = "cancel_auth_account"             // 取消授权帐号
-	EventDeliveryOrderAdd                     = "transport_add_order"             // 真实发起下单任务
-	EventDeliveryOrderTipsAdd                 = "transport_add_tips"              // 对待接单状态的订单增加小费
-	EventDeliveryOrderCancel                  = "transport_cancel_order"          // 取消订单操作
-	EventDeliveryOrderReturnConfirm           = "transport_confirm_return_to_biz" // 异常妥投商户收货确认
-	EventDeliveryOrderPreAdd                  = "transport_precreate_order"       // 预下单
-	EventDeliveryOrderPreCancel               = "transport_precancel_order"       // 预取消订单
-	EventDeliveryOrderQuery                   = "transport_query_order_status"    // 查询订单状态
-	EventDeliveryOrderReadd                   = "transport_readd_order"           // 下单
-	EventPreAuthCodeGet                       = "get_pre_auth_code"               // 获取预授权码
-	EventRiderScoreSet                        = "transport_set_rider_score"       // 给骑手评分
+	"github.com/medivhzhan/weapp/v3/request"
 )
 
 // Server 微信通知服务处理器
@@ -67,6 +28,11 @@ type Server struct {
 	aesKey   []byte // base64 解码后的消息加密密钥
 	validate bool   // 是否验证请求来自微信服务器
 
+	// 默认处理器
+	// 没有自定义处理器的情况下调用该处理器
+	handler func(map[string]interface{}) map[string]interface{}
+
+	// 自定义处理器
 	textMessageHandler                func(*TextMessageResult) *TransferCustomerMessage
 	imageMessageHandler               func(*ImageMessageResult) *TransferCustomerMessage
 	cardMessageHandler                func(*CardMessageResult) *TransferCustomerMessage
@@ -220,16 +186,8 @@ func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetR
 	srv.riderScoreSetHandler = fn
 }
 
-type dataType = string
-
-const (
-	dataTypeJSON  dataType = "application/json"
-	dataTypeXML            = "text/xml"
-	dataTypePlain          = "text/plain; charset=utf-8"
-)
-
 // NewServer 返回经过初始化的Server
-func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Server, error) {
+func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool, handler func(map[string]interface{}) map[string]interface{}) (*Server, error) {
 
 	key, err := base64.RawStdEncoding.DecodeString(aesKey)
 	if err != nil {
@@ -243,54 +201,55 @@ func NewServer(appID, token, aesKey, mchID, apiKey string, validate bool) (*Serv
 		token:    token,
 		aesKey:   key,
 		validate: validate,
+		handler:  handler,
 	}
 
 	return &server, nil
 }
 
-func getDataType(req *http.Request) dataType {
+func contentType(req *http.Request) request.ContentType {
 	ctp := req.Header.Get("Content-Type")
 
 	switch {
-	case strings.Contains(ctp, dataTypeJSON):
-		return dataTypeJSON
-	case strings.Contains(ctp, dataTypeXML):
-		return dataTypeXML
+	case strings.Contains(ctp, request.ContentTypeJSON.String()):
+		return request.ContentTypeJSON
+	case strings.Contains(ctp, request.ContentTypeXML.String()):
+		return request.ContentTypeXML
 	default:
-		return dataTypePlain
+		return request.ContentTypePlain
 	}
 }
 
-func unmarshal(data []byte, tp dataType, v interface{}) error {
-	switch tp {
-	case dataTypeJSON:
+func unmarshal(data []byte, ctp request.ContentType, v interface{}) error {
+	switch ctp {
+	case request.ContentTypeJSON:
 		if err := json.Unmarshal(data, v); err != nil {
 			return err
 		}
-	case dataTypeXML:
+	case request.ContentTypeXML:
 		if err := xml.Unmarshal(data, v); err != nil {
 			return err
 		}
 	default:
-		return errors.New("invalid content type: " + tp)
+		return errors.New("invalid content type")
 	}
 
 	return nil
 }
 
-func marshal(data interface{}, tp dataType) ([]byte, error) {
-	switch tp {
-	case dataTypeJSON:
+func marshal(data interface{}, ctp request.ContentType) ([]byte, error) {
+	switch ctp {
+	case request.ContentTypeJSON:
 		return json.Marshal(data)
-	case dataTypeXML:
+	case request.ContentTypeXML:
 		return xml.Marshal(data)
 	default:
-		return nil, errors.New("invalid content type: " + tp)
+		return nil, errors.New("invalid content type")
 	}
 }
 
 // 处理消息体
-func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrpt bool, tp dataType) (interface{}, error) {
+func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrpt bool, ctp request.ContentType) (interface{}, error) {
 	raw, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
@@ -306,7 +265,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 		}
 
 		res := new(EncryptedResult)
-		if err := unmarshal(raw, tp, res); err != nil {
+		if err := unmarshal(raw, ctp, res); err != nil {
 			return nil, err
 		}
 
@@ -319,14 +278,14 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 	}
 
 	res := new(CommonServerResult)
-	if err := unmarshal(raw, tp, res); err != nil {
+	if err := unmarshal(raw, ctp, res); err != nil {
 		return nil, err
 	}
 
 	switch res.MsgType {
 	case MsgText:
 		msg := new(TextMessageResult)
-		if err := unmarshal(raw, tp, msg); err != nil {
+		if err := unmarshal(raw, ctp, msg); err != nil {
 			return nil, err
 		}
 		if srv.textMessageHandler != nil {
@@ -335,7 +294,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 
 	case MsgImg:
 		msg := new(ImageMessageResult)
-		if err := unmarshal(raw, tp, msg); err != nil {
+		if err := unmarshal(raw, ctp, msg); err != nil {
 			return nil, err
 		}
 		if srv.imageMessageHandler != nil {
@@ -344,7 +303,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 
 	case MsgCard:
 		msg := new(CardMessageResult)
-		if err := unmarshal(raw, tp, msg); err != nil {
+		if err := unmarshal(raw, ctp, msg); err != nil {
 			return nil, err
 		}
 		if srv.cardMessageHandler != nil {
@@ -354,7 +313,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 		switch res.Event {
 		case EventUserTempsessionEnter:
 			msg := new(UserTempsessionEnterResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.userTempsessionEnterHandler != nil {
@@ -362,7 +321,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventQuotaGet:
 			msg := new(GetExpressQuotaResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.quotaGetHandler != nil {
@@ -370,7 +329,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventMediaCheckAsync:
 			msg := new(MediaCheckAsyncResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.mediaCheckAsyncHandler != nil {
@@ -378,7 +337,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventAddExpressOrder:
 			msg := new(AddExpressOrderResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.addExpressOrderHandler != nil {
@@ -386,7 +345,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventExpressOrderCancel:
 			msg := new(CancelExpressOrderResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.expressOrderCancelHandler != nil {
@@ -394,7 +353,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventCheckBusiness:
 			msg := new(CheckExpressBusinessResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.checkExpressBusinessHandler != nil {
@@ -402,7 +361,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderStatusUpdate:
 			msg := new(DeliveryOrderStatusUpdateResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderStatusUpdateHandler != nil {
@@ -410,7 +369,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventAgentPosQuery:
 			msg := new(AgentPosQueryResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.agentPosQueryHandler != nil {
@@ -418,7 +377,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventAuthInfoGet:
 			msg := new(AuthInfoGetResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.authInfoGetHandler != nil {
@@ -426,7 +385,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventAuthAccountCancel:
 			msg := new(CancelAuthResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.authAccountCancelHandler != nil {
@@ -434,7 +393,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderAdd:
 			msg := new(DeliveryOrderAddResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderAddHandler != nil {
@@ -442,7 +401,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderTipsAdd:
 			msg := new(DeliveryOrderAddTipsResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderTipsAddHandler != nil {
@@ -450,7 +409,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderCancel:
 			msg := new(DeliveryOrderCancelResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderCancelHandler != nil {
@@ -458,7 +417,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderReturnConfirm:
 			msg := new(DeliveryOrderReturnConfirmResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderReturnConfirmHandler != nil {
@@ -466,7 +425,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderPreAdd:
 			msg := new(DeliveryOrderPreAddResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderPreAddHandler != nil {
@@ -474,7 +433,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderPreCancel:
 			msg := new(DeliveryOrderPreCancelResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderPreCancelHandler != nil {
@@ -482,7 +441,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderQuery:
 			msg := new(DeliveryOrderQueryResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderQueryHandler != nil {
@@ -490,7 +449,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventDeliveryOrderReadd:
 			msg := new(DeliveryOrderReaddResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.deliveryOrderReaddHandler != nil {
@@ -498,7 +457,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventPreAuthCodeGet:
 			msg := new(PreAuthCodeGetResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.preAuthCodeGetHandler != nil {
@@ -506,7 +465,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventRiderScoreSet:
 			msg := new(RiderScoreSetResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.riderScoreSetHandler != nil {
@@ -514,7 +473,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventExpressPathUpdate:
 			msg := new(ExpressPathUpdateResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.expressPathUpdateHandler != nil {
@@ -522,18 +481,31 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 		case EventNearbyPoiAuditInfoAdd:
 			msg := new(AddNearbyPoiResult)
-			if err := unmarshal(raw, tp, msg); err != nil {
+			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
 			if srv.addNearbyPoiAuditHandler != nil {
 				srv.addNearbyPoiAuditHandler(msg)
 			}
 		default:
-			return nil, fmt.Errorf("unexpected message type '%s'", res.MsgType)
+			msg := make(map[string]interface{})
+			if err := unmarshal(raw, ctp, msg); err != nil {
+				return nil, err
+			}
+			if srv.handler != nil {
+				return srv.handler(msg), nil
+			}
 		}
 	default:
-		return nil, fmt.Errorf("unexpected message type '%s'", res.MsgType)
+		msg := make(map[string]interface{})
+		if err := unmarshal(raw, ctp, msg); err != nil {
+			return nil, err
+		}
+		if srv.handler != nil {
+			return srv.handler(msg), nil
+		}
 	}
+
 	return nil, nil
 }
 
@@ -551,16 +523,16 @@ func isNil(i interface{}) bool {
 func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 	switch r.Method {
 	case "POST":
-		tp := getDataType(r)
+		ctp := contentType(r)
 		isEncrypted := isEncrypted(r)
-		res, err := srv.handleRequest(w, r, isEncrypted, tp)
+		res, err := srv.handleRequest(w, r, isEncrypted, ctp)
 		if err != nil {
 			return fmt.Errorf("handle request content error: %s", err)
 		}
 
 		var raw []byte
 		if !isNil(res) {
-			raw, err = marshal(res, tp)
+			raw, err = marshal(res, ctp)
 			if err != nil {
 				return err
 			}
@@ -569,7 +541,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 				if err != nil {
 					return err
 				}
-				raw, err = marshal(res, tp)
+				raw, err = marshal(res, ctp)
 				if err != nil {
 					return err
 				}
@@ -583,7 +555,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 				if err != nil {
 					return err
 				}
-				raw, err = marshal(res, tp)
+				raw, err = marshal(res, ctp)
 				if err != nil {
 					return err
 				}
@@ -592,7 +564,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		w.Header().Set("Content-Type", tp)
+		w.Header().Set("Content-Type", ctp.String())
 		if _, err := w.Write(raw); err != nil {
 			return err
 		}
@@ -607,7 +579,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 			raw := []byte(r.URL.Query().Get("echostr"))
 
 			w.WriteHeader(http.StatusOK)
-			w.Header().Set("Content-Type", dataTypePlain)
+			w.Header().Set("Content-Type", request.ContentTypePlain.String())
 			if _, err := w.Write(raw); err != nil {
 				return err
 			}
@@ -615,7 +587,7 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 
 		return nil
 	default:
-		return errors.New("invalid request method: " + r.Method)
+		return errors.New("invalid request method")
 	}
 }
 
@@ -633,6 +605,7 @@ func (srv *Server) validateServer(req *http.Request) bool {
 	nonce := query.Get("nonce")
 	signature := query.Get("signature")
 	timestamp := query.Get("timestamp")
+
 	return encrypt.NewSigner(true, nonce, timestamp, srv.token).CompareWith(signature)
 }
 
@@ -663,6 +636,20 @@ func (srv *Server) encryptMsg(message string, timestamp int64) (*EncryptedMsgReq
 	}
 
 	return &request, nil
+}
+
+// 生成随机字符串
+//
+// @ln 需要生成字符串长度
+func randomString(ln int) string {
+	letters := []rune("1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
+	b := make([]rune, ln)
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+	for i := range b {
+		b[i] = letters[r.Intn(len(letters))]
+	}
+
+	return string(b)
 }
 
 // 检验消息的真实性，并且获取解密后的明文.
