@@ -10,12 +10,18 @@ const (
 // action	string		是	此接口下填写 "apply"
 // appID	string		是	插件 appId
 // reason	string		否	申请使用理由
-func ApplyPlugin(token, appID, reason string) (*CommonError, error) {
+func (cli *Client) ApplyPlugin(appID, reason string) (*CommonError, error) {
 	api := baseURL + apiPlugin
-	return applyPlugin(api, token, appID, reason)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.applyPlugin(api, token, appID, reason)
 }
 
-func applyPlugin(api, token, appID, reason string) (*CommonError, error) {
+func (cli *Client) applyPlugin(api, token, appID, reason string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -31,7 +37,7 @@ func applyPlugin(api, token, appID, reason string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -60,12 +66,18 @@ type GetPluginDevApplyListResponse struct {
 // accessToken 接口调用凭证
 // page	number		是	要拉取第几页的数据
 // num		是	每页的记录数
-func GetPluginDevApplyList(token string, page, num uint) (*GetPluginDevApplyListResponse, error) {
+func (cli *Client) GetPluginDevApplyList(page, num uint) (*GetPluginDevApplyListResponse, error) {
 	api := baseURL + apiDevPlugin
-	return getPluginDevApplyList(api, token, page, num)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getPluginDevApplyList(api, token, page, num)
 }
 
-func getPluginDevApplyList(api, token string, page, num uint) (*GetPluginDevApplyListResponse, error) {
+func (cli *Client) getPluginDevApplyList(api, token string, page, num uint) (*GetPluginDevApplyListResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -78,7 +90,7 @@ func getPluginDevApplyList(api, token string, page, num uint) (*GetPluginDevAppl
 	}
 
 	res := new(GetPluginDevApplyListResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -98,12 +110,18 @@ type GetPluginListResponse struct {
 
 // GetPluginList 查询已添加的插件
 // accessToken 接口调用凭证
-func GetPluginList(token string) (*GetPluginListResponse, error) {
+func (cli *Client) GetPluginList() (*GetPluginListResponse, error) {
 	api := baseURL + apiPlugin
-	return getPluginList(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getPluginList(api, token)
 }
 
-func getPluginList(api, token string) (*GetPluginListResponse, error) {
+func (cli *Client) getPluginList(api, token string) (*GetPluginListResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -114,7 +132,7 @@ func getPluginList(api, token string) (*GetPluginListResponse, error) {
 	}
 
 	res := new(GetPluginListResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -136,12 +154,18 @@ const (
 // appID 使用者的 appid。同意申请时填写。
 // reason 拒绝理由。拒绝申请时填写。
 // action 修改操作
-func SetDevPluginApplyStatus(token, appID, reason string, action DevAction) (*CommonError, error) {
+func (cli *Client) SetDevPluginApplyStatus(appID, reason string, action DevAction) (*CommonError, error) {
 	api := baseURL + apiDevPlugin
-	return setDevPluginApplyStatus(api, token, appID, reason, action)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.setDevPluginApplyStatus(api, token, appID, reason, action)
 }
 
-func setDevPluginApplyStatus(api, token, appID, reason string, action DevAction) (*CommonError, error) {
+func (cli *Client) setDevPluginApplyStatus(api, token, appID, reason string, action DevAction) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -154,7 +178,7 @@ func setDevPluginApplyStatus(api, token, appID, reason string, action DevAction)
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -164,12 +188,18 @@ func setDevPluginApplyStatus(api, token, appID, reason string, action DevAction)
 // UnbindPlugin 查询已添加的插件
 // accessToken 接口调用凭证
 // appID 插件 appId
-func UnbindPlugin(token, appID string) (*CommonError, error) {
+func (cli *Client) UnbindPlugin(appID string) (*CommonError, error) {
 	api := baseURL + apiPlugin
-	return unbindPlugin(api, token, appID)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.unbindPlugin(api, token, appID)
 }
 
-func unbindPlugin(api, token, appID string) (*CommonError, error) {
+func (cli *Client) unbindPlugin(api, token, appID string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -181,7 +211,7 @@ func unbindPlugin(api, token, appID string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

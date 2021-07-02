@@ -29,19 +29,25 @@ type URLSchemeResponse struct {
 // 获取小程序scheme码，适用于短信、邮件、外部网页等拉起小程序的业务场景。
 //
 // token 微信access_token
-func (scheme *URLScheme) Generate(token string) (*URLSchemeResponse, error) {
+func (cli *Client) GenerateURLSchema(scheme *URLScheme) (*URLSchemeResponse, error) {
 	api := baseURL + apiURLScheme
-	return scheme.generate(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.generateURLSchema(api, token, scheme)
 }
 
-func (scheme *URLScheme) generate(api, token string) (*URLSchemeResponse, error) {
+func (cli *Client) generateURLSchema(api, token string, scheme *URLScheme) (*URLSchemeResponse, error) {
 	uri, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(URLSchemeResponse)
-	err = postJSON(uri, scheme, res)
+	err = cli.request.Post(uri, scheme, res)
 	if err != nil {
 		return nil, err
 	}

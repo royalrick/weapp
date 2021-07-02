@@ -30,14 +30,20 @@ type BankCardResponse struct {
 // token 接口调用凭证
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func BankCardByURL(token, cardURL string, mode RecognizeMode) (*BankCardResponse, error) {
+func (cli *Client) BankCardByURL(cardURL string, mode RecognizeMode) (*BankCardResponse, error) {
 	api := baseURL + apiBankcard
-	return bankCardByURL(api, token, cardURL, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.bankCardByURL(api, token, cardURL, mode)
 }
 
-func bankCardByURL(api, token, cardURL string, mode RecognizeMode) (*BankCardResponse, error) {
+func (cli *Client) bankCardByURL(api, token, cardURL string, mode RecognizeMode) (*BankCardResponse, error) {
 	res := new(BankCardResponse)
-	err := ocrByURL(api, token, cardURL, mode, res)
+	err := cli.ocrByURL(api, token, cardURL, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -51,14 +57,20 @@ func bankCardByURL(api, token, cardURL string, mode RecognizeMode) (*BankCardRes
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func BankCard(token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
+func (cli *Client) BankCard(filename string, mode RecognizeMode) (*BankCardResponse, error) {
 	api := baseURL + apiBankcard
-	return bankCard(api, token, filename, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.bankCard(api, token, filename, mode)
 }
 
-func bankCard(api, token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
+func (cli *Client) bankCard(api, token, filename string, mode RecognizeMode) (*BankCardResponse, error) {
 	res := new(BankCardResponse)
-	err := ocrByFile(api, token, filename, mode, res)
+	err := cli.ocrByFile(api, token, filename, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -104,14 +116,20 @@ type DrivingLicenseResponse struct {
 // token 接口调用凭证
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func DriverLicenseByURL(token, licenseURL string) (*DrivingLicenseResponse, error) {
+func (cli *Client) DriverLicenseByURL(licenseURL string) (*DrivingLicenseResponse, error) {
 	api := baseURL + apiDrivingLicense
-	return driverLicenseByURL(api, token, licenseURL)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.driverLicenseByURL(api, token, licenseURL)
 }
 
-func driverLicenseByURL(api, token, licenseURL string) (*DrivingLicenseResponse, error) {
+func (cli *Client) driverLicenseByURL(api, token, licenseURL string) (*DrivingLicenseResponse, error) {
 	res := new(DrivingLicenseResponse)
-	err := ocrByURL(api, token, licenseURL, "", res)
+	err := cli.ocrByURL(api, token, licenseURL, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -125,14 +143,20 @@ func driverLicenseByURL(api, token, licenseURL string) (*DrivingLicenseResponse,
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func DriverLicense(token, filename string) (*DrivingLicenseResponse, error) {
+func (cli *Client) DriverLicense(filename string) (*DrivingLicenseResponse, error) {
 	api := baseURL + apiDrivingLicense
-	return driverLicense(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.driverLicense(api, token, filename)
 }
 
-func driverLicense(api, token, filename string) (*DrivingLicenseResponse, error) {
+func (cli *Client) driverLicense(api, token, filename string) (*DrivingLicenseResponse, error) {
 	res := new(DrivingLicenseResponse)
-	err := ocrByFile(api, token, filename, "", res)
+	err := cli.ocrByFile(api, token, filename, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -149,14 +173,20 @@ type IDCardResponse = CardResponse
 // token 接口调用凭证
 // url 要检测的图片 url，传这个则不用传 img 参数。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func IDCardByURL(token, cardURL string, mode RecognizeMode) (*IDCardResponse, error) {
+func (cli *Client) IDCardByURL(cardURL string, mode RecognizeMode) (*IDCardResponse, error) {
 	api := baseURL + apiIDCard
-	return idCardByURL(api, token, cardURL, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.idCardByURL(api, token, cardURL, mode)
 }
 
-func idCardByURL(api, token, cardURL string, mode RecognizeMode) (*IDCardResponse, error) {
+func (cli *Client) idCardByURL(api, token, cardURL string, mode RecognizeMode) (*IDCardResponse, error) {
 	res := new(IDCardResponse)
-	err := ocrByURL(api, token, cardURL, mode, res)
+	err := cli.ocrByURL(api, token, cardURL, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -170,14 +200,20 @@ func idCardByURL(api, token, cardURL string, mode RecognizeMode) (*IDCardRespons
 // token 接口调用凭证
 // img form-data 中媒体文件标识，有filename、filelength、content-type等信息，传这个则不用传递 img_url。
 // mode 图片识别模式，photo（拍照模式）或 scan（扫描模式）
-func IDCard(token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
+func (cli *Client) IDCard(filename string, mode RecognizeMode) (*IDCardResponse, error) {
 	api := baseURL + apiIDCard
-	return idCard(api, token, filename, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.idCard(api, token, filename, mode)
 }
 
-func idCard(api, token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
+func (cli *Client) idCard(api, token, filename string, mode RecognizeMode) (*IDCardResponse, error) {
 	res := new(IDCardResponse)
-	err := ocrByFile(api, token, filename, mode, res)
+	err := cli.ocrByFile(api, token, filename, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -205,14 +241,20 @@ type VehicleLicenseResponse struct {
 }
 
 // VehicleLicenseByURL 行驶证 OCR 识别
-func VehicleLicenseByURL(token, cardURL string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+func (cli *Client) VehicleLicenseByURL(cardURL string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	api := baseURL + apiVehicleLicense
-	return vehicleLicenseByURL(api, token, cardURL, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.vehicleLicenseByURL(api, token, cardURL, mode)
 }
 
-func vehicleLicenseByURL(api, token, cardURL string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+func (cli *Client) vehicleLicenseByURL(api, token, cardURL string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	res := new(VehicleLicenseResponse)
-	err := ocrByURL(api, token, cardURL, mode, res)
+	err := cli.ocrByURL(api, token, cardURL, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -221,14 +263,20 @@ func vehicleLicenseByURL(api, token, cardURL string, mode RecognizeMode) (*Vehic
 }
 
 // VehicleLicense 通过文件识别行驶证
-func VehicleLicense(token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+func (cli *Client) VehicleLicense(filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	api := baseURL + apiVehicleLicense
-	return vehicleLicense(api, token, filename, mode)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.vehicleLicense(api, token, filename, mode)
 }
 
-func vehicleLicense(api, token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
+func (cli *Client) vehicleLicense(api, token, filename string, mode RecognizeMode) (*VehicleLicenseResponse, error) {
 	res := new(VehicleLicenseResponse)
-	err := ocrByFile(api, token, filename, mode, res)
+	err := cli.ocrByFile(api, token, filename, mode, res)
 	if err != nil {
 		return nil, err
 	}
@@ -272,14 +320,20 @@ type BusinessLicenseResponse struct {
 }
 
 // BusinessLicenseByURL 通过链接进行营业执照 OCR 识别
-func BusinessLicenseByURL(token, cardURL string) (*BusinessLicenseResponse, error) {
+func (cli *Client) BusinessLicenseByURL(cardURL string) (*BusinessLicenseResponse, error) {
 	api := baseURL + apiBusinessLicense
-	return businessLicenseByURL(api, token, cardURL)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.businessLicenseByURL(api, token, cardURL)
 }
 
-func businessLicenseByURL(api, token, cardURL string) (*BusinessLicenseResponse, error) {
+func (cli *Client) businessLicenseByURL(api, token, cardURL string) (*BusinessLicenseResponse, error) {
 	res := new(BusinessLicenseResponse)
-	err := ocrByURL(api, token, cardURL, "", res)
+	err := cli.ocrByURL(api, token, cardURL, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -288,14 +342,20 @@ func businessLicenseByURL(api, token, cardURL string) (*BusinessLicenseResponse,
 }
 
 // BusinessLicense 通过文件进行营业执照 OCR 识别
-func BusinessLicense(token, filename string) (*BusinessLicenseResponse, error) {
+func (cli *Client) BusinessLicense(filename string) (*BusinessLicenseResponse, error) {
 	api := baseURL + apiBusinessLicense
-	return businessLicense(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.businessLicense(api, token, filename)
 }
 
-func businessLicense(api, token, filename string) (*BusinessLicenseResponse, error) {
+func (cli *Client) businessLicense(api, token, filename string) (*BusinessLicenseResponse, error) {
 	res := new(BusinessLicenseResponse)
-	err := ocrByFile(api, token, filename, "", res)
+	err := cli.ocrByFile(api, token, filename, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -314,14 +374,20 @@ type PrintedTextResponse struct {
 }
 
 // PrintedTextByURL 通过链接进行通用印刷体 OCR 识别
-func PrintedTextByURL(token, cardURL string) (*PrintedTextResponse, error) {
+func (cli *Client) PrintedTextByURL(cardURL string) (*PrintedTextResponse, error) {
 	api := baseURL + apiPrintedText
-	return printedTextByURL(api, token, cardURL)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.printedTextByURL(api, token, cardURL)
 }
 
-func printedTextByURL(api, token, cardURL string) (*PrintedTextResponse, error) {
+func (cli *Client) printedTextByURL(api, token, cardURL string) (*PrintedTextResponse, error) {
 	res := new(PrintedTextResponse)
-	err := ocrByURL(api, token, cardURL, "", res)
+	err := cli.ocrByURL(api, token, cardURL, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -330,14 +396,20 @@ func printedTextByURL(api, token, cardURL string) (*PrintedTextResponse, error) 
 }
 
 // PrintedText 通过文件进行通用印刷体 OCR 识别
-func PrintedText(token, filename string) (*PrintedTextResponse, error) {
+func (cli *Client) PrintedText(filename string) (*PrintedTextResponse, error) {
 	api := baseURL + apiPrintedText
-	return printedText(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.printedText(api, token, filename)
 }
 
-func printedText(api, token, filename string) (*PrintedTextResponse, error) {
+func (cli *Client) printedText(api, token, filename string) (*PrintedTextResponse, error) {
 	res := new(PrintedTextResponse)
-	err := ocrByFile(api, token, filename, "", res)
+	err := cli.ocrByFile(api, token, filename, "", res)
 	if err != nil {
 		return nil, err
 	}
@@ -345,7 +417,7 @@ func printedText(api, token, filename string) (*PrintedTextResponse, error) {
 	return res, err
 }
 
-func ocrByFile(api, token, filename string, mode RecognizeMode, response interface{}) error {
+func (cli *Client) ocrByFile(api, token, filename string, mode RecognizeMode, response interface{}) error {
 	queries := requestQueries{
 		"access_token": token,
 		"type":         mode,
@@ -356,14 +428,14 @@ func ocrByFile(api, token, filename string, mode RecognizeMode, response interfa
 		return err
 	}
 
-	if err := postFormByFile(url, "img", filename, response); err != nil {
+	if err := cli.request.FormPostWithFile(url, "img", filename, response); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func ocrByURL(api, token, cardURL string, mode RecognizeMode, response interface{}) error {
+func (cli *Client) ocrByURL(api, token, cardURL string, mode RecognizeMode, response interface{}) error {
 	queries := requestQueries{
 		"access_token": token,
 		"img_url":      cardURL,
@@ -378,7 +450,7 @@ func ocrByURL(api, token, cardURL string, mode RecognizeMode, response interface
 		return err
 	}
 
-	if err := postJSON(url, nil, response); err != nil {
+	if err := cli.request.Post(url, nil, response); err != nil {
 		return err
 	}
 

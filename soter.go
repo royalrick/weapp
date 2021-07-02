@@ -15,12 +15,18 @@ type VerifySignatureResponse struct {
 // openID 用户 openid
 // data 通过 wx.startSoterAuthentication 成功回调获得的 resultJSON 字段
 // signature 通过 wx.startSoterAuthentication 成功回调获得的 resultJSONSignature 字段
-func VerifySignature(token, openID, data, signature string) (*VerifySignatureResponse, error) {
+func (cli *Client) VerifySignature(openID, data, signature string) (*VerifySignatureResponse, error) {
 	api := baseURL + apiVerifySignature
-	return verifySignature(api, token, openID, data, signature)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.verifySignature(api, token, openID, data, signature)
 }
 
-func verifySignature(api, token, openID, data, signature string) (*VerifySignatureResponse, error) {
+func (cli *Client) verifySignature(api, token, openID, data, signature string) (*VerifySignatureResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -33,7 +39,7 @@ func verifySignature(api, token, openID, data, signature string) (*VerifySignatu
 	}
 
 	res := new(VerifySignatureResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

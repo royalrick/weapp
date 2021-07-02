@@ -7,10 +7,6 @@ import (
 	"github.com/medivhzhan/weapp/v3/request"
 )
 
-type Client interface {
-	Login(code string) (*LoginResponse, error)
-}
-
 // 小程序账号信息
 type AccountInfo struct {
 	// 小程序后台配置: 小程序ID
@@ -27,7 +23,7 @@ type AccountInfo struct {
 	IsEncrypted string
 }
 
-type client struct {
+type Client struct {
 	// HTTP请求客户端
 	request *request.Request
 	// 数据缓存器
@@ -39,8 +35,8 @@ type client struct {
 }
 
 // 初始化客户端
-func newClient(info AccountInfo) *client {
-	cli := client{
+func newClient(info AccountInfo) *Client {
+	cli := Client{
 		account:     info,
 		cache:       cache.NewMemoryCache(),
 		contentType: info.ContentType,
@@ -51,7 +47,7 @@ func newClient(info AccountInfo) *client {
 }
 
 // 初始化客户端并用自定义配置替换默认配置
-func NewClient(info AccountInfo, opts ...func(Client)) Client {
+func NewClient(info AccountInfo, opts ...func(*Client)) *Client {
 	cli := newClient(info)
 
 	// 执行额外的配置函数
@@ -62,14 +58,14 @@ func NewClient(info AccountInfo, opts ...func(Client)) Client {
 	return cli
 }
 
-func WithHttpClient(c *http.Client) func(client) {
-	return func(cli client) {
+func WithHttpClient(c *http.Client) func(*Client) {
+	return func(cli *Client) {
 		cli.request = request.NewRequest(c, cli.contentType)
 	}
 }
 
-func WithCache(c cache.Cache) func(client) {
-	return func(cli client) {
+func WithCache(c cache.Cache) func(*Client) {
+	return func(cli *Client) {
 		cli.cache = c
 	}
 }

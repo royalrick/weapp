@@ -1,17 +1,17 @@
 package weapp
 
 const (
-	apiBindAccount        = "/cgi-bin/express/business/account/bind"
-	apiGetAllAccount      = "/cgi-bin/express/business/account/getall"
-	apiGetExpressPath     = "/cgi-bin/express/business/path/get"
-	apiAddExpressOrder    = "/cgi-bin/express/business/order/add"
-	apiCancelExpressOrder = "/cgi-bin/express/business/order/cancel"
-	apiGetAllDelivery     = "/cgi-bin/express/business/delivery/getall"
-	apiGetExpressOrder    = "/cgi-bin/express/business/order/get"
-	apiGetPrinter         = "/cgi-bin/express/business/printer/getall"
-	apiGetQuota           = "/cgi-bin/express/business/quota/get"
-	apiUpdatePrinter      = "/cgi-bin/express/business/printer/update"
-	apiTestUpdateOrder    = "/cgi-bin/express/business/test_update_order"
+	apiBindAccount            = "/cgi-bin/express/business/account/bind"
+	apiGetAllLogisticsAccount = "/cgi-bin/express/business/account/getall"
+	apiGetExpressPath         = "/cgi-bin/express/business/path/get"
+	apiAddExpressOrder        = "/cgi-bin/express/business/order/add"
+	apiCancelExpressOrder     = "/cgi-bin/express/business/order/cancel"
+	apiGetAllDelivery         = "/cgi-bin/express/business/delivery/getall"
+	apiGetExpressOrder        = "/cgi-bin/express/business/order/get"
+	apiGetPrinter             = "/cgi-bin/express/business/printer/getall"
+	apiGetExpressQuota        = "/cgi-bin/express/business/quota/get"
+	apiUpdatePrinter          = "/cgi-bin/express/business/printer/update"
+	apiTestUpdateOrder        = "/cgi-bin/express/business/test_update_order"
 )
 
 // ExpressAccount 物流账号
@@ -34,19 +34,25 @@ const (
 
 // Bind 绑定、解绑物流账号
 // token 接口调用凭证
-func (ea *ExpressAccount) Bind(token string) (*CommonError, error) {
+func (cli *Client) BindLogisticsAccount(ea *ExpressAccount) (*CommonError, error) {
 	api := baseURL + apiBindAccount
-	return ea.bind(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.bindLogisticsAccount(api, token, ea)
 }
 
-func (ea *ExpressAccount) bind(api, token string) (*CommonError, error) {
+func (cli *Client) bindLogisticsAccount(api, token string, ea *ExpressAccount) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, ea, res); err != nil {
+	if err := cli.request.Post(url, ea, res); err != nil {
 		return nil, err
 	}
 
@@ -80,21 +86,26 @@ const (
 	BindFailed  = -1 // 系统失败
 )
 
-// GetAllAccount 获取所有绑定的物流账号
+// GetAllLogisticsAccount 获取所有绑定的物流账号
 // token 接口调用凭证
-func GetAllAccount(token string) (*AccountList, error) {
-	api := baseURL + apiGetAllAccount
-	return getAllAccount(api, token)
+func (cli *Client) GetAllLogisticsAccount() (*AccountList, error) {
+	api := baseURL + apiGetAllLogisticsAccount
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getAllLogisticsAccount(api, token)
 }
 
-func getAllAccount(api, token string) (*AccountList, error) {
+func (cli *Client) getAllLogisticsAccount(api, token string) (*AccountList, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AccountList)
-	if err := postJSON(url, requestParams{}, res); err != nil {
+	if err := cli.request.Post(url, requestParams{}, res); err != nil {
 		return nil, err
 	}
 
@@ -123,19 +134,25 @@ type ExpressPathNode struct {
 
 // Get 查询运单轨迹
 // token 接口调用凭证
-func (ep *ExpressPathGetter) Get(token string) (*GetExpressPathResponse, error) {
+func (cli *Client) GetLogisticsPath(ep *ExpressPathGetter) (*GetExpressPathResponse, error) {
 	api := baseURL + apiGetExpressPath
-	return ep.get(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getLogisticsPath(api, token, ep)
 }
 
-func (ep *ExpressPathGetter) get(api, token string) (*GetExpressPathResponse, error) {
+func (cli *Client) getLogisticsPath(api, token string, ep *ExpressPathGetter) (*GetExpressPathResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetExpressPathResponse)
-	if err := postJSON(url, ep, res); err != nil {
+	if err := cli.request.Post(url, ep, res); err != nil {
 		return nil, err
 	}
 
@@ -184,19 +201,24 @@ type CreateExpressOrderResponse struct {
 
 // Create 生成运单
 // token 接口调用凭证
-func (creator *ExpressOrderCreator) Create(token string) (*CreateExpressOrderResponse, error) {
+func (cli *Client) AddLogisticOrder(creator *ExpressOrderCreator) (*CreateExpressOrderResponse, error) {
 	api := baseURL + apiAddExpressOrder
-	return creator.create(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.addLogisticOrder(api, token, creator)
 }
 
-func (creator *ExpressOrderCreator) create(api, token string) (*CreateExpressOrderResponse, error) {
+func (cli *Client) addLogisticOrder(api, token string, creator *ExpressOrderCreator) (*CreateExpressOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CreateExpressOrderResponse)
-	if err := postJSON(url, creator, res); err != nil {
+	if err := cli.request.Post(url, creator, res); err != nil {
 		return nil, err
 	}
 
@@ -226,12 +248,17 @@ type DeliveryList struct {
 
 // GetAllDelivery 获取支持的快递公司列表
 // token 接口调用凭证
-func GetAllDelivery(token string) (*DeliveryList, error) {
+func (cli *Client) GetAllDelivery() (*DeliveryList, error) {
 	api := baseURL + apiGetAllDelivery
-	return getAllDelivery(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getAllDelivery(api, token)
 }
 
-func getAllDelivery(api, token string) (*DeliveryList, error) {
+func (cli *Client) getAllDelivery(api, token string) (*DeliveryList, error) {
 	queries := requestQueries{
 		"access_token": token,
 	}
@@ -242,7 +269,7 @@ func getAllDelivery(api, token string) (*DeliveryList, error) {
 	}
 
 	res := new(DeliveryList)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -269,19 +296,24 @@ type GetExpressOrderResponse struct {
 
 // Get 获取运单数据
 // token 接口调用凭证
-func (getter *ExpressOrderGetter) Get(token string) (*GetExpressOrderResponse, error) {
+func (cli *Client) GetLogisticsOrder(getter *ExpressOrderGetter) (*GetExpressOrderResponse, error) {
 	api := baseURL + apiGetExpressOrder
-	return getter.get(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getLogisticsOrder(api, token, getter)
 }
 
-func (getter *ExpressOrderGetter) get(api, token string) (*GetExpressOrderResponse, error) {
+func (cli *Client) getLogisticsOrder(api, token string, getter *ExpressOrderGetter) (*GetExpressOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetExpressOrderResponse)
-	if err := postJSON(url, getter, res); err != nil {
+	if err := cli.request.Post(url, getter, res); err != nil {
 		return nil, err
 	}
 
@@ -293,19 +325,24 @@ type ExpressOrderCanceler ExpressOrderGetter
 
 // Cancel 取消运单
 // token 接 口调用凭证
-func (canceler *ExpressOrderCanceler) Cancel(token string) (*CommonError, error) {
+func (cli *Client) CancelLogisticsOrder(canceler *ExpressOrderCanceler) (*CommonError, error) {
 	api := baseURL + apiCancelExpressOrder
-	return canceler.cancel(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.cancelLogisticsOrder(api, token, canceler)
 }
 
-func (canceler *ExpressOrderCanceler) cancel(api, token string) (*CommonError, error) {
+func (cli *Client) cancelLogisticsOrder(api, token string, canceler *ExpressOrderCanceler) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, canceler, res); err != nil {
+	if err := cli.request.Post(url, canceler, res); err != nil {
 		return nil, err
 	}
 
@@ -322,19 +359,24 @@ type GetPrinterResponse struct {
 
 // GetPrinter 获取打印员。若需要使用微信打单 PC 软件，才需要调用。
 // token 接口调用凭证
-func GetPrinter(token string) (*GetPrinterResponse, error) {
+func (cli *Client) GetPrinter(token string) (*GetPrinterResponse, error) {
 	api := baseURL + apiGetPrinter
-	return getPrinter(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getPrinter(api, token)
 }
 
-func getPrinter(api, token string) (*GetPrinterResponse, error) {
+func (cli *Client) getPrinter(api, token string) (*GetPrinterResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetPrinterResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -354,19 +396,24 @@ type QuotaGetResponse struct {
 }
 
 // Get 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。
-func (getter *QuotaGetter) Get(token string) (*QuotaGetResponse, error) {
-	api := baseURL + apiGetQuota
-	return getter.get(api, token)
+func (cli *Client) GetExpressQuota(getter *QuotaGetter) (*QuotaGetResponse, error) {
+	api := baseURL + apiGetExpressQuota
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getExpressQuota(api, token, getter)
 }
 
-func (getter *QuotaGetter) get(api, token string) (*QuotaGetResponse, error) {
+func (cli *Client) getExpressQuota(api, token string, getter *QuotaGetter) (*QuotaGetResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(QuotaGetResponse)
-	if err := postJSON(url, getter, res); err != nil {
+	if err := cli.request.Post(url, getter, res); err != nil {
 		return nil, err
 	}
 
@@ -385,19 +432,24 @@ type UpdateExpressOrderTester struct {
 }
 
 // Test 模拟快递公司更新订单状态, 该接口只能用户测试
-func (tester *UpdateExpressOrderTester) Test(token string) (*CommonError, error) {
+func (cli *Client) TestUpdateExpressOrder(tester *UpdateExpressOrderTester) (*CommonError, error) {
 	api := baseURL + apiTestUpdateOrder
-	return tester.test(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.testUpdateExpressOrder(api, token, tester)
 }
 
-func (tester *UpdateExpressOrderTester) test(api, token string) (*CommonError, error) {
+func (cli *Client) testUpdateExpressOrder(api, token string, tester *UpdateExpressOrderTester) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, tester, res); err != nil {
+	if err := cli.request.Post(url, tester, res); err != nil {
 		return nil, err
 	}
 
@@ -412,19 +464,24 @@ type PrinterUpdater struct {
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (updater *PrinterUpdater) Update(token string) (*CommonError, error) {
+func (cli *Client) UpdateExpressOrder(updater *PrinterUpdater) (*CommonError, error) {
 	api := baseURL + apiUpdatePrinter
-	return updater.update(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.updateExpressOrder(api, token, updater)
 }
 
-func (updater *PrinterUpdater) update(api, token string) (*CommonError, error) {
+func (cli *Client) updateExpressOrder(api, token string, updater *PrinterUpdater) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, updater, res); err != nil {
+	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}
 

@@ -14,19 +14,25 @@ type CreateActivityIDResponse struct {
 
 // CreateActivityID 创建被分享动态消息的 activity_id。
 // token 接口调用凭证
-func CreateActivityID(token string) (*CreateActivityIDResponse, error) {
+func (cli *Client) CreateActivityID() (*CreateActivityIDResponse, error) {
 	api := baseURL + apiCreateActivityID
-	return createActivityID(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.createActivityID(api, token)
 }
 
-func createActivityID(api, token string) (*CreateActivityIDResponse, error) {
+func (cli *Client) createActivityID(api, token string) (*CreateActivityIDResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CreateActivityIDResponse)
-	if err := getJSON(api, res); err != nil {
+	if err := cli.request.Get(api, res); err != nil {
 		return nil, err
 	}
 
@@ -70,28 +76,34 @@ const (
 	UpdatableMsgParamVersionType                       = "version_type" // target_state = 1 时必填，点击「进入」启动小程序时使用的版本。有效参数值为：develop（开发版），trial（体验版），release（正式版）
 )
 
-// UpdatableMsgSetter 动态消息
-type UpdatableMsgSetter struct {
+// UpdatableMsg 动态消息
+type UpdatableMsg struct {
 	ActivityID   string                  `json:"activity_id"`   // 动态消息的 ID，通过 updatableMessage.createActivityId 接口获取
 	TargetState  UpdatableMsgTargetState `json:"target_state"`  // 动态消息修改后的状态（具体含义见后文）
 	TemplateInfo UpdatableMsgTempInfo    `json:"template_info"` // 动态消息对应的模板信息
 }
 
-// Set 修改被分享的动态消息。
+// 修改被分享的动态消息。
 // accessToken 接口调用凭证
-func (setter *UpdatableMsgSetter) Set(token string) (*CommonError, error) {
+func (cli *Client) SetUpdateableMsg(msg *UpdatableMsg) (*CommonError, error) {
 	api := baseURL + apiSetUpdatableMsg
-	return setter.set(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.setUpdateableMsg(api, token, msg)
 }
 
-func (setter *UpdatableMsgSetter) set(api, token string) (*CommonError, error) {
+func (cli *Client) setUpdateableMsg(api, token string, setter *UpdatableMsg) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, setter, res); err != nil {
+	if err := cli.request.Post(api, setter, res); err != nil {
 		return nil, err
 	}
 

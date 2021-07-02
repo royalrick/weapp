@@ -26,19 +26,25 @@ type AbnormalConfirmer struct {
 }
 
 // Confirm 异常件退回商家商家确认收货
-func (confirmer *AbnormalConfirmer) Confirm(token string) (*CommonResult, error) {
+func (cli *Client) AbnormalImmediateDelivoryConfirm(confirmer *AbnormalConfirmer) (*CommonResult, error) {
 	api := baseURL + apiAbnormalConfirm
-	return confirmer.confirm(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.abnormalImmediateDelivoryConfirm(api, token, confirmer)
 }
 
-func (confirmer *AbnormalConfirmer) confirm(api, token string) (*CommonResult, error) {
+func (cli *Client) abnormalImmediateDelivoryConfirm(api, token string, confirmer *AbnormalConfirmer) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonResult)
-	if err := postJSON(url, confirmer, res); err != nil {
+	if err := cli.request.Post(url, confirmer, res); err != nil {
 		return nil, err
 	}
 
@@ -143,19 +149,25 @@ type PreDeliveryOrderResponse struct {
 }
 
 // Prepare 预下配送单接口
-func (creator *DeliveryOrderCreator) Prepare(token string) (*PreDeliveryOrderResponse, error) {
+func (cli *Client) PreAddImmediateDeliveryOrder(creator *DeliveryOrderCreator) (*PreDeliveryOrderResponse, error) {
 	api := baseURL + apiPreCancelDeliveryOrder
-	return creator.prepare(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.preAddImmediateDeliveryOrder(api, token, creator)
 }
 
-func (creator *DeliveryOrderCreator) prepare(api, token string) (*PreDeliveryOrderResponse, error) {
+func (cli *Client) preAddImmediateDeliveryOrder(api, token string, creator *DeliveryOrderCreator) (*PreDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PreDeliveryOrderResponse)
-	if err := postJSON(url, creator, res); err != nil {
+	if err := cli.request.Post(url, creator, res); err != nil {
 		return nil, err
 	}
 
@@ -179,19 +191,25 @@ type CreateDeliveryOrderResponse struct {
 }
 
 // Create 下配送单
-func (creator *DeliveryOrderCreator) Create(token string) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) AddImmediateDelivoryOrder(creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	api := baseURL + apiAddDeliveryOrder
-	return creator.create(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.addImmediateDelivoryOrder(api, token, creator)
 }
 
-func (creator *DeliveryOrderCreator) create(api, token string) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) addImmediateDelivoryOrder(api, token string, creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CreateDeliveryOrderResponse)
-	if err := postJSON(url, creator, res); err != nil {
+	if err := cli.request.Post(url, creator, res); err != nil {
 		return nil, err
 	}
 
@@ -199,19 +217,25 @@ func (creator *DeliveryOrderCreator) create(api, token string) (*CreateDeliveryO
 }
 
 // Recreate 重新下单
-func (creator *DeliveryOrderCreator) Recreate(token string) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) ReImmediateDeliveryOrder(creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	api := baseURL + apiReAddDeliveryOrder
-	return creator.recreate(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.reImmediateDeliveryOrder(api, token, creator)
 }
 
-func (creator *DeliveryOrderCreator) recreate(api, token string) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) reImmediateDeliveryOrder(api, token string, creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CreateDeliveryOrderResponse)
-	if err := postJSON(url, creator, res); err != nil {
+	if err := cli.request.Post(url, creator, res); err != nil {
 		return nil, err
 	}
 
@@ -231,19 +255,24 @@ type DeliveryTipAdder struct {
 }
 
 // Add 对待接单状态的订单增加小费。需要注意：订单的小费，以最新一次加小费动作的金额为准，故下一次增加小费额必须大于上一次小费额
-func (adder *DeliveryTipAdder) Add(token string) (*CommonResult, error) {
+func (cli *Client) AddImmediateDelivoryTip(adder *DeliveryTipAdder) (*CommonResult, error) {
 	api := baseURL + apiAddDeliveryTip
-	return adder.add(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.addImmediateDelivoryTip(api, token, adder)
 }
 
-func (adder *DeliveryTipAdder) add(api, token string) (*CommonResult, error) {
+func (cli *Client) addImmediateDelivoryTip(api, token string, adder *DeliveryTipAdder) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonResult)
-	if err := postJSON(url, adder, res); err != nil {
+	if err := cli.request.Post(url, adder, res); err != nil {
 		return nil, err
 	}
 
@@ -270,19 +299,23 @@ type CancelDeliveryOrderResponse struct {
 }
 
 // Prepare 预取消配送单
-func (canceler *DeliveryOrderCanceler) Prepare(token string) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) PreCancelImmediateDelivoryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	api := baseURL + apiCancelDeliveryOrder
-	return canceler.prepare(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+	return cli.preCancelImmediateDelivoryOrder(api, token, canceler)
 }
 
-func (canceler *DeliveryOrderCanceler) prepare(api, token string) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) preCancelImmediateDelivoryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CancelDeliveryOrderResponse)
-	if err := postJSON(url, canceler, res); err != nil {
+	if err := cli.request.Post(url, canceler, res); err != nil {
 		return nil, err
 	}
 
@@ -290,19 +323,25 @@ func (canceler *DeliveryOrderCanceler) prepare(api, token string) (*CancelDelive
 }
 
 // Cancel 取消配送单
-func (canceler *DeliveryOrderCanceler) Cancel(token string) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) CancelImmediateDelivoryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	api := baseURL + apiCancelDeliveryOrder
-	return canceler.cancel(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.cancelImmediateDelivoryOrder(api, token, canceler)
 }
 
-func (canceler *DeliveryOrderCanceler) cancel(api, token string) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) cancelImmediateDelivoryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CancelDeliveryOrderResponse)
-	if err := postJSON(url, canceler, res); err != nil {
+	if err := cli.request.Post(url, canceler, res); err != nil {
 		return nil, err
 	}
 
@@ -319,19 +358,25 @@ type GetAllImmediateDeliveryResponse struct {
 }
 
 // GetAllImmediateDelivery 获取已支持的配送公司列表接口
-func GetAllImmediateDelivery(token string) (*GetAllImmediateDeliveryResponse, error) {
+func (cli *Client) GetAllImmediateDelivery() (*GetAllImmediateDeliveryResponse, error) {
 	api := baseURL + apiGetAllImmediateDelivery
-	return getAllImmediateDelivery(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getAllImmediateDelivery(api, token)
 }
 
-func getAllImmediateDelivery(api, token string) (*GetAllImmediateDeliveryResponse, error) {
+func (cli *Client) getAllImmediateDelivery(api, token string) (*GetAllImmediateDeliveryResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetAllImmediateDeliveryResponse)
-	if err := postJSON(url, nil, res); err != nil {
+	if err := cli.request.Post(url, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -349,19 +394,25 @@ type GetBindAccountResponse struct {
 }
 
 // GetBindAccount 拉取已绑定账号
-func GetBindAccount(token string) (*GetBindAccountResponse, error) {
+func (cli *Client) GetImmediateDelivoryBindAccount() (*GetBindAccountResponse, error) {
 	api := baseURL + apiGetDeliveryBindAccount
-	return getBindAccount(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getImmediateDelivoryBindAccount(api, token)
 }
 
-func getBindAccount(api, token string) (*GetBindAccountResponse, error) {
+func (cli *Client) getImmediateDelivoryBindAccount(api, token string) (*GetBindAccountResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetBindAccountResponse)
-	if err := postJSON(url, nil, res); err != nil {
+	if err := cli.request.Post(url, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -388,19 +439,25 @@ type GetDeliveryOrderResponse struct {
 }
 
 // Get 下配送单
-func (getter *DeliveryOrderGetter) Get(token string) (*GetDeliveryOrderResponse, error) {
+func (cli *Client) GetImmediateDelivoryOrder(getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
 	api := baseURL + apiGetDeliveryOrder
-	return getter.get(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getImmediateDelivoryOrder(api, token, getter)
 }
 
-func (getter *DeliveryOrderGetter) get(api, token string) (*GetDeliveryOrderResponse, error) {
+func (cli *Client) getImmediateDelivoryOrder(api, token string, getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetDeliveryOrderResponse)
-	if err := postJSON(url, getter, res); err != nil {
+	if err := cli.request.Post(url, getter, res); err != nil {
 		return nil, err
 	}
 
@@ -417,19 +474,25 @@ type UpdateDeliveryOrderMocker struct {
 }
 
 // Mock 模拟配送公司更新配送单状态
-func (mocker *UpdateDeliveryOrderMocker) Mock(token string) (*CommonResult, error) {
+func (cli *Client) MockUpdateImmediateDeliveryOrder(mocker *UpdateDeliveryOrderMocker) (*CommonResult, error) {
 	api := baseURL + apiMockUpdateDeliveryOrder
-	return mocker.mock(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.mockUpdateImmediateDeliveryOrder(api, token, mocker)
 }
 
-func (mocker *UpdateDeliveryOrderMocker) mock(api, token string) (*CommonResult, error) {
+func (cli *Client) mockUpdateImmediateDeliveryOrder(api, token string, mocker *UpdateDeliveryOrderMocker) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonResult)
-	if err := postJSON(url, mocker, res); err != nil {
+	if err := cli.request.Post(url, mocker, res); err != nil {
 		return nil, err
 	}
 
@@ -459,19 +522,25 @@ type DeliveryAgent struct {
 }
 
 // Update 模拟配送公司更新配送单状态
-func (updater *DeliveryOrderUpdater) Update(token string) (*CommonResult, error) {
+func (cli *Client) UpdateImmediateDelivoryOrder(updater *DeliveryOrderUpdater) (*CommonResult, error) {
 	api := baseURL + apiUpdateDeliveryOrder
-	return updater.update(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.updateImmediateDelivoryOrder(api, token, updater)
 }
 
-func (updater *DeliveryOrderUpdater) update(api, token string) (*CommonResult, error) {
+func (cli *Client) updateImmediateDelivoryOrder(api, token string, updater *DeliveryOrderUpdater) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonResult)
-	if err := postJSON(url, updater, res); err != nil {
+	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}
 

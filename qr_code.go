@@ -33,13 +33,19 @@ type QRCode struct {
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
 //
 // token 微信access_token
-func (code *QRCode) Get(token string) (*http.Response, *CommonError, error) {
+func (cli *Client) GetQRCode(code *QRCode) (*http.Response, *CommonError, error) {
 	api := baseURL + apiGetQrCode
-	return code.get(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return cli.getQRCode(api, token, code)
 }
 
-func (code *QRCode) get(api, token string) (*http.Response, *CommonError, error) {
-	return qrCodeRequest(api, token, code)
+func (cli *Client) getQRCode(api, token string, code *QRCode) (*http.Response, *CommonError, error) {
+	return cli.qrCodeRequest(api, token, code)
 }
 
 // UnlimitedQRCode 小程序码参数
@@ -57,13 +63,19 @@ type UnlimitedQRCode struct {
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
 //
 // token 微信access_token
-func (code *UnlimitedQRCode) Get(token string) (*http.Response, *CommonError, error) {
+func (cli *Client) GetUnlimitedQRCode(code *UnlimitedQRCode) (*http.Response, *CommonError, error) {
 	api := baseURL + apiGetUnlimitedQRCode
-	return code.get(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return cli.getUnlimitedQRCode(api, token, code)
 }
 
-func (code *UnlimitedQRCode) get(api, token string) (*http.Response, *CommonError, error) {
-	return qrCodeRequest(api, token, code)
+func (cli *Client) getUnlimitedQRCode(api, token string, code *UnlimitedQRCode) (*http.Response, *CommonError, error) {
+	return cli.qrCodeRequest(api, token, code)
 }
 
 // QRCodeCreator 二维码创建器
@@ -76,25 +88,31 @@ type QRCodeCreator struct {
 // 通过该接口生成的小程序码，永久有效，有数量限制
 //
 // token 微信access_token
-func (creator *QRCodeCreator) Create(token string) (*http.Response, *CommonError, error) {
+func (cli *Client) CreateQRCode(creator *QRCodeCreator) (*http.Response, *CommonError, error) {
 	api := baseURL + apiCreateQRCode
-	return creator.create(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return cli.createQRCode(api, token, creator)
 }
 
-func (creator *QRCodeCreator) create(api, token string) (*http.Response, *CommonError, error) {
-	return qrCodeRequest(api, token, creator)
+func (cli *Client) createQRCode(api, token string, creator *QRCodeCreator) (*http.Response, *CommonError, error) {
+	return cli.qrCodeRequest(api, token, creator)
 }
 
 // 向微信服务器获取二维码
 // 返回 HTTP 请求实例
-func qrCodeRequest(api, token string, params interface{}) (*http.Response, *CommonError, error) {
+func (cli *Client) qrCodeRequest(api, token string, params interface{}) (*http.Response, *CommonError, error) {
 
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := postJSONWithBody(url, params)
+	res, err := cli.request.PostWithBody(url, params)
 	if err != nil {
 		return nil, nil, err
 	}

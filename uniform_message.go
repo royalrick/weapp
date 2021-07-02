@@ -53,19 +53,24 @@ type UniformMsgSender struct {
 // Send 统一服务消息
 //
 // token access_token
-func (msg *UniformMsgSender) Send(token string) (*CommonError, error) {
+func (cli *Client) SendUniformMsg(msg *UniformMsgSender) (*CommonError, error) {
 	api := baseURL + apiSendUniformMessage
-	return msg.send(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.sendUniformMsg(api, token, msg)
 }
 
-func (msg *UniformMsgSender) send(api, token string) (*CommonError, error) {
+func (cli *Client) sendUniformMsg(api, token string, msg *UniformMsgSender) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, msg, res); err != nil {
+	if err := cli.request.Post(api, msg, res); err != nil {
 		return nil, err
 	}
 

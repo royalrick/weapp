@@ -25,12 +25,18 @@ type ContactUser struct {
 
 // GetContact 获取面单联系人信息
 // accessToken, token, watBillID 接口调用凭证
-func GetContact(accessToken, token, watBillID string) (*GetContactResponse, error) {
+func (cli *Client) GetContact(token, watBillID string) (*GetContactResponse, error) {
 	api := baseURL + apiGetContact
-	return getContact(api, accessToken, token, watBillID)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getContact(api, accessToken, token, watBillID)
 }
 
-func getContact(api, accessToken, token, watBillID string) (*GetContactResponse, error) {
+func (cli *Client) getContact(api, accessToken, token, watBillID string) (*GetContactResponse, error) {
 	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
@@ -42,7 +48,7 @@ func getContact(api, accessToken, token, watBillID string) (*GetContactResponse,
 	}
 
 	res := new(GetContactResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -66,19 +72,25 @@ type PreviewTemplateResponse struct {
 
 // Preview 预览面单模板。用于调试面单模板使用。
 // token 接口调用凭证
-func (previewer *ExpressTemplatePreviewer) Preview(token string) (*PreviewTemplateResponse, error) {
+func (cli *Client) PreviewLogisticsTemplate(previewer *ExpressTemplatePreviewer) (*PreviewTemplateResponse, error) {
 	api := baseURL + apiPreviewTemplate
-	return previewer.preview(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.previewLogisticsTemplate(api, token, previewer)
 }
 
-func (previewer *ExpressTemplatePreviewer) preview(api, token string) (*PreviewTemplateResponse, error) {
+func (cli *Client) previewLogisticsTemplate(api, token string, previewer *ExpressTemplatePreviewer) (*PreviewTemplateResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(PreviewTemplateResponse)
-	if err := postJSON(url, previewer, res); err != nil {
+	if err := cli.request.Post(url, previewer, res); err != nil {
 		return nil, err
 	}
 
@@ -104,19 +116,25 @@ type BusinessUpdater struct {
 
 // Update 更新商户审核结果
 // token 接口调用凭证
-func (updater *BusinessUpdater) Update(token string) (*CommonError, error) {
+func (cli *Client) UpdateLogisticsBusiness(updater *BusinessUpdater) (*CommonError, error) {
 	api := baseURL + apiUpdateBusiness
-	return updater.update(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.updateLogisticsBusiness(api, token, updater)
 }
 
-func (updater *BusinessUpdater) update(api, token string) (*CommonError, error) {
+func (cli *Client) updateLogisticsBusiness(api, token string, updater *BusinessUpdater) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, updater, res); err != nil {
+	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}
 
@@ -134,19 +152,25 @@ type ExpressPathUpdater struct {
 
 // Update 更新运单轨迹
 // token 接口调用凭证
-func (updater *ExpressPathUpdater) Update(token string) (*CommonError, error) {
+func (cli *Client) UpdateLogisticsPath(updater *ExpressPathUpdater) (*CommonError, error) {
 	api := baseURL + apiUpdatePath
-	return updater.update(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.updateLogisticsPath(api, token, updater)
 }
 
-func (updater *ExpressPathUpdater) update(api, token string) (*CommonError, error) {
+func (cli *Client) updateLogisticsPath(api, token string, updater *ExpressPathUpdater) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, updater, res); err != nil {
+	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}
 

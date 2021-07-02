@@ -27,7 +27,7 @@ type VisitTrend struct {
 // GetMonthlyVisitTrend 获取用户访问小程序数据月趋势
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
-func (cli *client) GetMonthlyVisitTrend(begin, end string) (*VisitTrend, error) {
+func (cli *Client) GetMonthlyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetMonthlyVisitTrend
 
 	accessToken, err := cli.AccessToken()
@@ -41,7 +41,7 @@ func (cli *client) GetMonthlyVisitTrend(begin, end string) (*VisitTrend, error) 
 // GetWeeklyVisitTrend 获取用户访问小程序数据周趋势
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
-func (cli *client) GetWeeklyVisitTrend(begin, end string) (*VisitTrend, error) {
+func (cli *Client) GetWeeklyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetWeeklyVisitTrend
 
 	accessToken, err := cli.AccessToken()
@@ -55,7 +55,7 @@ func (cli *client) GetWeeklyVisitTrend(begin, end string) (*VisitTrend, error) {
 // GetDailyVisitTrend 获取用户访问小程序数据日趋势
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func (cli *client) GetDailyVisitTrend(begin, end string) (*VisitTrend, error) {
+func (cli *Client) GetDailyVisitTrend(begin, end string) (*VisitTrend, error) {
 	api := baseURL + apiGetDailyVisitTrend
 
 	accessToken, err := cli.AccessToken()
@@ -66,7 +66,7 @@ func (cli *client) GetDailyVisitTrend(begin, end string) (*VisitTrend, error) {
 	return cli.getVisitTrend(accessToken, begin, end, api)
 }
 
-func (cli *client) getVisitTrend(accessToken, begin, end, api string) (*VisitTrend, error) {
+func (cli *Client) getVisitTrend(accessToken, begin, end, api string) (*VisitTrend, error) {
 	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
@@ -78,7 +78,7 @@ func (cli *client) getVisitTrend(accessToken, begin, end, api string) (*VisitTre
 	}
 
 	res := new(VisitTrend)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

@@ -23,12 +23,12 @@ type LoginResponse struct {
 // appID 小程序 appID
 // secret 小程序的 app secret
 // code 小程序登录时获取的 code
-func (cli *client) Login(code string) (*LoginResponse, error) {
+func (cli *Client) Login(code string) (*LoginResponse, error) {
 	api := baseURL + apiLogin
 	return cli.login(code, api)
 }
 
-func (cli *client) login(code, api string) (*LoginResponse, error) {
+func (cli *Client) login(code, api string) (*LoginResponse, error) {
 	queries := requestQueries{
 		"appid":      cli.account.AppID,
 		"secret":     cli.account.AppSecret,
@@ -57,13 +57,13 @@ type TokenResponse struct {
 }
 
 // access_token 缓存 KEY
-func (cli *client) tokenCacheKey() string {
+func (cli *Client) tokenCacheKey() string {
 	return "weapp.access.token"
 }
 
 // 获取小程序全局唯一后台接口调用凭据（access_token）。
 // 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
-func (cli *client) AccessToken() (string, error) {
+func (cli *Client) AccessToken() (string, error) {
 
 	key := cli.tokenCacheKey()
 	data, ok := cli.cache.Get(key)
@@ -85,7 +85,7 @@ func (cli *client) AccessToken() (string, error) {
 	return rsp.AccessToken, nil
 }
 
-func (cli *client) GetAccessToken() (*TokenResponse, error) {
+func (cli *Client) GetAccessToken() (*TokenResponse, error) {
 
 	queries := requestQueries{
 		"appid":      cli.account.AppID,
@@ -114,7 +114,7 @@ type GetPaidUnionIDResponse struct {
 }
 
 // GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
-func (cli *client) GetPaidUnionID(openID, transactionID string) (*GetPaidUnionIDResponse, error) {
+func (cli *Client) GetPaidUnionID(openID, transactionID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
 	accessToken, err := cli.AccessToken()
 	if err != nil {
@@ -123,7 +123,7 @@ func (cli *client) GetPaidUnionID(openID, transactionID string) (*GetPaidUnionID
 	return cli.getPaidUnionID(accessToken, openID, transactionID, api)
 }
 
-func (cli *client) getPaidUnionID(accessToken, openID, transactionID, api string) (*GetPaidUnionIDResponse, error) {
+func (cli *Client) getPaidUnionID(accessToken, openID, transactionID, api string) (*GetPaidUnionIDResponse, error) {
 	queries := requestQueries{
 		"openid":         openID,
 		"access_token":   accessToken,
@@ -134,7 +134,7 @@ func (cli *client) getPaidUnionID(accessToken, openID, transactionID, api string
 }
 
 // GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
-func (cli *client) GetPaidUnionIDWithMCH(openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
+func (cli *Client) GetPaidUnionIDWithMCH(openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
 
 	accessToken, err := cli.AccessToken()
@@ -145,7 +145,7 @@ func (cli *client) GetPaidUnionIDWithMCH(openID, outTradeNo, mchID string) (*Get
 	return cli.getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api)
 }
 
-func (cli *client) getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api string) (*GetPaidUnionIDResponse, error) {
+func (cli *Client) getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID, api string) (*GetPaidUnionIDResponse, error) {
 	queries := requestQueries{
 		"openid":       openID,
 		"mch_id":       mchID,
@@ -156,7 +156,7 @@ func (cli *client) getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID,
 	return cli.getPaidUnionIDRequest(api, queries)
 }
 
-func (cli *client) getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDResponse, error) {
+func (cli *Client) getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDResponse, error) {
 	url, err := encodeURL(api, queries)
 	if err != nil {
 		return nil, err

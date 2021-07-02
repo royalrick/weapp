@@ -15,7 +15,7 @@ const (
 
 // NearbyPoi 附近地点
 type NearbyPoi struct {
-	PicList           PicList      `json:"pic_list"`           // 门店图片，最多9张，最少1张，上传门店图片如门店外景、环境设施、商品服务等，图片将展示在微信客户端的门店页。图片链接通过文档https://mp.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729中的《上传图文消息内的图片获取URL》接口获取。必填，文件格式为bmp、png、jpeg、jpg或gif，大小不超过5M pic_list是字符串，内容是一个json！
+	PicList           PicList      `json:"pic_list"`           // 门店图片，最多9张，最少1张，上传门店图片如门店外景、环境设施、商品服务等，图片将展示在微信客户端的门店页。图片链接通过文档https://mpoi.weixin.qq.com/wiki?t=resource/res_main&id=mp1444738729中的《上传图文消息内的图片获取URL》接口获取。必填，文件格式为bmp、png、jpeg、jpg或gif，大小不超过5M pic_list是字符串，内容是一个json！
 	ServiceInfos      ServiceInfos `json:"service_infos"`      // 必服务标签列表 选填，需要填写服务标签ID、APPID、对应服务落地页的path路径，详细字段格式见下方示例
 	StoreName         string       `json:"store_name"`         // 门店名字 必填，门店名称需按照所选地理位置自动拉取腾讯地图门店名称，不可修改，如需修改请重现选择地图地点或重新创建地点
 	Hour              string       `json:"hour"`               // 营业时间，格式11:11-12:12 必填
@@ -65,24 +65,30 @@ type AddNearbyPoiResponse struct {
 
 // Add 添加地点
 // token  接口调用凭证
-func (p *NearbyPoi) Add(token string) (*AddNearbyPoiResponse, error) {
+func (cli *Client) AddNearByPoi(poi *NearbyPoi) (*AddNearbyPoiResponse, error) {
 	api := baseURL + apiAddNearbyPoi
-	return p.add(api, token)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.addNearByPoi(api, token, poi)
 }
 
-func (p *NearbyPoi) add(api, token string) (*AddNearbyPoiResponse, error) {
+func (cli *Client) addNearByPoi(api, token string, poi *NearbyPoi) (*AddNearbyPoiResponse, error) {
 
-	pisList, err := json.Marshal(p.PicList)
+	pisList, err := json.Marshal(poi.PicList)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal picture list to json: %v", err)
 	}
 
-	serviceInfos, err := json.Marshal(p.ServiceInfos)
+	serviceInfos, err := json.Marshal(poi.ServiceInfos)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal service info list to json: %v", err)
 	}
 
-	kfInfo, err := json.Marshal(p.KFInfo)
+	kfInfo, err := json.Marshal(poi.KFInfo)
 	if err != nil {
 		return nil, fmt.Errorf("failed to marshal customer service staff info list to json: %v", err)
 	}
@@ -96,18 +102,18 @@ func (p *NearbyPoi) add(api, token string) (*AddNearbyPoiResponse, error) {
 		"is_comm_nearby":     "1",
 		"pic_list":           string(pisList),
 		"service_infos":      string(serviceInfos),
-		"store_name":         p.StoreName,
-		"hour":               p.Hour,
-		"credential":         p.Credential,
-		"address":            p.Address,
-		"company_name":       p.CompanyName,
-		"qualification_list": p.QualificationList,
+		"store_name":         poi.StoreName,
+		"hour":               poi.Hour,
+		"credential":         poi.Credential,
+		"address":            poi.Address,
+		"company_name":       poi.CompanyName,
+		"qualification_list": poi.QualificationList,
 		"kf_info":            string(kfInfo),
-		"poi_id":             p.PoiID,
+		"poi_id":             poi.PoiID,
 	}
 
 	res := new(AddNearbyPoiResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -117,12 +123,18 @@ func (p *NearbyPoi) add(api, token string) (*AddNearbyPoiResponse, error) {
 // DeleteNearbyPoi 删除地点
 // token  接口调用凭证
 // id  附近地点 ID
-func DeleteNearbyPoi(token, id string) (*CommonError, error) {
+func (cli *Client) DeleteNearbyPoi(id string) (*CommonError, error) {
 	api := baseURL + apiDeleteNearbyPoi
-	return deleteNearbyPoi(api, token, id)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.deleteNearbyPoi(api, token, id)
 }
 
-func deleteNearbyPoi(api, token, id string) (*CommonError, error) {
+func (cli *Client) deleteNearbyPoi(api, token, id string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -133,7 +145,7 @@ func deleteNearbyPoi(api, token, id string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -164,12 +176,18 @@ type PositionList struct {
 // token  接口调用凭证
 // page  起始页id（从1开始计数）
 // rows  每页展示个数（最多1000个）
-func GetNearbyPoiList(token string, page, rows uint) (*PositionList, error) {
+func (cli *Client) GetNearbyPoiList(page, rows uint) (*PositionList, error) {
 	api := baseURL + apiGetNearbyPoiList
-	return getNearbyPoiList(api, token, page, rows)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getNearbyPoiList(api, token, page, rows)
 }
 
-func getNearbyPoiList(api, token string, page, rows uint) (*PositionList, error) {
+func (cli *Client) getNearbyPoiList(api, token string, page, rows uint) (*PositionList, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -181,7 +199,7 @@ func getNearbyPoiList(api, token string, page, rows uint) (*PositionList, error)
 	}
 
 	res := new(PositionList)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -206,12 +224,18 @@ const (
 // token  接口调用凭证
 // poiID  附近地点 ID
 // status  是否展示
-func SetNearbyPoiShowStatus(token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+func (cli *Client) SetNearbyPoiShowStatus(poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
 	api := baseURL + apiSetNearbyPoiShowStatus
-	return setNearbyPoiShowStatus(api, token, poiID, status)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.setNearbyPoiShowStatus(api, token, poiID, status)
 }
 
-func setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+func (cli *Client) setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -223,7 +247,7 @@ func setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

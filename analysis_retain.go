@@ -23,7 +23,7 @@ type RetainResponse struct {
 // GetMonthlyRetain 获取用户访问小程序月留存
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
-func (cli *client) GetMonthlyRetain(begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetMonthlyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetMonthlyRetain
 
 	accessToken, err := cli.AccessToken()
@@ -37,7 +37,7 @@ func (cli *client) GetMonthlyRetain(begin, end string) (*RetainResponse, error) 
 // GetWeeklyRetain 获取用户访问小程序周留存
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
-func (cli *client) GetWeeklyRetain(begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetWeeklyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetWeeklyRetain
 
 	accessToken, err := cli.AccessToken()
@@ -51,7 +51,7 @@ func (cli *client) GetWeeklyRetain(begin, end string) (*RetainResponse, error) {
 // GetDailyRetain 获取用户访问小程序日留存
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func (cli *client) GetDailyRetain(begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetDailyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetDailyRetain
 
 	accessToken, err := cli.AccessToken()
@@ -62,7 +62,7 @@ func (cli *client) GetDailyRetain(begin, end string) (*RetainResponse, error) {
 	return cli.getRetain(accessToken, begin, end, api)
 }
 
-func (cli *client) getRetain(accessToken, begin, end, api string) (*RetainResponse, error) {
+func (cli *Client) getRetain(accessToken, begin, end, api string) (*RetainResponse, error) {
 	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
@@ -74,7 +74,7 @@ func (cli *client) getRetain(accessToken, begin, end, api string) (*RetainRespon
 	}
 
 	res := new(RetainResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

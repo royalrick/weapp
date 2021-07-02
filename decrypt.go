@@ -9,7 +9,7 @@ import (
 )
 
 // DecryptUserData 解密用户数据
-func DecryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
+func (cli *Client) DecryptUserData(ssk, ciphertext, iv string) ([]byte, error) {
 	key, err := base64.StdEncoding.DecodeString(ssk)
 	if err != nil {
 		return nil, err
@@ -46,8 +46,8 @@ type Mobile struct {
 // sessionKey 通过 Login 向微信服务端请求得到的 session_key
 // encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
-func DecryptMobile(sessionKey, encryptedData, iv string) (*Mobile, error) {
-	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
+func (cli *Client) DecryptMobile(sessionKey, encryptedData, iv string) (*Mobile, error) {
+	raw, err := cli.DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -72,9 +72,9 @@ type ShareInfo struct {
 // iv 小程序通过 api 得到的初始向量(iv)
 //
 // gid 小程序唯一群号
-func DecryptShareInfo(sessionKey, encryptedData, iv string) (*ShareInfo, error) {
+func (cli *Client) DecryptShareInfo(sessionKey, encryptedData, iv string) (*ShareInfo, error) {
 
-	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
+	raw, err := cli.DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -108,13 +108,13 @@ type UserInfo struct {
 // encryptedData 包括敏感数据在内的完整用户信息的加密数据
 // signature 使用 sha1( rawData + session_key ) 得到字符串，用于校验用户信息
 // iv 加密算法的初始向量
-func DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
+func (cli *Client) DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
 
 	if encrypt.NewSigner(false, rawData, sessionKey).CompareWith(signature) {
 		return nil, errors.New("failed to validate signature")
 	}
 
-	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
+	raw, err := cli.DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}
@@ -143,8 +143,8 @@ type SetpInfo struct {
 // sessionKey 通过 Login 向微信服务端请求得到的 session_key
 // encryptedData 小程序通过 api 得到的加密数据(encryptedData)
 // iv 小程序通过 api 得到的初始向量(iv)
-func DecryptRunData(sessionKey, encryptedData, iv string) (*RunData, error) {
-	raw, err := DecryptUserData(sessionKey, encryptedData, iv)
+func (cli *Client) DecryptRunData(sessionKey, encryptedData, iv string) (*RunData, error) {
+	raw, err := cli.DecryptUserData(sessionKey, encryptedData, iv)
 	if err != nil {
 		return nil, err
 	}

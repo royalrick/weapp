@@ -21,12 +21,18 @@ type FaceIdentifyResponse struct {
 //
 // token 微信 access_token
 // key 小程序 verify_result
-func FaceIdentify(token, key string) (*FaceIdentifyResponse, error) {
+func (cli *Client) FaceIdentify(key string) (*FaceIdentifyResponse, error) {
 	api := baseURL + apiFaceIdentify
-	return faceIdentify(api, token, key)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.faceIdentify(api, token, key)
 }
 
-func faceIdentify(api, token, key string) (*FaceIdentifyResponse, error) {
+func (cli *Client) faceIdentify(api, token, key string) (*FaceIdentifyResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -37,7 +43,7 @@ func faceIdentify(api, token, key string) (*FaceIdentifyResponse, error) {
 	}
 
 	res := new(FaceIdentifyResponse)
-	err = postJSON(api, params, res)
+	err = cli.request.Post(api, params, res)
 	if err != nil {
 		return nil, err
 	}

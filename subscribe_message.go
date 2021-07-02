@@ -26,12 +26,18 @@ type AddTemplateResponse struct {
 // tid 模板ID
 // desc 服务场景描述，15个字以内
 // keywordIDList 关键词 ID 列表
-func AddTemplate(token, tid, desc string, keywordIDList []int32) (*AddTemplateResponse, error) {
+func (cli *Client) AddTemplate(tid, desc string, keywordIDList []int32) (*AddTemplateResponse, error) {
 	api := baseURL + apiAddTemplate
-	return addTemplate(api, token, tid, desc, keywordIDList)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.addTemplate(api, token, tid, desc, keywordIDList)
 }
 
-func addTemplate(api, token, tid, desc string, keywordIDList []int32) (*AddTemplateResponse, error) {
+func (cli *Client) addTemplate(api, token, tid, desc string, keywordIDList []int32) (*AddTemplateResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -44,7 +50,7 @@ func addTemplate(api, token, tid, desc string, keywordIDList []int32) (*AddTempl
 	}
 
 	res := new(AddTemplateResponse)
-	err = postJSON(api, params, res)
+	err = cli.request.Post(api, params, res)
 	if err != nil {
 		return nil, err
 	}
@@ -56,12 +62,17 @@ func addTemplate(api, token, tid, desc string, keywordIDList []int32) (*AddTempl
 //
 // token 微信 access_token
 // pid 模板ID
-func DeleteTemplate(token, pid string) (*CommonError, error) {
+func (cli *Client) DeleteTemplate(pid string) (*CommonError, error) {
 	api := baseURL + apiDeleteTemplate
-	return deleteTemplate(api, token, pid)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.deleteTemplate(api, token, pid)
 }
 
-func deleteTemplate(api, token, pid string) (*CommonError, error) {
+func (cli *Client) deleteTemplate(api, token, pid string) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -72,7 +83,7 @@ func deleteTemplate(api, token, pid string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	err = postJSON(api, params, res)
+	err = cli.request.Post(api, params, res)
 	if err != nil {
 		return nil, err
 	}
@@ -92,19 +103,24 @@ type GetTemplateCategoryResponse struct {
 // GetTemplateCategory 删除帐号下的某个模板
 //
 // token 微信 access_token
-func GetTemplateCategory(token string) (*GetTemplateCategoryResponse, error) {
+func (cli *Client) GetTemplateCategory() (*GetTemplateCategoryResponse, error) {
 	api := baseURL + apiGetTemplateCategory
-	return getTemplateCategory(token, api)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getTemplateCategory(token, api)
 }
 
-func getTemplateCategory(token, api string) (*GetTemplateCategoryResponse, error) {
+func (cli *Client) getTemplateCategory(token, api string) (*GetTemplateCategoryResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetTemplateCategoryResponse)
-	err = getJSON(api, res)
+	err = cli.request.Get(api, res)
 	if err != nil {
 		return nil, err
 	}
@@ -128,12 +144,17 @@ type GetPubTemplateKeyWordsByIdResponse struct {
 //
 // token 微信 access_token
 // tid 模板ID
-func GetPubTemplateKeyWordsById(token, tid string) (*GetPubTemplateKeyWordsByIdResponse, error) {
+func (cli *Client) GetPubTemplateKeyWordsById(tid string) (*GetPubTemplateKeyWordsByIdResponse, error) {
 	api := baseURL + apiGetPubTemplateKeyWordsById
-	return getPubTemplateKeyWordsById(api, token, tid)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getPubTemplateKeyWordsById(api, token, tid)
 }
 
-func getPubTemplateKeyWordsById(api, token, tid string) (*GetPubTemplateKeyWordsByIdResponse, error) {
+func (cli *Client) getPubTemplateKeyWordsById(api, token, tid string) (*GetPubTemplateKeyWordsByIdResponse, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"tid":          tid,
@@ -144,7 +165,7 @@ func getPubTemplateKeyWordsById(api, token, tid string) (*GetPubTemplateKeyWords
 	}
 
 	res := new(GetPubTemplateKeyWordsByIdResponse)
-	if err = getJSON(url, res); err != nil {
+	if err = cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -169,12 +190,16 @@ type GetPubTemplateTitleListResponse struct {
 // ids 类目 id，多个用逗号隔开
 // start 用于分页，表示从 start 开始。从 0 开始计数。
 // limit 用于分页，表示拉取 limit 条记录。最大为 30
-func GetPubTemplateTitleList(token, ids string, start, limit int) (*GetPubTemplateTitleListResponse, error) {
+func (cli *Client) GetPubTemplateTitleList(ids string, start, limit int) (*GetPubTemplateTitleListResponse, error) {
 	api := baseURL + apiGetPubTemplateTitleList
-	return getPubTemplateTitleList(api, token, ids, start, limit)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+	return cli.getPubTemplateTitleList(api, token, ids, start, limit)
 }
 
-func getPubTemplateTitleList(api, token, ids string, start, limit int) (*GetPubTemplateTitleListResponse, error) {
+func (cli *Client) getPubTemplateTitleList(api, token, ids string, start, limit int) (*GetPubTemplateTitleListResponse, error) {
 
 	queries := requestQueries{
 		"access_token": token,
@@ -189,7 +214,7 @@ func getPubTemplateTitleList(api, token, ids string, start, limit int) (*GetPubT
 	}
 
 	res := new(GetPubTemplateTitleListResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -211,19 +236,24 @@ type GetTemplateListResponse struct {
 // GetTemplateList 获取帐号下已存在的模板列表
 //
 // token 微信 access_token
-func GetTemplateList(token string) (*GetTemplateListResponse, error) {
+func (cli *Client) GetTemplateList() (*GetTemplateListResponse, error) {
 	api := baseURL + apiGetTemplateList
-	return getTemplateList(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getTemplateList(api, token)
 }
 
-func getTemplateList(api, token string) (*GetTemplateListResponse, error) {
+func (cli *Client) getTemplateList(api, token string) (*GetTemplateListResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(GetTemplateListResponse)
-	if err := getJSON(url, res); err != nil {
+	if err := cli.request.Get(url, res); err != nil {
 		return nil, err
 	}
 
@@ -252,19 +282,24 @@ const (
 // Send 发送订阅消息
 //
 // token access_token
-func (sm *SubscribeMessage) Send(token string) (*CommonError, error) {
+func (cli *Client) SendSubscribeMsg(msg *SubscribeMessage) (*CommonError, error) {
 	api := baseURL + apiSendSubscribeMessage
-	return sm.send(api, token)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.sendSubscribeMsg(api, token, msg)
 }
 
-func (sm *SubscribeMessage) send(api, token string) (*CommonError, error) {
+func (cli *Client) sendSubscribeMsg(api, token string, msg *SubscribeMessage) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := &CommonError{}
-	if err := postJSON(api, sm, res); err != nil {
+	if err := cli.request.Post(api, msg, res); err != nil {
 		return nil, err
 	}
 
