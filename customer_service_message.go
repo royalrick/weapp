@@ -27,12 +27,12 @@ const (
 
 // csMessage 消息体
 type csMessage struct {
-	Receiver string      `json:"touser"`  // user openID
-	Type     csMsgType   `json:"msgtype"` // text | image | link | miniprogrampage
-	Text     CSMsgText   `json:"text,omitempty"`
-	Image    CSMsgImage  `json:"image,omitempty"`
-	Link     CSMsgLink   `json:"link,omitempty"`
-	MPCard   CSMsgMPCard `json:"miniprogrampage,omitempty"`
+	Receiver string       `json:"touser"`  // user openID
+	Type     csMsgType    `json:"msgtype"` // text | image | link | miniprogrampage
+	Text     *CSMsgText   `json:"text,omitempty"`
+	Image    *CSMsgImage  `json:"image,omitempty"`
+	Link     *CSMsgLink   `json:"link,omitempty"`
+	MPCard   *CSMsgMPCard `json:"miniprogrampage,omitempty"`
 }
 
 // CSMsgText 接收的文本消息
@@ -44,7 +44,7 @@ type CSMsgText struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (cli *Client) SendTextMsg(openID, token string, msg CSMsgText) (*CommonError, error) {
+func (cli *Client) SendTextMsg(openID string, msg *CSMsgText) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -64,7 +64,7 @@ type CSMsgImage struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (cli *Client) SendImageMsg(openID, token string, msg CSMsgImage) (*CommonError, error) {
+func (cli *Client) SendImageMsg(openID string, msg *CSMsgImage) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -87,7 +87,7 @@ type CSMsgLink struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (cli *Client) SendLinkMsg(openID, token string, msg CSMsgLink) (*CommonError, error) {
+func (cli *Client) SendLinkMsg(openID string, msg *CSMsgLink) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -109,7 +109,7 @@ type CSMsgMPCard struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (cli *Client) SendCardMsg(openID, token string, msg CSMsgMPCard) (*CommonError, error) {
+func (cli *Client) SendCardMsg(openID string, msg *CSMsgMPCard) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,

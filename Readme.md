@@ -166,20 +166,38 @@ go get -u github.com/medivhzhan/weapp/v3
 1. 初始化接口客户端
 
 ```go
+import "github.com/medivhzhan/weapp/v3"
+
 cli := weapp.NewClient("your-appid", "your-secret")
 
 // 自定义缓存
+// 默认缓存在内存中
+// 主要用户缓存 AccessToken
+// 只需要实现 cache 模块下 的 Cache 接口即可使用
+cc := MyCache{
+    //
+}
+
 cli := weapp.NewClient(
     "your-appid",
     "your-secret",
-    weapp.WithCache(cache.Cache),
+    weapp.WithCache(cc),
 )
 
 // 自定义 HTTP 请求客户端
+// 默认为 http.DefaultClient
+httpCli := &http.Client{
+    Timeout: 10 * time.Second,
+    Transport: &http.Transport{
+        // 跳过校验
+        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+    },
+}
+
 cli := weapp.NewClient(
     "your-appid",
     "your-secret",
-    weapp.WithHttpClient(*http.Client),
+    weapp.WithHttpClient(httpCli),
 )
 
 ```
@@ -187,6 +205,8 @@ cli := weapp.NewClient(
 1. 初始化微信通知服务
 
 ```go
+import "github.com/medivhzhan/weapp/v3/server"
+
 //  通用处理器
 handler := func(req map[string]interface{}) map[string]interface{}{
 
@@ -249,9 +269,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPaidUnionID("access-token", "open-id", "transaction-id")
+res, err :=cli.GetPaidUnionID("open-id", "transaction-id")
 // 或者
-res, err :=cli.GetPaidUnionIDWithMCH("access-token", "open-id", "out-trade-number", "mch-id")
+res, err :=cli.GetPaidUnionIDWithMCH("open-id", "out-trade-number", "mch-id")
 
 if err != nil {
     // 处理一般错误信息
@@ -273,7 +293,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ### getAccessToken
 
-> 调用次数有限制 请注意缓存
+> SDK 默认会自动获取并缓存 AccessToken 不建议直接调用
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/access-token/auth.getAccessToken.html)
 
@@ -281,7 +301,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetAccessToken("appid", "secret")
+res, err :=cli.GetAccessToken()
 if err != nil {
     // 处理一般错误信息
     return
@@ -310,7 +330,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailyRetain("access-token", "begin-date", "end-date")
+res, err :=cli.GetDailyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -333,7 +353,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetWeeklyRetain("access-token", "begin-date", "end-date")
+res, err :=cli.GetWeeklyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -356,7 +376,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetMonthlyRetain("access-token", "begin-date", "end-date")
+res, err :=cli.GetMonthlyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -379,7 +399,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailySummary("access-token", "begin-date", "end-date")
+res, err :=cli.GetDailySummary("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -404,7 +424,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailyVisitTrend("access-token", "begin-date", "end-date")
+res, err :=cli.GetDailyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -427,7 +447,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetWeeklyVisitTrend("access-token", "begin-date", "end-date")
+res, err :=cli.GetWeeklyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -450,7 +470,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetMonthlyVisitTrend("access-token", "begin-date", "end-date")
+res, err :=cli.GetMonthlyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -473,7 +493,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetUserPortrait("access-token", "begin-date", "end-date")
+res, err :=cli.GetUserPortrait("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -496,7 +516,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetVisitDistribution("access-token", "begin-date", "end-date")
+res, err :=cli.GetVisitDistribution("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -519,7 +539,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetVisitPage("access-token", "begin-date", "end-date")
+res, err :=cli.GetVisitPage("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -546,7 +566,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-resp, res, err :=cli.GetTempMedia("access-token", "media-id")
+resp, res, err :=cli.GetTempMedia("media-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -582,7 +602,7 @@ srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.Trans
         Content: "content",
     }
 
-    res, err := reply.SendTo("open-id", "access-token")
+    res, err := cli.SendTextMsg(msg.FromUserName, &reply)
     if err != nil {
         // 处理一般错误信息
         return nil
@@ -603,7 +623,7 @@ srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.Tran
         MediaID: "media-id",
     }
 
-    res, err := reply.SendTo("open-id", "access-token")
+    res, err := cli.SendImageMsg(msg.FromUserName, &reply)
     if err != nil {
         // 处理一般错误信息
         return nil
@@ -625,7 +645,7 @@ srv.OnCustomerServiceCardMessage(func(msg *weapp.TextMessageResult) *weapp.Trans
         PagePath:     "page-path",
         ThumbMediaID: "thumb-media-id",
     }
-    res, err := reply.SendTo("open-id", "access-token")
+    res, err := cli.SendCardMsg(msg.FromUserName, &reply)
     if err != nil {
         // 处理一般错误信息
         return nil
@@ -654,7 +674,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetTyping("access-token", "open-id",cli.SetTypingCommandTyping)
+res, err :=cli.SetTyping("open-id",cli.SetTypingCommandTyping)
 if err != nil {
     // 处理一般错误信息
     return
@@ -677,7 +697,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.UploadTempMedia("access-token",cli.TempMediaTypeImage, "media-filename")
+res, err :=cli.UploadTempMedia(cli.TempMediaTypeImage, "media-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -726,7 +746,7 @@ sender :=cli.UniformMsgSender{
     },
 }
 
-res, err := sender.Send("access-token")
+res, err := cli.SendUniformMsg(&sender)
 if err != nil {
     // 处理一般错误信息
     return
@@ -753,7 +773,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.CreateActivityId("access-token")
+res, err :=cli.CreateActivityId()
 if err != nil {
     // 处理一般错误信息
     return
@@ -777,7 +797,7 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp/v3"
 
 
-setter :=cli.UpdatableMsgSetter{
+setter :=cli.UpdatableMsg{
     "activity-id",
     UpdatableMsgJoining,
     UpdatableMsgTempInfo{
@@ -788,7 +808,7 @@ setter :=cli.UpdatableMsgSetter{
     },
 }
 
-res, err := setter.Set("access-token")
+res, err := setter.SetUpdatableMsg(&setter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -815,7 +835,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.ApplyPlugin("access-token", "plugin-app-id", "reason")
+res, err :=cli.ApplyPlugin("plugin-app-id", "reason")
 if err != nil {
     // 处理一般错误信息
     return
@@ -838,7 +858,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPluginDevApplyList("access-token", 1, 2)
+res, err :=cli.GetPluginDevApplyList(1, 2)
 if err != nil {
     // 处理一般错误信息
     return
@@ -861,7 +881,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPluginList("access-token")
+res, err := cli.GetPluginList()
 if err != nil {
     // 处理一般错误信息
     return
@@ -884,7 +904,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetDevPluginApplyStatus("access-token", "plugin-app-id", "reason",cli.DevAgree)
+res, err :=cli.SetDevPluginApplyStatus("plugin-app-id", "reason",cli.DevAgree)
 if err != nil {
     // 处理一般错误信息
     return
@@ -907,7 +927,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.UnbindPlugin("access-token", "plugin-app-id")
+res, err :=cli.UnbindPlugin("plugin-app-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -949,7 +969,7 @@ poi := NearbyPoi{
     PoiID:             "poi-id",                          // 如果创建新的门店，poi_id字段为空 如果更新门店，poi_id参数则填对应门店的poi_id 选填
 }
 
-res, err := poi.Add("access-token")
+res, err := cli.AddNearByPoi(&poi)
 if err != nil {
     // 处理一般错误信息
     return
@@ -968,11 +988,11 @@ if err != nil {
 }
 
 srv.OnAddNearbyPoi(func(mix *weapp.AddNearbyPoiResult) {
-    // 处理返回结果
+    // 处理接收的数据
 })
 
 if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
-    // 处理微信返回错误信息
+    // 服务出错
     return
 }
 
@@ -986,7 +1006,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DeleteNearbyPoi("access-token", "poi-id")
+res, err :=cli.DeleteNearbyPoi("poi-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1009,7 +1029,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetNearbyPoiList("access-token", 1, 10)
+res, err :=cli.GetNearbyPoiList(1, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1032,9 +1052,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetNearbyPoiShowStatus("access-token", "poi-id",cli.ShowNearbyPoi)
+res, err :=cli.SetNearbyPoiShowStatus("poi-id",cli.ShowNearbyPoi)
 // 或者
-res, err :=cli.SetNearbyPoiShowStatus("access-token", "poi-id",cli.HideNearbyPoi)
+res, err :=cli.SetNearbyPoiShowStatus("poi-id",cli.HideNearbyPoi)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1070,7 +1090,7 @@ creator :=cli.QRCodeCreator{
     Width: 430,
 }
 
-resp, res, err := creator.Create("access-token")
+resp, res, err := cli.CreateQRCode(&creator)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1107,7 +1127,7 @@ getter :=cli.QRCode{
     IsHyaline: true,
 }
 
-resp, res, err := getter.Get("access-token")
+resp, res, err := cli.GetQRCode(&getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1145,7 +1165,7 @@ getter := cli.UnlimitedQRCode{
     IsHyaline: true,
 }
 
-resp, res, err := getter.Get("access-token")
+resp, res, err := cli.GetUnlimitedQRCode(&getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1187,7 +1207,7 @@ scheme :=cli.URLScheme{
     ExpireTime: 1234567890,
 }
 
-resp, res, err := scheme.Generate("access-token")
+resp, res, err := cli.GenerateURLSchema(&scheme)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1214,7 +1234,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.IMGSecCheck("access-token", "local-filename")
+res, err :=cli.IMGSecCheck("local-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1237,7 +1257,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.MediaCheckAsync("access-token", "image-url",cli.MediaTypeImage)
+res, err :=cli.MediaCheckAsync("image-url",cli.MediaTypeImage)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1275,7 +1295,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.MSGSecCheck("access-token", "message-content")
+res, err :=cli.MSGSecCheck("message-content")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1302,9 +1322,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.AICrop("access-token", "filename")
+res, err :=cli.AICrop("filename")
 // 或者
-res, err :=cli.AICropByURL("access-token", "url")
+res, err :=cli.AICropByURL("url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1327,9 +1347,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.ScanQRCode("access-token", "file-path")
+res, err :=cli.ScanQRCode("file-path")
 // 或者
-res, err :=cli.ScanQRCodeByURL("access-token", "qr-code-url")
+res, err :=cli.ScanQRCodeByURL("qr-code-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1352,9 +1372,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SuperResolution("access-token", "file-path")
+res, err :=cli.SuperResolution("file-path")
 // 或者
-res, err :=cli.SuperResolutionByURL("access-token", "img-url")
+res, err :=cli.SuperResolutionByURL("img-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1387,7 +1407,7 @@ mocker :=cli.DeliveryOrderUpdater{
    // ...
 }
 
-res, err := mocker.Update("access-token")
+res, err := cli.UpdateImmediateDeliveryOrder(&mocker)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1785,7 +1805,7 @@ confirmer :=cli.AbnormalConfirmer{
     DeliverySign: "123456",
 }
 
-res, err := confirmer.Confirm("access-token")
+res, err := cli.AbnormalImmediateDeliveryConfirm(&confirmer)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1812,7 +1832,7 @@ creator :=cli.DeliveryOrderCreator{
    // ...
 }
 
-res, err := creator.Create("access-token")
+res, err := cli.AddImmediateDeliveryOrder(&creator)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1839,7 +1859,7 @@ adder :=cli.DeliveryTipAdder{
    // ...
 }
 
-res, err := adder.Add("access-token")
+res, err := cli.AddImmediateDeliveryTip(&addr)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1866,7 +1886,7 @@ canceler :=cli.DeliveryOrderCanceler{
    // ...
 }
 
-res, err := canceler.Cancel("access-token")
+res, err := cli.PreCancelImmediateDeliveryOrder(&canceler)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1889,7 +1909,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetAllImmediateDelivery("access-token")
+res, err :=cli.GetAllImmediateDelivery()
 if err != nil {
     // 处理一般错误信息
     return
@@ -1912,7 +1932,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetBindAccount("access-token")
+res, err :=cli.GetBindAccount()
 if err != nil {
     // 处理一般错误信息
     return
@@ -1939,7 +1959,7 @@ getter :=cli.DeliveryOrderGetter{
    // ...
 }
 
-res, err := getter.Get("access-token")
+res, err := cli.GetImmediateDeliveryOrder(getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1966,7 +1986,7 @@ mocker :=cli.UpdateDeliveryOrderMocker{
    // ...
 }
 
-res, err := mocker.Mock("access-token")
+res, err := cli.MockUpdateImmediateDeliveryOrder(mocker)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2021,7 +2041,7 @@ creator :=cli.DeliveryOrderCreator{
    // ...
 }
 
-res, err := creator.Prepare("access-token")
+res, err := cli.PreAddImmediateDeliveryOrder(&creator)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2048,7 +2068,7 @@ canceler :=cli.DeliveryOrderCanceler{
    // ...
 }
 
-res, err := canceler.Prepare("access-token")
+res, err := cli.PreCancelImmediateDeliveryOrder(&canceler)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2075,7 +2095,7 @@ creator :=cli.DeliveryOrderCreator{
    // ...
 }
 
-res, err := creator.Recreate("access-token")
+res, err := cli.ReImmediateDeliveryOrder(&creator)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2108,7 +2128,7 @@ creator :=cli.ExpressOrderCreator{
    // ...
 }
 
-res, err := creator.Create("access-token")
+res, err := cli.AddLogisticOrder(&creator)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2135,7 +2155,7 @@ canceler :=cli.ExpressOrderCanceler{
    // ...
 }
 
-res, err := canceler.cancel("access-token")
+res, err := cli.CancelLogisticsOrder(&canceler)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2158,7 +2178,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.getAllDelivery("access-token")
+res, err :=cli.getAllDelivery()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2185,7 +2205,7 @@ getter :=cli.ExpressOrderGetter{
    // ...
 }
 
-res, err := getter.Get("access-token")
+res, err := cli.GetLogisticsOrder(&getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2212,7 +2232,7 @@ getter :=cli.ExpressPathGetter{
    // ...
 }
 
-res, err := getter.Get("access-token")
+res, err := cli.GetLogisticsPath(&getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2235,7 +2255,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPrinter("access-token")
+res, err :=cli.GetPrinter()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2262,7 +2282,7 @@ getter :=cli.QuotaGetter{
    // ...
 }
 
-res, err := getter.Get("access-token")
+res, err := cli.GetExpressQuota(&getter)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2313,7 +2333,7 @@ tester :=cli.UpdateExpressOrderTester{
    // ...
 }
 
-res, err := tester.Test("access-token")
+res, err := cli.TestUpdateExpressOrder(&tester)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2340,7 +2360,7 @@ updater :=cli.PrinterUpdater{
    // ...
 }
 
-res, err := updater.Update("access-token")
+res, err := cli.updateExpressOrder(&updater)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2365,7 +2385,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetContact("access-token", "token", "wat-bill-id")
+res, err :=cli.GetContact("token", "wat-bill-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2504,7 +2524,7 @@ previewer :=cli.ExpressTemplatePreviewer{
    // ...
 }
 
-res, err := previewer.Preview("access-token")
+res, err := cli.PreviewLogisticsTemplate(&previewer)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2531,7 +2551,7 @@ updater :=cli.BusinessUpdater{
    // ...
 }
 
-res, err := updater.Update("access-token")
+res, err := cli.UpdateLogisticsBusiness(&updater)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2558,7 +2578,7 @@ updater :=cli.ExpressPathUpdater{
    // ...
 }
 
-res, err := updater.Update("access-token")
+res, err := cli.UpdateLogisticsPath(&updater)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2585,9 +2605,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.BankCard("access-token", "file-path",cli.RecognizeModeScan)
+res, err :=cli.BankCard("file-path",cli.RecognizeModeScan)
 // 或者
-res, err :=cli.BankCardByURL("access-token", "card-url",cli.RecognizeModePhoto)
+res, err :=cli.BankCardByURL("card-url",cli.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2610,9 +2630,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.BusinessLicense("access-token", "file-path")
+res, err :=cli.BusinessLicense("file-path")
 // 或者
-res, err :=cli.BusinessLicenseByURL("access-token", "card-url")
+res, err :=cli.BusinessLicenseByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2635,9 +2655,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DriverLicense("access-token", "file-path")
+res, err :=cli.DriverLicense("file-path")
 // 或者
-res, err :=cli.DriverLicenseByURL("access-token", "card-url")
+res, err :=cli.DriverLicenseByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2660,9 +2680,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.IDCardByURL("access-token", "card-url",cli.RecognizeModePhoto)
+res, err :=cli.IDCardByURL("card-url",cli.RecognizeModePhoto)
 // 或者
-res, err :=cli.IDCard("access-token", "file-path",cli.RecognizeModeScan)
+res, err :=cli.IDCard("file-path",cli.RecognizeModeScan)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2685,9 +2705,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.PrintedText("access-token", "file-path")
+res, err :=cli.PrintedText("file-path")
 // 或者
-res, err :=cli.PrintedTextByURL("access-token", "card-url")
+res, err :=cli.PrintedTextByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2710,9 +2730,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.VehicleLicense("access-token", "file-path",cli.RecognizeModeScan)
+res, err :=cli.VehicleLicense("file-path",cli.RecognizeModeScan)
 // 或者
-res, err :=cli.VehicleLicenseByURL("access-token", "card-url",cli.RecognizeModePhoto)
+res, err :=cli.VehicleLicenseByURL("card-url",cli.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2741,7 +2761,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-sender :=cli.SearchSubmitPages{
+sender := weapp.SearchSubmitPages{
     []weapp.SearchSubmitPage{
         {
             Path:  "pages/index/index",
@@ -2750,7 +2770,7 @@ sender :=cli.SearchSubmitPages{
     },
 }
 
-res, err := sender.Send("access-token")
+res, err := cli.SendSearchSubmitPages(&sender)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2777,7 +2797,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.VerifySignature("access-token", "open-id", "data", "signature")
+res, err :=cli.VerifySignature("open-id", "data", "signature")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2805,11 +2825,10 @@ import "github.com/medivhzhan/weapp/v3"
 
 // AddTemplate 组合模板并添加至帐号下的个人模板库
 //
-// token 微信 access_token
 // tid 模板ID
 // desc 服务场景描述，15个字以内
 // keywordIDList 关键词 ID 列表
-res, err :=cli.AddTemplate("access_token", "tid", "desc", []int32{1, 2, 3})
+res, err :=cli.AddTemplate("tid", "desc", []int32{1, 2, 3})
 if err != nil {
     // 处理一般错误信息
     return
@@ -2830,9 +2849,8 @@ import "github.com/medivhzhan/weapp/v3"
 
 // DeleteTemplate 删除帐号下的某个模板
 //
-// token 微信 access_token
 // pid 模板ID
-res, err :=cli.DeleteTemplate("access_token", "pid")
+res, err :=cli.DeleteTemplate("pid")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2853,8 +2871,7 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetTemplateCategory 删除帐号下的某个模板
 //
-// token 微信 access_token
-res, err :=cli.GetTemplateCategory("access_token")
+res, err :=cli.GetTemplateCategory()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2875,9 +2892,8 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetPubTemplateKeyWordsById 获取模板标题下的关键词列表
 //
-// token 微信 access_token
 // tid 模板ID
-res, err :=cli.GetPubTemplateKeyWordsById("access_token", "tid")
+res, err :=cli.GetPubTemplateKeyWordsById("tid")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2898,11 +2914,10 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetPubTemplateTitleList 获取帐号所属类目下的公共模板标题
 //
-// token 微信 access_token
 // ids 类目 id，多个用逗号隔开
 // start 用于分页，表示从 start 开始。从 0 开始计数。
 // limit 用于分页，表示拉取 limit 条记录。最大为 30
-res, err :=cli.GetPubTemplateTitleList("access_token", "1,2,3", 0, 10)
+res, err :=cli.GetPubTemplateTitleList("1,2,3", 0, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2923,8 +2938,7 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetTemplateList 获取帐号下已存在的模板列表
 //
-// token 微信 access_token
-res, err :=cli.GetTemplateList("access_token")
+res, err :=cli.GetTemplateList()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2944,7 +2958,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-sender :=cli.SubscribeMessage{
+sender := weapp.SubscribeMessage{
     ToUser:     mpOpenID,
     TemplateID: "template-id",
     Page:       "mock/page/path",
@@ -2959,7 +2973,7 @@ sender :=cli.SubscribeMessage{
     },
 }
 
-res, err := sender.Send("access-token")
+res, err := cli.SendSubscribeMsg(&sender)
 if err != nil {
     // 处理一般错误信息
     return
@@ -3047,9 +3061,8 @@ import "github.com/medivhzhan/weapp/v3"
 
 // FaceIdentify 获取人脸识别结果
 //
-// token 微信 access_token
 // key 小程序 verify_result
-res, err :=cli.FaceIdentify("access_token", "verify_result")
+res, err :=cli.FaceIdentify("verify_result")
 if err != nil {
     // 处理一般错误信息
     return
@@ -3058,6 +3071,7 @@ if err := res.GetResponseError(); err !=nil {
     // 处理微信返回错误信息
     return
 }
+
 fmt.Printf("返回结果: %#v", res)
 ```
 

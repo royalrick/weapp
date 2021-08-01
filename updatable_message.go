@@ -85,7 +85,7 @@ type UpdatableMsg struct {
 
 // 修改被分享的动态消息。
 // accessToken 接口调用凭证
-func (cli *Client) SetUpdateableMsg(msg *UpdatableMsg) (*CommonError, error) {
+func (cli *Client) SetUpdatableMsg(msg *UpdatableMsg) (*CommonError, error) {
 	api := baseURL + apiSetUpdatableMsg
 
 	token, err := cli.AccessToken()
@@ -93,10 +93,10 @@ func (cli *Client) SetUpdateableMsg(msg *UpdatableMsg) (*CommonError, error) {
 		return nil, err
 	}
 
-	return cli.setUpdateableMsg(api, token, msg)
+	return cli.setUpdatableMsg(api, token, msg)
 }
 
-func (cli *Client) setUpdateableMsg(api, token string, setter *UpdatableMsg) (*CommonError, error) {
+func (cli *Client) setUpdatableMsg(api, token string, setter *UpdatableMsg) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err

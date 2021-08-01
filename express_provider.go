@@ -24,7 +24,7 @@ type ContactUser struct {
 }
 
 // GetContact 获取面单联系人信息
-// accessToken, token, watBillID 接口调用凭证
+// token, watBillID 接口调用凭证
 func (cli *Client) GetContact(token, watBillID string) (*GetContactResponse, error) {
 	api := baseURL + apiGetContact
 

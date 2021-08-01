@@ -26,7 +26,7 @@ type AbnormalConfirmer struct {
 }
 
 // Confirm 异常件退回商家商家确认收货
-func (cli *Client) AbnormalImmediateDelivoryConfirm(confirmer *AbnormalConfirmer) (*CommonResult, error) {
+func (cli *Client) AbnormalImmediateDeliveryConfirm(confirmer *AbnormalConfirmer) (*CommonResult, error) {
 	api := baseURL + apiAbnormalConfirm
 
 	token, err := cli.AccessToken()
@@ -34,10 +34,10 @@ func (cli *Client) AbnormalImmediateDelivoryConfirm(confirmer *AbnormalConfirmer
 		return nil, err
 	}
 
-	return cli.abnormalImmediateDelivoryConfirm(api, token, confirmer)
+	return cli.abnormalImmediateDeliveryConfirm(api, token, confirmer)
 }
 
-func (cli *Client) abnormalImmediateDelivoryConfirm(api, token string, confirmer *AbnormalConfirmer) (*CommonResult, error) {
+func (cli *Client) abnormalImmediateDeliveryConfirm(api, token string, confirmer *AbnormalConfirmer) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -191,7 +191,7 @@ type CreateDeliveryOrderResponse struct {
 }
 
 // Create 下配送单
-func (cli *Client) AddImmediateDelivoryOrder(creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) AddImmediateDeliveryOrder(creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	api := baseURL + apiAddDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -199,10 +199,10 @@ func (cli *Client) AddImmediateDelivoryOrder(creator *DeliveryOrderCreator) (*Cr
 		return nil, err
 	}
 
-	return cli.addImmediateDelivoryOrder(api, token, creator)
+	return cli.addImmediateDeliveryOrder(api, token, creator)
 }
 
-func (cli *Client) addImmediateDelivoryOrder(api, token string, creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
+func (cli *Client) addImmediateDeliveryOrder(api, token string, creator *DeliveryOrderCreator) (*CreateDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -255,17 +255,17 @@ type DeliveryTipAdder struct {
 }
 
 // Add 对待接单状态的订单增加小费。需要注意：订单的小费，以最新一次加小费动作的金额为准，故下一次增加小费额必须大于上一次小费额
-func (cli *Client) AddImmediateDelivoryTip(adder *DeliveryTipAdder) (*CommonResult, error) {
+func (cli *Client) AddImmediateDeliveryTip(adder *DeliveryTipAdder) (*CommonResult, error) {
 	api := baseURL + apiAddDeliveryTip
 	token, err := cli.AccessToken()
 	if err != nil {
 		return nil, err
 	}
 
-	return cli.addImmediateDelivoryTip(api, token, adder)
+	return cli.addImmediateDeliveryTip(api, token, adder)
 }
 
-func (cli *Client) addImmediateDelivoryTip(api, token string, adder *DeliveryTipAdder) (*CommonResult, error) {
+func (cli *Client) addImmediateDeliveryTip(api, token string, adder *DeliveryTipAdder) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -299,16 +299,16 @@ type CancelDeliveryOrderResponse struct {
 }
 
 // Prepare 预取消配送单
-func (cli *Client) PreCancelImmediateDelivoryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) PreCancelImmediateDeliveryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	api := baseURL + apiCancelDeliveryOrder
 	token, err := cli.AccessToken()
 	if err != nil {
 		return nil, err
 	}
-	return cli.preCancelImmediateDelivoryOrder(api, token, canceler)
+	return cli.preCancelImmediateDeliveryOrder(api, token, canceler)
 }
 
-func (cli *Client) preCancelImmediateDelivoryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) preCancelImmediateDeliveryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -323,7 +323,7 @@ func (cli *Client) preCancelImmediateDelivoryOrder(api, token string, canceler *
 }
 
 // Cancel 取消配送单
-func (cli *Client) CancelImmediateDelivoryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) CancelImmediateDeliveryOrder(canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	api := baseURL + apiCancelDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -331,10 +331,10 @@ func (cli *Client) CancelImmediateDelivoryOrder(canceler *DeliveryOrderCanceler)
 		return nil, err
 	}
 
-	return cli.cancelImmediateDelivoryOrder(api, token, canceler)
+	return cli.cancelImmediateDeliveryOrder(api, token, canceler)
 }
 
-func (cli *Client) cancelImmediateDelivoryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
+func (cli *Client) cancelImmediateDeliveryOrder(api, token string, canceler *DeliveryOrderCanceler) (*CancelDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -394,7 +394,7 @@ type GetBindAccountResponse struct {
 }
 
 // GetBindAccount 拉取已绑定账号
-func (cli *Client) GetImmediateDelivoryBindAccount() (*GetBindAccountResponse, error) {
+func (cli *Client) GetImmediateDeliveryBindAccount() (*GetBindAccountResponse, error) {
 	api := baseURL + apiGetDeliveryBindAccount
 
 	token, err := cli.AccessToken()
@@ -402,10 +402,10 @@ func (cli *Client) GetImmediateDelivoryBindAccount() (*GetBindAccountResponse, e
 		return nil, err
 	}
 
-	return cli.getImmediateDelivoryBindAccount(api, token)
+	return cli.getImmediateDeliveryBindAccount(api, token)
 }
 
-func (cli *Client) getImmediateDelivoryBindAccount(api, token string) (*GetBindAccountResponse, error) {
+func (cli *Client) getImmediateDeliveryBindAccount(api, token string) (*GetBindAccountResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -439,7 +439,7 @@ type GetDeliveryOrderResponse struct {
 }
 
 // Get 下配送单
-func (cli *Client) GetImmediateDelivoryOrder(getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
+func (cli *Client) GetImmediateDeliveryOrder(getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
 	api := baseURL + apiGetDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -447,10 +447,10 @@ func (cli *Client) GetImmediateDelivoryOrder(getter *DeliveryOrderGetter) (*GetD
 		return nil, err
 	}
 
-	return cli.getImmediateDelivoryOrder(api, token, getter)
+	return cli.getImmediateDeliveryOrder(api, token, getter)
 }
 
-func (cli *Client) getImmediateDelivoryOrder(api, token string, getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
+func (cli *Client) getImmediateDeliveryOrder(api, token string, getter *DeliveryOrderGetter) (*GetDeliveryOrderResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -522,7 +522,7 @@ type DeliveryAgent struct {
 }
 
 // Update 模拟配送公司更新配送单状态
-func (cli *Client) UpdateImmediateDelivoryOrder(updater *DeliveryOrderUpdater) (*CommonResult, error) {
+func (cli *Client) UpdateImmediateDeliveryOrder(updater *DeliveryOrderUpdater) (*CommonResult, error) {
 	api := baseURL + apiUpdateDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -530,10 +530,10 @@ func (cli *Client) UpdateImmediateDelivoryOrder(updater *DeliveryOrderUpdater) (
 		return nil, err
 	}
 
-	return cli.updateImmediateDelivoryOrder(api, token, updater)
+	return cli.updateImmediateDeliveryOrder(api, token, updater)
 }
 
-func (cli *Client) updateImmediateDelivoryOrder(api, token string, updater *DeliveryOrderUpdater) (*CommonResult, error) {
+func (cli *Client) updateImmediateDeliveryOrder(api, token string, updater *DeliveryOrderUpdater) (*CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
