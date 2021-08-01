@@ -20,7 +20,7 @@ go get -u github.com/medivhzhan/weapp/v3
 
 ## `目录`
 
-> 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便您一一对照查找相关内容。
+> 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便一一对照查找相关内容。
 
 ✅: 代表已经经过线上测试
 ❌: 代表还没有经过线上测试或者未完成
