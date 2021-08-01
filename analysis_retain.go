@@ -21,33 +21,48 @@ type RetainResponse struct {
 }
 
 // GetMonthlyRetain 获取用户访问小程序月留存
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为自然月最后一天，限定查询一个月数据。格式为 yyyymmdd
-func GetMonthlyRetain(accessToken, begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetMonthlyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetMonthlyRetain
-	return getRetain(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getRetain(accessToken, begin, end, api)
 }
 
 // GetWeeklyRetain 获取用户访问小程序周留存
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，为周日日期，限定查询一周数据。格式为 yyyymmdd
-func GetWeeklyRetain(accessToken, begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetWeeklyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetWeeklyRetain
-	return getRetain(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getRetain(accessToken, begin, end, api)
 }
 
 // GetDailyRetain 获取用户访问小程序日留存
-// accessToken 接口调用凭证
 // begin 开始日期，为自然月第一天。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetDailyRetain(accessToken, begin, end string) (*RetainResponse, error) {
+func (cli *Client) GetDailyRetain(begin, end string) (*RetainResponse, error) {
 	api := baseURL + apiGetDailyRetain
-	return getRetain(accessToken, begin, end, api)
+
+	accessToken, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getRetain(accessToken, begin, end, api)
 }
 
-func getRetain(accessToken, begin, end, api string) (*RetainResponse, error) {
+func (cli *Client) getRetain(accessToken, begin, end, api string) (*RetainResponse, error) {
 	url, err := tokenAPI(api, accessToken)
 	if err != nil {
 		return nil, err
@@ -59,7 +74,7 @@ func getRetain(accessToken, begin, end, api string) (*RetainResponse, error) {
 	}
 
 	res := new(RetainResponse)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

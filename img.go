@@ -22,19 +22,25 @@ type AICropResponse struct {
 }
 
 // AICrop 本接口提供基于小程序的图片智能裁剪能力。
-func AICrop(token, filename string) (*AICropResponse, error) {
+func (cli *Client) AICrop(filename string) (*AICropResponse, error) {
 	api := baseURL + apiAICrop
-	return aiCrop(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.aiCrop(api, token, filename)
 }
 
-func aiCrop(api, token, filename string) (*AICropResponse, error) {
+func (cli *Client) aiCrop(api, token, filename string) (*AICropResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(AICropResponse)
-	if err := postFormByFile(url, "img", filename, res); err != nil {
+	if err := cli.request.FormPostWithFile(url, "img", filename, res); err != nil {
 		return nil, err
 	}
 
@@ -42,12 +48,18 @@ func aiCrop(api, token, filename string) (*AICropResponse, error) {
 }
 
 // AICropByURL 本接口提供基于小程序的图片智能裁剪能力。
-func AICropByURL(token, url string) (*AICropResponse, error) {
+func (cli *Client) AICropByURL(url string) (*AICropResponse, error) {
 	api := baseURL + apiAICrop
-	return aiCropByURL(api, token, url)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.aiCropByURL(api, token, url)
 }
 
-func aiCropByURL(api, token, imgURL string) (*AICropResponse, error) {
+func (cli *Client) aiCropByURL(api, token, imgURL string) (*AICropResponse, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"img_url":      imgURL,
@@ -59,7 +71,7 @@ func aiCropByURL(api, token, imgURL string) (*AICropResponse, error) {
 	}
 
 	res := new(AICropResponse)
-	if err := postJSON(url, nil, res); err != nil {
+	if err := cli.request.Post(url, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -92,19 +104,25 @@ type ScanQRCodeResponse struct {
 }
 
 // ScanQRCode 本接口提供基于小程序的条码/二维码识别的API。
-func ScanQRCode(token, filename string) (*ScanQRCodeResponse, error) {
+func (cli *Client) ScanQRCode(filename string) (*ScanQRCodeResponse, error) {
 	api := baseURL + apiScanQRCode
-	return scanQRCode(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.scanQRCode(api, token, filename)
 }
 
-func scanQRCode(api, token, filename string) (*ScanQRCodeResponse, error) {
+func (cli *Client) scanQRCode(api, token, filename string) (*ScanQRCodeResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(ScanQRCodeResponse)
-	if err := postFormByFile(url, "img", filename, res); err != nil {
+	if err := cli.request.FormPostWithFile(url, "img", filename, res); err != nil {
 		return nil, err
 	}
 
@@ -112,12 +130,18 @@ func scanQRCode(api, token, filename string) (*ScanQRCodeResponse, error) {
 }
 
 // ScanQRCodeByURL 把网络文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
-func ScanQRCodeByURL(token, imgURL string) (*ScanQRCodeResponse, error) {
+func (cli *Client) ScanQRCodeByURL(imgURL string) (*ScanQRCodeResponse, error) {
 	api := baseURL + apiScanQRCode
-	return scanQRCodeByURL(api, token, imgURL)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.scanQRCodeByURL(api, token, imgURL)
 }
 
-func scanQRCodeByURL(api, token, imgURL string) (*ScanQRCodeResponse, error) {
+func (cli *Client) scanQRCodeByURL(api, token, imgURL string) (*ScanQRCodeResponse, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"img_url":      imgURL,
@@ -129,7 +153,7 @@ func scanQRCodeByURL(api, token, imgURL string) (*ScanQRCodeResponse, error) {
 	}
 
 	res := new(ScanQRCodeResponse)
-	if err := postJSON(url, nil, res); err != nil {
+	if err := cli.request.Post(url, nil, res); err != nil {
 		return nil, err
 	}
 
@@ -143,19 +167,25 @@ type SuperResolutionResponse struct {
 }
 
 // SuperResolution 本接口提供基于小程序的图片高清化能力。
-func SuperResolution(token, filename string) (*SuperResolutionResponse, error) {
+func (cli *Client) SuperResolution(filename string) (*SuperResolutionResponse, error) {
 	api := baseURL + apiSuperResolution
-	return superResolution(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.superResolution(api, token, filename)
 }
 
-func superResolution(api, token, filename string) (*SuperResolutionResponse, error) {
+func (cli *Client) superResolution(api, token, filename string) (*SuperResolutionResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(SuperResolutionResponse)
-	if err := postFormByFile(url, "img", filename, res); err != nil {
+	if err := cli.request.FormPostWithFile(url, "img", filename, res); err != nil {
 		return nil, err
 	}
 
@@ -163,12 +193,18 @@ func superResolution(api, token, filename string) (*SuperResolutionResponse, err
 }
 
 // SuperResolutionByURL 把网络文件上传到微信服务器。目前仅支持图片。用于发送客服消息或被动回复用户消息。
-func SuperResolutionByURL(token, imgURL string) (*SuperResolutionResponse, error) {
+func (cli *Client) SuperResolutionByURL(imgURL string) (*SuperResolutionResponse, error) {
 	api := baseURL + apiSuperResolution
-	return superResolutionByURL(api, token, imgURL)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.superResolutionByURL(api, token, imgURL)
 }
 
-func superResolutionByURL(api, token, imgURL string) (*SuperResolutionResponse, error) {
+func (cli *Client) superResolutionByURL(api, token, imgURL string) (*SuperResolutionResponse, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"img_url":      imgURL,
@@ -180,7 +216,7 @@ func superResolutionByURL(api, token, imgURL string) (*SuperResolutionResponse, 
 	}
 
 	res := new(SuperResolutionResponse)
-	if err := postJSON(url, nil, res); err != nil {
+	if err := cli.request.Post(url, nil, res); err != nil {
 		return nil, err
 	}
 

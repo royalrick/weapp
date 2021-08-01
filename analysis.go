@@ -45,13 +45,19 @@ type Attribute struct {
 // 其中，新增用户数为时间范围内首次访问小程序的去重用户数，活跃用户数为时间范围内访问过小程序的去重用户数。
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，开始日期与结束日期相差的天数限定为0/6/29，分别表示查询最近1/7/30天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetUserPortrait(accessToken, begin, end string) (*UserPortrait, error) {
+func (cli *Client) GetUserPortrait(begin, end string) (*UserPortrait, error) {
 	api := baseURL + apiGetUserPortrait
-	return getUserPortrait(accessToken, begin, end, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getUserPortrait(token, begin, end, api)
 }
 
-func getUserPortrait(accessToken, begin, end, api string) (*UserPortrait, error) {
-	api, err := tokenAPI(api, accessToken)
+func (cli *Client) getUserPortrait(token, begin, end, api string) (*UserPortrait, error) {
+	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +68,7 @@ func getUserPortrait(accessToken, begin, end, api string) (*UserPortrait, error)
 	}
 
 	res := new(UserPortrait)
-	if err := postJSON(api, params, res); err != nil {
+	if err := cli.request.Post(api, params, res); err != nil {
 		return nil, err
 	}
 
@@ -98,13 +104,19 @@ type DistributionItem struct {
 // GetVisitDistribution 获取用户小程序访问分布数据
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询 1 天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetVisitDistribution(accessToken, begin, end string) (*VisitDistribution, error) {
+func (cli *Client) GetVisitDistribution(begin, end string) (*VisitDistribution, error) {
 	api := baseURL + apiGetVisitDistribution
-	return getVisitDistribution(accessToken, begin, end, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getVisitDistribution(token, begin, end, api)
 }
 
-func getVisitDistribution(accessToken, begin, end, api string) (*VisitDistribution, error) {
-	url, err := tokenAPI(api, accessToken)
+func (cli *Client) getVisitDistribution(token, begin, end, api string) (*VisitDistribution, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +127,7 @@ func getVisitDistribution(accessToken, begin, end, api string) (*VisitDistributi
 	}
 
 	res := new(VisitDistribution)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -146,13 +158,19 @@ type Page struct {
 // 目前只提供按 page_visit_pv 排序的 top200。
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetVisitPage(accessToken, begin, end string) (*VisitPage, error) {
+func (cli *Client) GetVisitPage(begin, end string) (*VisitPage, error) {
 	api := baseURL + apiGetVisitPage
-	return getVisitPage(accessToken, begin, end, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getVisitPage(token, begin, end, api)
 }
 
-func getVisitPage(accessToken, begin, end, api string) (*VisitPage, error) {
-	url, err := tokenAPI(api, accessToken)
+func (cli *Client) getVisitPage(token, begin, end, api string) (*VisitPage, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +181,7 @@ func getVisitPage(accessToken, begin, end, api string) (*VisitPage, error) {
 	}
 
 	res := new(VisitPage)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -187,12 +205,19 @@ type Summary struct {
 // GetDailySummary 获取用户访问小程序数据概况
 // begin 开始日期。格式为 yyyymmdd
 // end 结束日期，限定查询1天数据，允许设置的最大值为昨日。格式为 yyyymmdd
-func GetDailySummary(accessToken, begin, end string) (*DailySummary, error) {
+func (cli *Client) GetDailySummary(begin, end string) (*DailySummary, error) {
 	api := baseURL + apiGetDailySummary
-	return getDailySummary(accessToken, begin, end, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.getDailySummary(token, begin, end, api)
 }
-func getDailySummary(accessToken, begin, end, api string) (*DailySummary, error) {
-	url, err := tokenAPI(api, accessToken)
+
+func (cli *Client) getDailySummary(token, begin, end, api string) (*DailySummary, error) {
+	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
@@ -203,7 +228,7 @@ func getDailySummary(accessToken, begin, end, api string) (*DailySummary, error)
 	}
 
 	res := new(DailySummary)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

@@ -12,12 +12,18 @@ const (
 //
 // filename 要检测的图片本地路径
 // token 接口调用凭证(access_token)
-func IMGSecCheck(token, filename string) (*CommonError, error) {
+func (cli *Client) IMGSecCheck(filename string) (*CommonError, error) {
 	api := baseURL + apiIMGSecCheck
-	return imgSecCheck(api, token, filename)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.imgSecCheck(api, token, filename)
 }
 
-func imgSecCheck(api, token, filename string) (*CommonError, error) {
+func (cli *Client) imgSecCheck(api, token, filename string) (*CommonError, error) {
 
 	url, err := tokenAPI(api, token)
 	if err != nil {
@@ -25,7 +31,7 @@ func imgSecCheck(api, token, filename string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err := postFormByFile(url, "media", filename, res); err != nil {
+	if err := cli.request.FormPostWithFile(url, "media", filename, res); err != nil {
 		return nil, err
 	}
 
@@ -37,12 +43,18 @@ func imgSecCheck(api, token, filename string) (*CommonError, error) {
 //
 // content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // token 接口调用凭证(access_token)
-func MSGSecCheck(token, content string) (*CommonError, error) {
+func (cli *Client) MSGSecCheck(content string) (*CommonError, error) {
 	api := baseURL + apiMSGSecCheck
-	return msgSecCheck(api, token, content)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.msgSecCheck(api, token, content)
 }
 
-func msgSecCheck(api, token, content string) (*CommonError, error) {
+func (cli *Client) msgSecCheck(api, token, content string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -53,7 +65,7 @@ func msgSecCheck(api, token, content string) (*CommonError, error) {
 	}
 
 	res := new(CommonError)
-	if err = postJSON(url, params, res); err != nil {
+	if err = cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -80,12 +92,18 @@ type CheckMediaResponse struct {
 //
 // mediaURL 要检测的多媒体url
 // mediaType 接口调用凭证(access_token)
-func MediaCheckAsync(token, mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
+func (cli *Client) MediaCheckAsync(mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
 	api := baseURL + apiMediaCheckAsync
-	return mediaCheckAsync(api, token, mediaURL, mediaType)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.mediaCheckAsync(api, token, mediaURL, mediaType)
 }
 
-func mediaCheckAsync(api, token, mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
+func (cli *Client) mediaCheckAsync(api, token, mediaURL string, mediaType MediaType) (*CheckMediaResponse, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -97,7 +115,7 @@ func mediaCheckAsync(api, token, mediaURL string, mediaType MediaType) (*CheckMe
 	}
 
 	res := new(CheckMediaResponse)
-	if err = postJSON(url, params, res); err != nil {
+	if err = cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 

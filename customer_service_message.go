@@ -20,9 +20,9 @@ type csMsgType string
 // 所有消息类型
 const (
 	csMsgTypeText   csMsgType = "text"            // 文本消息类型
-	csMsgTypeLink             = "link"            // 图文链接消息类型
-	csMsgTypeImage            = "image"           // 图片消息类型
-	csMsgTypeMPCard           = "miniprogrampage" // 小程序卡片消息类型
+	csMsgTypeLink   csMsgType = "link"            // 图文链接消息类型
+	csMsgTypeImage  csMsgType = "image"           // 图片消息类型
+	csMsgTypeMPCard csMsgType = "miniprogrampage" // 小程序卡片消息类型
 )
 
 // csMessage 消息体
@@ -44,7 +44,7 @@ type CSMsgText struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg CSMsgText) SendTo(openID, token string) (*CommonError, error) {
+func (cli *Client) SendTextMsg(openID, token string, msg CSMsgText) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -52,7 +52,7 @@ func (msg CSMsgText) SendTo(openID, token string) (*CommonError, error) {
 		Text:     msg,
 	}
 
-	return sendMessage(token, params)
+	return cli.sendMessage(params)
 }
 
 // CSMsgImage 客服图片消息
@@ -64,7 +64,7 @@ type CSMsgImage struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg CSMsgImage) SendTo(openID, token string) (*CommonError, error) {
+func (cli *Client) SendImageMsg(openID, token string, msg CSMsgImage) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -72,7 +72,7 @@ func (msg CSMsgImage) SendTo(openID, token string) (*CommonError, error) {
 		Image:    msg,
 	}
 
-	return sendMessage(token, params)
+	return cli.sendMessage(params)
 }
 
 // CSMsgLink 图文链接消息
@@ -87,7 +87,7 @@ type CSMsgLink struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg CSMsgLink) SendTo(openID, token string) (*CommonError, error) {
+func (cli *Client) SendLinkMsg(openID, token string, msg CSMsgLink) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
@@ -95,7 +95,7 @@ func (msg CSMsgLink) SendTo(openID, token string) (*CommonError, error) {
 		Link:     msg,
 	}
 
-	return sendMessage(token, params)
+	return cli.sendMessage(params)
 }
 
 // CSMsgMPCard 接收的卡片消息
@@ -109,33 +109,39 @@ type CSMsgMPCard struct {
 //
 // openID 用户openID
 // token 微信 access_token
-func (msg CSMsgMPCard) SendTo(openID, token string) (*CommonError, error) {
+func (cli *Client) SendCardMsg(openID, token string, msg CSMsgMPCard) (*CommonError, error) {
 
 	params := csMessage{
 		Receiver: openID,
-		Type:     "miniprogrampage",
+		Type:     csMsgTypeMPCard,
 		MPCard:   msg,
 	}
 
-	return sendMessage(token, params)
+	return cli.sendMessage(params)
 }
 
 // send 发送消息
 //
 // token 微信 access_token
-func sendMessage(token string, params interface{}) (*CommonError, error) {
+func (cli *Client) sendMessage(params interface{}) (*CommonError, error) {
 	api := baseURL + apiSendMessage
-	return doSendMessage(token, params, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.doSendMessage(api, token, params)
 }
 
-func doSendMessage(token string, params interface{}, api string) (*CommonError, error) {
+func (cli *Client) doSendMessage(api, token string, params interface{}) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -148,7 +154,7 @@ type SetTypingCommand = string
 // 所有下发客服当前输入状态命令
 const (
 	SetTypingCommandTyping       SetTypingCommand = "Typing"       // 对用户下发"正在输入"状态
-	SetTypingCommandCancelTyping                  = "CancelTyping" // 取消对用户的"正在输入"状态
+	SetTypingCommandCancelTyping SetTypingCommand = "CancelTyping" // 取消对用户的"正在输入"状态
 )
 
 // SetTyping 下发客服当前输入状态给用户。
@@ -156,12 +162,18 @@ const (
 // token 接口调用凭证
 // openID 用户的 OpenID
 // cmd 命令
-func SetTyping(token, openID string, cmd SetTypingCommand) (*CommonError, error) {
+func (cli *Client) SetTyping(openID string, cmd SetTypingCommand) (*CommonError, error) {
 	api := baseURL + apiSetTyping
-	return setTyping(token, openID, cmd, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.setTyping(token, openID, cmd, api)
 }
 
-func setTyping(token, openID string, cmd SetTypingCommand, api string) (*CommonError, error) {
+func (cli *Client) setTyping(token, openID string, cmd SetTypingCommand, api string) (*CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -173,7 +185,7 @@ func setTyping(token, openID string, cmd SetTypingCommand, api string) (*CommonE
 	}
 
 	res := new(CommonError)
-	if err := postJSON(url, params, res); err != nil {
+	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
 
@@ -201,12 +213,18 @@ type UploadTempMediaResponse struct {
 // token 接口调用凭证
 // mediaType 文件类型
 // medianame 媒体文件名
-func UploadTempMedia(token string, mediaType TempMediaType, medianame string) (*UploadTempMediaResponse, error) {
+func (cli *Client) UploadTempMedia(mediaType TempMediaType, medianame string) (*UploadTempMediaResponse, error) {
 	api := baseURL + apiUploadTemplateMedia
-	return uploadTempMedia(token, mediaType, medianame, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.uploadTempMedia(token, mediaType, medianame, api)
 }
 
-func uploadTempMedia(token string, mediaType TempMediaType, medianame, api string) (*UploadTempMediaResponse, error) {
+func (cli *Client) uploadTempMedia(token string, mediaType TempMediaType, medianame, api string) (*UploadTempMediaResponse, error) {
 	queries := requestQueries{
 		"type":         mediaType,
 		"access_token": token,
@@ -218,7 +236,7 @@ func uploadTempMedia(token string, mediaType TempMediaType, medianame, api strin
 	}
 
 	res := new(UploadTempMediaResponse)
-	if err := postFormByFile(url, "media", medianame, res); err != nil {
+	if err := cli.request.FormPostWithFile(url, "media", medianame, res); err != nil {
 		return nil, err
 	}
 
@@ -229,12 +247,18 @@ func uploadTempMedia(token string, mediaType TempMediaType, medianame, api strin
 //
 // token 接口调用凭证
 // mediaID 媒体文件 ID
-func GetTempMedia(token, mediaID string) (*http.Response, *CommonError, error) {
+func (cli *Client) GetTempMedia(mediaID string) (*http.Response, *CommonError, error) {
 	api := baseURL + apiGetTemplateMedia
-	return getTempMedia(token, mediaID, api)
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return cli.getTempMedia(token, mediaID, api)
 }
 
-func getTempMedia(token, mediaID, api string) (*http.Response, *CommonError, error) {
+func (cli *Client) getTempMedia(token, mediaID, api string) (*http.Response, *CommonError, error) {
 	queries := requestQueries{
 		"access_token": token,
 		"media_id":     mediaID,
@@ -258,7 +282,7 @@ func getTempMedia(token, mediaID, api string) (*http.Response, *CommonError, err
 		}
 		return res, response, nil
 
-	case strings.HasPrefix(header, "image"): // 返回文件 TODO: 应该确认一下
+	case strings.HasPrefix(header, "image"):
 		return res, response, nil
 
 	default:

@@ -71,8 +71,13 @@ type LiveRoomCreator struct {
 }
 
 // 创建直播间
-func (creator *LiveRoomCreator) CreateLiveRoom(accessToken string) (*CreateLiveRoomResponse, error) {
+func (cli *Client) CreateLiveRoom(creator *LiveRoomCreator) (*CreateLiveRoomResponse, error) {
 	api := baseURL + apiCreateLiveRoom
+
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
 
 	req := createLiveRoomRequest{
 		Name:            creator.Name,
@@ -95,17 +100,17 @@ func (creator *LiveRoomCreator) CreateLiveRoom(accessToken string) (*CreateLiveR
 		CloseKf:         bool2int(creator.CloseKf),
 	}
 
-	return createLiveRoom(api, accessToken, &req)
+	return cli.createLiveRoom(api, token, &req)
 }
 
-func createLiveRoom(api, token string, info *createLiveRoomRequest) (*CreateLiveRoomResponse, error) {
+func (cli *Client) createLiveRoom(api, token string, info *createLiveRoomRequest) (*CreateLiveRoomResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	rsp := new(CreateLiveRoomResponse)
-	if err := postJSON(api, nil, rsp); err != nil {
+	if err := cli.request.Post(api, nil, rsp); err != nil {
 		return nil, err
 	}
 
@@ -202,13 +207,18 @@ type FetchLiveRoomListResponse struct {
 //
 // @start: 起始拉取房间，start = 0 表示从第 1 个房间开始拉取
 // @limit: 每次拉取的个数上限，不要设置过大，建议 100 以内
-func FetchLiveRoomList(accessToken string, start, limit int) (*FetchLiveRoomListResponse, error) {
+func (cli *Client) FetchLiveRoomList(start, limit int) (*FetchLiveRoomListResponse, error) {
 	api := baseURL + apiFetchLiveRoomList
 
-	return fetchLiveRoomList(api, accessToken, start, limit)
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.fetchLiveRoomList(api, token, start, limit)
 }
 
-func fetchLiveRoomList(api, token string, start, limit int) (*FetchLiveRoomListResponse, error) {
+func (cli *Client) fetchLiveRoomList(api, token string, start, limit int) (*FetchLiveRoomListResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -220,7 +230,7 @@ func fetchLiveRoomList(api, token string, start, limit int) (*FetchLiveRoomListR
 	}
 
 	rsp := new(FetchLiveRoomListResponse)
-	if err := postJSON(api, params, rsp); err != nil {
+	if err := cli.request.Post(api, params, rsp); err != nil {
 		return nil, err
 	}
 

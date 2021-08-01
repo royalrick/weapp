@@ -16,18 +16,24 @@ type SearchSubmitPage struct {
 }
 
 // Send 提交收录请求
-func (s *SearchSubmitPages) Send(token string) (*CommonError, error) {
-	return s.send(baseURL+apiSearchSubmitPages, token)
+func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPages) (*CommonError, error) {
+	api := baseURL + apiSearchSubmitPages
+	token, err := cli.AccessToken()
+	if err != nil {
+		return nil, err
+	}
+
+	return cli.sendSearchSubmitPages(api, token, smp)
 }
 
-func (s *SearchSubmitPages) send(api, token string) (*CommonError, error) {
+func (cli *Client) sendSearchSubmitPages(api, token string, smp *SearchSubmitPages) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
 	res := new(CommonError)
-	if err := postJSON(api, s, res); err != nil {
+	if err := cli.request.Post(api, smp, res); err != nil {
 		return nil, err
 	}
 
