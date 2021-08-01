@@ -113,7 +113,7 @@ type GetPaidUnionIDResponse struct {
 	UnionID string `json:"unionid"`
 }
 
-// GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId，
+// GetPaidUnionID 用户支付完成后，通过微信支付订单号（transaction_id）获取该用户的 UnionId
 func (cli *Client) GetPaidUnionID(openID, transactionID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
 	accessToken, err := cli.AccessToken()
@@ -133,7 +133,7 @@ func (cli *Client) getPaidUnionID(accessToken, openID, transactionID, api string
 	return cli.getPaidUnionIDRequest(api, queries)
 }
 
-// GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId，
+// GetPaidUnionIDWithMCH 用户支付完成后，通过微信支付商户订单号和微信支付商户号（out_trade_no 及 mch_id）获取该用户的 UnionId
 func (cli *Client) GetPaidUnionIDWithMCH(openID, outTradeNo, mchID string) (*GetPaidUnionIDResponse, error) {
 	api := baseURL + apiGetPaidUnionID
 

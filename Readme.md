@@ -152,6 +152,7 @@ go get -u github.com/medivhzhan/weapp/v3
   - [getPubTemplateTitleList](#getPubTemplateTitleList) ✅
   - [getTemplateList](#getTemplateList) ✅
   - [sendSubscribeMessage](#sendSubscribeMessage) ✅
+  - [监听订阅消息事件](#监听订阅消息事件) ✅
 - [解密](#解密)
   - [解密手机号码](#解密手机号码) ✅
   - [解密分享内容](#解密分享内容)
@@ -588,7 +589,7 @@ fmt.Printf("返回结果: %#v", res)
 
 ```go
 
-import "github.com/medivhzhan/weapp/v3"
+import "github.com/medivhzhan/weapp/v3/server"
 
 srv, err := server.NewServer("appid", "token", "aesKey", "mchID", "apiKey", false, nil)
 if err != nil {
@@ -596,7 +597,7 @@ if err != nil {
 }
 
 // 文本消息
-srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
+srv.OnCustomerServiceTextMessage(func(msg *server.TextMessageResult) *weapp.TransferCustomerMessage {
 
     reply := cli.CSMsgText{
         Content: "content",
@@ -617,7 +618,7 @@ srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.Trans
 })
 
 // 图片消息
-srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
+srv.OnCustomerServiceImageMessage(func(msg *server.TextMessageResult) *weapp.TransferCustomerMessage {
 
     reply := cli.CSMsgImage{
         MediaID: "media-id",
@@ -638,7 +639,7 @@ srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.Tran
 })
 
 // 小程序卡片消息
-srv.OnCustomerServiceCardMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
+srv.OnCustomerServiceCardMessage(func(msg *server.TextMessageResult) *weapp.TransferCustomerMessage {
 
     reply := cli.CSMsgMPCard{
         Title:        "title",
@@ -2985,6 +2986,39 @@ if err := res.GetResponseError(); err !=nil {
 }
 
 fmt.Printf("返回结果: %#v", res)
+
+```
+
+### 监听订阅消息事件
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v3/server"
+
+srv, err := server.NewServer("appid", "token", "aesKey", "mchID", "apiKey", false, nil)
+if err != nil {
+    lof.Fatalf("init server error: %s", err)
+}
+
+// 当用户触发订阅消息弹框后
+srv.OnSubscribeMsgPopup(func(msg *server.SubscribeMsgPopupEvent) {
+
+    // Do something cool ...
+    return nil
+})
+
+// 当用户通过设置界面改变订阅消息事件内容
+srv.OnSubscribeMsgChange(func(msg *server.SubscribeMsgChangeEvent) {
+    // Do something cool ...
+    return nil
+})
+
+if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
+    // 处理微信返回错误信息
+    return
+}
 
 ```
 

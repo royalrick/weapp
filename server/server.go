@@ -58,6 +58,8 @@ type Server struct {
 	deliveryOrderReaddHandler         func(*DeliveryOrderReaddResult) *DeliveryOrderReaddReturn
 	preAuthCodeGetHandler             func(*PreAuthCodeGetResult) *PreAuthCodeGetReturn
 	riderScoreSetHandler              func(*RiderScoreSetResult) *RiderScoreSetReturn
+	subscribeMsgPopup                 func(*SubscribeMsgPopupEvent)
+	subscribeMsgChange                func(*SubscribeMsgChangeEvent)
 }
 
 // OnCustomerServiceTextMessage add handler to handle customer text service message.
@@ -184,6 +186,16 @@ func (srv *Server) OnPreAuthCodeGet(fn func(*PreAuthCodeGetResult) *PreAuthCodeG
 // OnRiderScoreSet add handler to handle riderScoreSet.
 func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetReturn) {
 	srv.riderScoreSetHandler = fn
+}
+
+// 当用户触发订阅消息弹框后
+func (srv *Server) OnSubscribeMsgPopup(fn func(*SubscribeMsgPopupEvent)) {
+	srv.subscribeMsgPopup = fn
+}
+
+// 当用户通过设置界面改变订阅消息事件内容
+func (srv *Server) OnSubscribeMsgChange(fn func(*SubscribeMsgChangeEvent)) {
+	srv.subscribeMsgChange = fn
 }
 
 // NewServer 返回经过初始化的Server
@@ -319,6 +331,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.userTempsessionEnterHandler != nil {
 				srv.userTempsessionEnterHandler(msg)
 			}
+
 		case EventQuotaGet:
 			msg := new(GetExpressQuotaResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -327,6 +340,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.quotaGetHandler != nil {
 				return srv.quotaGetHandler(msg), nil
 			}
+
 		case EventMediaCheckAsync:
 			msg := new(MediaCheckAsyncResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -335,6 +349,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.mediaCheckAsyncHandler != nil {
 				srv.mediaCheckAsyncHandler(msg)
 			}
+
 		case EventAddExpressOrder:
 			msg := new(AddExpressOrderResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -343,6 +358,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.addExpressOrderHandler != nil {
 				return srv.addExpressOrderHandler(msg), nil
 			}
+
 		case EventExpressOrderCancel:
 			msg := new(CancelExpressOrderResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -351,6 +367,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.expressOrderCancelHandler != nil {
 				return srv.expressOrderCancelHandler(msg), nil
 			}
+
 		case EventCheckBusiness:
 			msg := new(CheckExpressBusinessResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -359,6 +376,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.checkExpressBusinessHandler != nil {
 				return srv.checkExpressBusinessHandler(msg), nil
 			}
+
 		case EventDeliveryOrderStatusUpdate:
 			msg := new(DeliveryOrderStatusUpdateResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -367,6 +385,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderStatusUpdateHandler != nil {
 				return srv.deliveryOrderStatusUpdateHandler(msg), nil
 			}
+
 		case EventAgentPosQuery:
 			msg := new(AgentPosQueryResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -375,6 +394,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.agentPosQueryHandler != nil {
 				return srv.agentPosQueryHandler(msg), nil
 			}
+
 		case EventAuthInfoGet:
 			msg := new(AuthInfoGetResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -383,6 +403,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.authInfoGetHandler != nil {
 				return srv.authInfoGetHandler(msg), nil
 			}
+
 		case EventAuthAccountCancel:
 			msg := new(CancelAuthResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -391,6 +412,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.authAccountCancelHandler != nil {
 				return srv.authAccountCancelHandler(msg), nil
 			}
+
 		case EventDeliveryOrderAdd:
 			msg := new(DeliveryOrderAddResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -399,6 +421,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderAddHandler != nil {
 				return srv.deliveryOrderAddHandler(msg), nil
 			}
+
 		case EventDeliveryOrderTipsAdd:
 			msg := new(DeliveryOrderAddTipsResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -407,6 +430,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderTipsAddHandler != nil {
 				return srv.deliveryOrderTipsAddHandler(msg), nil
 			}
+
 		case EventDeliveryOrderCancel:
 			msg := new(DeliveryOrderCancelResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -415,6 +439,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderCancelHandler != nil {
 				return srv.deliveryOrderCancelHandler(msg), nil
 			}
+
 		case EventDeliveryOrderReturnConfirm:
 			msg := new(DeliveryOrderReturnConfirmResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -423,6 +448,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderReturnConfirmHandler != nil {
 				return srv.deliveryOrderReturnConfirmHandler(msg), nil
 			}
+
 		case EventDeliveryOrderPreAdd:
 			msg := new(DeliveryOrderPreAddResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -431,6 +457,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderPreAddHandler != nil {
 				return srv.deliveryOrderPreAddHandler(msg), nil
 			}
+
 		case EventDeliveryOrderPreCancel:
 			msg := new(DeliveryOrderPreCancelResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -439,6 +466,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderPreCancelHandler != nil {
 				return srv.deliveryOrderPreCancelHandler(msg), nil
 			}
+
 		case EventDeliveryOrderQuery:
 			msg := new(DeliveryOrderQueryResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -447,6 +475,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderQueryHandler != nil {
 				return srv.deliveryOrderQueryHandler(msg), nil
 			}
+
 		case EventDeliveryOrderReadd:
 			msg := new(DeliveryOrderReaddResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -455,6 +484,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.deliveryOrderReaddHandler != nil {
 				return srv.deliveryOrderReaddHandler(msg), nil
 			}
+
 		case EventPreAuthCodeGet:
 			msg := new(PreAuthCodeGetResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -463,6 +493,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.preAuthCodeGetHandler != nil {
 				return srv.preAuthCodeGetHandler(msg), nil
 			}
+
 		case EventRiderScoreSet:
 			msg := new(RiderScoreSetResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -471,6 +502,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.riderScoreSetHandler != nil {
 				return srv.riderScoreSetHandler(msg), nil
 			}
+
 		case EventExpressPathUpdate:
 			msg := new(ExpressPathUpdateResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -479,6 +511,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.expressPathUpdateHandler != nil {
 				srv.expressPathUpdateHandler(msg)
 			}
+
 		case EventNearbyPoiAuditInfoAdd:
 			msg := new(AddNearbyPoiResult)
 			if err := unmarshal(raw, ctp, msg); err != nil {
@@ -495,7 +528,26 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.handler != nil {
 				return srv.handler(msg), nil
 			}
+
+		case EventSubscribeMsgPopup:
+			msg := new(SubscribeMsgPopupEvent)
+			if err := unmarshal(raw, ctp, msg); err != nil {
+				return nil, err
+			}
+			if srv.riderScoreSetHandler != nil {
+				srv.subscribeMsgPopup(msg)
+			}
+
+		case EventSubscribeMsgChange:
+			msg := new(SubscribeMsgChangeEvent)
+			if err := unmarshal(raw, ctp, msg); err != nil {
+				return nil, err
+			}
+			if srv.riderScoreSetHandler != nil {
+				srv.subscribeMsgChange(msg)
+			}
 		}
+
 	default:
 		msg := make(map[string]interface{})
 		if err := unmarshal(raw, ctp, msg); err != nil {

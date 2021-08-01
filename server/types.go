@@ -658,3 +658,41 @@ type RiderScoreSetResult struct {
 	CargoIntactScore    uint   `json:"cargo_intact_score" xml:"cargo_intact_score"`       // 货物完整分数，范围1-5
 	AttitudeScore       uint   `json:"attitude_score" xml:"attitude_score"`               // 服务态度分数 范围1-5
 }
+
+// 订阅结果
+type SubscribeResult = string
+
+const (
+	SubscribeResultAccept SubscribeResult = "accept"
+	SubscribeResultReject SubscribeResult = "reject"
+)
+
+// 用户触发订阅消息弹框事件内容
+type SubscribeMsgPopupEvent struct {
+	CommonServerResult
+	SubscribeMsgPopupEvent []*UserSubscribedMsg `json:"SubscribeMsgPopupEvent" xml:"SubscribeMsgPopupEvent"`
+}
+
+// 订阅的模板
+type UserSubscribedMsg struct {
+	// 模板id（一次订阅可能有多个id）
+	TemplateId string `json:"TemplateId" xml:"TemplateId"`
+	// 订阅结果（accept接收；reject拒收）
+	SubscribeStatusString string `json:"SubscribeStatusString" xml:"SubscribeStatusString"`
+	// 弹框场景，0代表在小程序页面内
+	PopupScene string `json:"PopupScene" xml:"PopupScene"`
+}
+
+// 用户改变订阅消息事件内容
+type SubscribeMsgChangeEvent struct {
+	CommonServerResult
+	SubscribeMsgChangeEvent []*UserChangesSubscribeMsg `json:"SubscribeMsgChangeEvent" xml:"SubscribeMsgChangeEvent"`
+}
+
+// 订阅的模板
+type UserChangesSubscribeMsg struct {
+	// 模板id（一次订阅可能有多个id）
+	TemplateId string `json:"TemplateId" xml:"TemplateId"`
+	// 订阅结果（accept接收；reject拒收）
+	SubscribeStatusString string `json:"SubscribeStatusString" xml:"SubscribeStatusString"`
+}

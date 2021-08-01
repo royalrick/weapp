@@ -27,4 +27,6 @@ const (
 	EventDeliveryOrderReadd         EventType = "transport_readd_order"           // 下单
 	EventPreAuthCodeGet             EventType = "get_pre_auth_code"               // 获取预授权码
 	EventRiderScoreSet              EventType = "transport_set_rider_score"       // 给骑手评分
+	EventSubscribeMsgPopup          EventType = "subscribe_msg_popup_event"       // 订阅消息弹框事件
+	EventSubscribeMsgChange         EventType = "subscribe_msg_change_event"      // 用户改变订阅消息事件
 )
