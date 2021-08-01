@@ -172,7 +172,7 @@ cli := weapp.NewClient("your-appid", "your-secret")
 
 // 自定义缓存
 // 默认缓存在内存中
-// 主要用户缓存 AccessToken
+// 用于缓存 AccessToken
 // 只需要实现 cache 模块下 的 Cache 接口即可使用
 cc := MyCache{
     //
