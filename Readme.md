@@ -269,9 +269,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPaidUnionID("open-id", "transaction-id")
+res, err := cli.GetPaidUnionID("open-id", "transaction-id")
 // 或者
-res, err :=cli.GetPaidUnionIDWithMCH("open-id", "out-trade-number", "mch-id")
+res, err := cli.GetPaidUnionIDWithMCH("open-id", "out-trade-number", "mch-id")
 
 if err != nil {
     // 处理一般错误信息
@@ -301,7 +301,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetAccessToken()
+res, err := cli.GetAccessToken()
 if err != nil {
     // 处理一般错误信息
     return
@@ -330,7 +330,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailyRetain("begin-date", "end-date")
+res, err := cli.GetDailyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -353,7 +353,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetWeeklyRetain("begin-date", "end-date")
+res, err := cli.GetWeeklyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -376,7 +376,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetMonthlyRetain("begin-date", "end-date")
+res, err := cli.GetMonthlyRetain("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -399,7 +399,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailySummary("begin-date", "end-date")
+res, err := cli.GetDailySummary("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -424,7 +424,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetDailyVisitTrend("begin-date", "end-date")
+res, err := cli.GetDailyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -447,7 +447,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetWeeklyVisitTrend("begin-date", "end-date")
+res, err := cli.GetWeeklyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -470,7 +470,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetMonthlyVisitTrend("begin-date", "end-date")
+res, err := cli.GetMonthlyVisitTrend("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -493,7 +493,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetUserPortrait("begin-date", "end-date")
+res, err := cli.GetUserPortrait("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -516,7 +516,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetVisitDistribution("begin-date", "end-date")
+res, err := cli.GetVisitDistribution("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -539,7 +539,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetVisitPage("begin-date", "end-date")
+res, err := cli.GetVisitPage("begin-date", "end-date")
 if err != nil {
     // 处理一般错误信息
     return
@@ -566,7 +566,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-resp, res, err :=cli.GetTempMedia("media-id")
+resp, res, err := cli.GetTempMedia("media-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -598,7 +598,7 @@ if err != nil {
 // 文本消息
 srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    reply :=cli.CSMsgText{
+    reply := cli.CSMsgText{
         Content: "content",
     }
 
@@ -619,7 +619,7 @@ srv.OnCustomerServiceTextMessage(func(msg *weapp.TextMessageResult) *weapp.Trans
 // 图片消息
 srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    reply :=cli.CSMsgImage{
+    reply := cli.CSMsgImage{
         MediaID: "media-id",
     }
 
@@ -640,7 +640,7 @@ srv.OnCustomerServiceImageMessage(func(msg *weapp.TextMessageResult) *weapp.Tran
 // 小程序卡片消息
 srv.OnCustomerServiceCardMessage(func(msg *weapp.TextMessageResult) *weapp.TransferCustomerMessage {
 
-    reply :=cli.CSMsgMPCard{
+    reply := cli.CSMsgMPCard{
         Title:        "title",
         PagePath:     "page-path",
         ThumbMediaID: "thumb-media-id",
@@ -674,7 +674,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetTyping("open-id",cli.SetTypingCommandTyping)
+res, err := cli.SetTyping("open-id",cli.SetTypingCommandTyping)
 if err != nil {
     // 处理一般错误信息
     return
@@ -697,7 +697,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.UploadTempMedia(cli.TempMediaTypeImage, "media-filename")
+res, err := cli.UploadTempMedia(cli.TempMediaTypeImage, "media-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -724,7 +724,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-sender :=cli.UniformMsgSender{
+sender := cli.UniformMsgSender{
     ToUser: "open-id",
     UniformWeappTmpMsg:cli.UniformWeappTmpMsg{
         TemplateID: "template-id",
@@ -773,7 +773,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.CreateActivityId()
+res, err := cli.CreateActivityId()
 if err != nil {
     // 处理一般错误信息
     return
@@ -797,7 +797,7 @@ fmt.Printf("返回结果: %#v", res)
 import "github.com/medivhzhan/weapp/v3"
 
 
-setter :=cli.UpdatableMsg{
+setter := cli.UpdatableMsg{
     "activity-id",
     UpdatableMsgJoining,
     UpdatableMsgTempInfo{
@@ -835,7 +835,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.ApplyPlugin("plugin-app-id", "reason")
+res, err := cli.ApplyPlugin("plugin-app-id", "reason")
 if err != nil {
     // 处理一般错误信息
     return
@@ -858,7 +858,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPluginDevApplyList(1, 2)
+res, err := cli.GetPluginDevApplyList(1, 2)
 if err != nil {
     // 处理一般错误信息
     return
@@ -904,7 +904,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetDevPluginApplyStatus("plugin-app-id", "reason",cli.DevAgree)
+res, err := cli.SetDevPluginApplyStatus("plugin-app-id", "reason",cli.DevAgree)
 if err != nil {
     // 处理一般错误信息
     return
@@ -927,7 +927,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.UnbindPlugin("plugin-app-id")
+res, err := cli.UnbindPlugin("plugin-app-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1006,7 +1006,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DeleteNearbyPoi("poi-id")
+res, err := cli.DeleteNearbyPoi("poi-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1029,7 +1029,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetNearbyPoiList(1, 10)
+res, err := cli.GetNearbyPoiList(1, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1052,9 +1052,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SetNearbyPoiShowStatus("poi-id",cli.ShowNearbyPoi)
+res, err := cli.SetNearbyPoiShowStatus("poi-id",cli.ShowNearbyPoi)
 // 或者
-res, err :=cli.SetNearbyPoiShowStatus("poi-id",cli.HideNearbyPoi)
+res, err := cli.SetNearbyPoiShowStatus("poi-id",cli.HideNearbyPoi)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1085,7 +1085,7 @@ import (
 )
 
 
-creator :=cli.QRCodeCreator{
+creator := cli.QRCodeCreator{
     Path:  "mock/path",
     Width: 430,
 }
@@ -1119,7 +1119,7 @@ import (
 )
 
 
-getter :=cli.QRCode{
+getter := cli.QRCode{
     Path:      "mock/path",
     Width:     430,
     AutoColor: true,
@@ -1198,7 +1198,7 @@ import (
 )
 
 
-scheme :=cli.URLScheme{
+scheme := cli.URLScheme{
     SchemedInfo:  &weapp.SchemedInfo{
         Path:  "mock/path",
         Query:  "",
@@ -1234,7 +1234,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.IMGSecCheck("local-filename")
+res, err := cli.IMGSecCheck("local-filename")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1257,7 +1257,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.MediaCheckAsync("image-url",cli.MediaTypeImage)
+res, err := cli.MediaCheckAsync("image-url",cli.MediaTypeImage)
 if err != nil {
     // 处理一般错误信息
     return
@@ -1295,7 +1295,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.MSGSecCheck("message-content")
+res, err := cli.MSGSecCheck("message-content")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1322,9 +1322,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.AICrop("filename")
+res, err := cli.AICrop("filename")
 // 或者
-res, err :=cli.AICropByURL("url")
+res, err := cli.AICropByURL("url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1347,9 +1347,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.ScanQRCode("file-path")
+res, err := cli.ScanQRCode("file-path")
 // 或者
-res, err :=cli.ScanQRCodeByURL("qr-code-url")
+res, err := cli.ScanQRCodeByURL("qr-code-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1372,9 +1372,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.SuperResolution("file-path")
+res, err := cli.SuperResolution("file-path")
 // 或者
-res, err :=cli.SuperResolutionByURL("img-url")
+res, err := cli.SuperResolutionByURL("img-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -1403,7 +1403,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-mocker :=cli.DeliveryOrderUpdater{
+mocker := cli.DeliveryOrderUpdater{
    // ...
 }
 
@@ -1796,7 +1796,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-confirmer :=cli.AbnormalConfirmer{
+confirmer := cli.AbnormalConfirmer{
     ShopID:       "123456",
     ShopOrderID:  "123456",
     ShopNo:       "shop_no_111",
@@ -1828,7 +1828,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-creator :=cli.DeliveryOrderCreator{
+creator := cli.DeliveryOrderCreator{
    // ...
 }
 
@@ -1855,7 +1855,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-adder :=cli.DeliveryTipAdder{
+adder := cli.DeliveryTipAdder{
    // ...
 }
 
@@ -1882,7 +1882,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-canceler :=cli.DeliveryOrderCanceler{
+canceler := cli.DeliveryOrderCanceler{
    // ...
 }
 
@@ -1909,7 +1909,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetAllImmediateDelivery()
+res, err := cli.GetAllImmediateDelivery()
 if err != nil {
     // 处理一般错误信息
     return
@@ -1932,7 +1932,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetBindAccount()
+res, err := cli.GetBindAccount()
 if err != nil {
     // 处理一般错误信息
     return
@@ -1955,7 +1955,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-getter :=cli.DeliveryOrderGetter{
+getter := cli.DeliveryOrderGetter{
    // ...
 }
 
@@ -1982,7 +1982,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-mocker :=cli.UpdateDeliveryOrderMocker{
+mocker := cli.UpdateDeliveryOrderMocker{
    // ...
 }
 
@@ -2037,7 +2037,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-creator :=cli.DeliveryOrderCreator{
+creator := cli.DeliveryOrderCreator{
    // ...
 }
 
@@ -2064,7 +2064,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-canceler :=cli.DeliveryOrderCanceler{
+canceler := cli.DeliveryOrderCanceler{
    // ...
 }
 
@@ -2091,7 +2091,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-creator :=cli.DeliveryOrderCreator{
+creator := cli.DeliveryOrderCreator{
    // ...
 }
 
@@ -2124,7 +2124,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-creator :=cli.ExpressOrderCreator{
+creator := cli.ExpressOrderCreator{
    // ...
 }
 
@@ -2151,7 +2151,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-canceler :=cli.ExpressOrderCanceler{
+canceler := cli.ExpressOrderCanceler{
    // ...
 }
 
@@ -2178,7 +2178,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.getAllDelivery()
+res, err := cli.getAllDelivery()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2201,7 +2201,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-getter :=cli.ExpressOrderGetter{
+getter := cli.ExpressOrderGetter{
    // ...
 }
 
@@ -2228,7 +2228,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-getter :=cli.ExpressPathGetter{
+getter := cli.ExpressPathGetter{
    // ...
 }
 
@@ -2255,7 +2255,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetPrinter()
+res, err := cli.GetPrinter()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2278,7 +2278,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-getter :=cli.QuotaGetter{
+getter := cli.QuotaGetter{
    // ...
 }
 
@@ -2329,7 +2329,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-tester :=cli.UpdateExpressOrderTester{
+tester := cli.UpdateExpressOrderTester{
    // ...
 }
 
@@ -2356,7 +2356,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-updater :=cli.PrinterUpdater{
+updater := cli.PrinterUpdater{
    // ...
 }
 
@@ -2385,7 +2385,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.GetContact("token", "wat-bill-id")
+res, err := cli.GetContact("token", "wat-bill-id")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2520,7 +2520,7 @@ if err := srv.Serve(http.ResponseWriter, *http.Request); err != nil {
 
 import "github.com/medivhzhan/weapp/v3"
 
-previewer :=cli.ExpressTemplatePreviewer{
+previewer := cli.ExpressTemplatePreviewer{
    // ...
 }
 
@@ -2547,7 +2547,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-updater :=cli.BusinessUpdater{
+updater := cli.BusinessUpdater{
    // ...
 }
 
@@ -2574,7 +2574,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-updater :=cli.ExpressPathUpdater{
+updater := cli.ExpressPathUpdater{
    // ...
 }
 
@@ -2605,9 +2605,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.BankCard("file-path",cli.RecognizeModeScan)
+res, err := cli.BankCard("file-path",cli.RecognizeModeScan)
 // 或者
-res, err :=cli.BankCardByURL("card-url",cli.RecognizeModePhoto)
+res, err := cli.BankCardByURL("card-url",cli.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2630,9 +2630,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.BusinessLicense("file-path")
+res, err := cli.BusinessLicense("file-path")
 // 或者
-res, err :=cli.BusinessLicenseByURL("card-url")
+res, err := cli.BusinessLicenseByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2655,9 +2655,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DriverLicense("file-path")
+res, err := cli.DriverLicense("file-path")
 // 或者
-res, err :=cli.DriverLicenseByURL("card-url")
+res, err := cli.DriverLicenseByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2680,9 +2680,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.IDCardByURL("card-url",cli.RecognizeModePhoto)
+res, err := cli.IDCardByURL("card-url",cli.RecognizeModePhoto)
 // 或者
-res, err :=cli.IDCard("file-path",cli.RecognizeModeScan)
+res, err := cli.IDCard("file-path",cli.RecognizeModeScan)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2705,9 +2705,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.PrintedText("file-path")
+res, err := cli.PrintedText("file-path")
 // 或者
-res, err :=cli.PrintedTextByURL("card-url")
+res, err := cli.PrintedTextByURL("card-url")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2730,9 +2730,9 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.VehicleLicense("file-path",cli.RecognizeModeScan)
+res, err := cli.VehicleLicense("file-path",cli.RecognizeModeScan)
 // 或者
-res, err :=cli.VehicleLicenseByURL("card-url",cli.RecognizeModePhoto)
+res, err := cli.VehicleLicenseByURL("card-url",cli.RecognizeModePhoto)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2797,7 +2797,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.VerifySignature("open-id", "data", "signature")
+res, err := cli.VerifySignature("open-id", "data", "signature")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2828,7 +2828,7 @@ import "github.com/medivhzhan/weapp/v3"
 // tid 模板ID
 // desc 服务场景描述，15个字以内
 // keywordIDList 关键词 ID 列表
-res, err :=cli.AddTemplate("tid", "desc", []int32{1, 2, 3})
+res, err := cli.AddTemplate("tid", "desc", []int32{1, 2, 3})
 if err != nil {
     // 处理一般错误信息
     return
@@ -2850,7 +2850,7 @@ import "github.com/medivhzhan/weapp/v3"
 // DeleteTemplate 删除帐号下的某个模板
 //
 // pid 模板ID
-res, err :=cli.DeleteTemplate("pid")
+res, err := cli.DeleteTemplate("pid")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2871,7 +2871,7 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetTemplateCategory 删除帐号下的某个模板
 //
-res, err :=cli.GetTemplateCategory()
+res, err := cli.GetTemplateCategory()
 if err != nil {
     // 处理一般错误信息
     return
@@ -2893,7 +2893,7 @@ import "github.com/medivhzhan/weapp/v3"
 // GetPubTemplateKeyWordsById 获取模板标题下的关键词列表
 //
 // tid 模板ID
-res, err :=cli.GetPubTemplateKeyWordsById("tid")
+res, err := cli.GetPubTemplateKeyWordsById("tid")
 if err != nil {
     // 处理一般错误信息
     return
@@ -2917,7 +2917,7 @@ import "github.com/medivhzhan/weapp/v3"
 // ids 类目 id，多个用逗号隔开
 // start 用于分页，表示从 start 开始。从 0 开始计数。
 // limit 用于分页，表示拉取 limit 条记录。最大为 30
-res, err :=cli.GetPubTemplateTitleList("1,2,3", 0, 10)
+res, err := cli.GetPubTemplateTitleList("1,2,3", 0, 10)
 if err != nil {
     // 处理一般错误信息
     return
@@ -2938,7 +2938,7 @@ import "github.com/medivhzhan/weapp/v3"
 
 // GetTemplateList 获取帐号下已存在的模板列表
 //
-res, err :=cli.GetTemplateList()
+res, err := cli.GetTemplateList()
 if err != nil {
     // 处理一般错误信息
     return
@@ -3001,7 +3001,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DecryptMobile("session-key", "encrypted-data", "iv" )
+res, err := cli.DecryptMobile("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
@@ -3015,7 +3015,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DecryptShareInfo("session-key", "encrypted-data", "iv" )
+res, err := cli.DecryptShareInfo("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
@@ -3029,7 +3029,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DecryptUserInfo( "session-key", "raw-data", "encrypted-data", "signature", "iv")
+res, err := cli.DecryptUserInfo( "session-key", "raw-data", "encrypted-data", "signature", "iv")
 if err != nil {
     // 处理一般错误信息
     return
@@ -3043,7 +3043,7 @@ fmt.Printf("返回结果: %#v", res)
 ```go
 import "github.com/medivhzhan/weapp/v3"
 
-res, err :=cli.DecryptRunData("session-key", "encrypted-data", "iv" )
+res, err := cli.DecryptRunData("session-key", "encrypted-data", "iv" )
 if err != nil {
     // 处理一般错误信息
     return
@@ -3062,7 +3062,7 @@ import "github.com/medivhzhan/weapp/v3"
 // FaceIdentify 获取人脸识别结果
 //
 // key 小程序 verify_result
-res, err :=cli.FaceIdentify("verify_result")
+res, err := cli.FaceIdentify("verify_result")
 if err != nil {
     // 处理一般错误信息
     return
