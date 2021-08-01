@@ -71,7 +71,11 @@ go get -u github.com/medivhzhan/weapp/v3
   - [get](#get) ✅
   - [getUnlimited](#getUnlimited) ✅
 - [URL-Scheme](#URL-Scheme)
-  - [generate](#generate) ✅
+  - [GenerateURLScheme](#GenerateURLScheme) ✅
+- [URL-Link](#URL-Link)
+  - [GenerateURLLink](#GenerateURLLink) ✅
+- [ShortLink](#ShortLink)
+  - [GenerateShortLink](#GenerateShortLink) ✅
 - [内容安全](#内容安全)
   - [imgSecCheck](#imgSecCheck) ✅
   - [mediaCheckAsync](#mediaCheckAsync)✅
@@ -1187,7 +1191,7 @@ content, err := ioutil.ReadAll(resp.Body)
 
 ## URL-Scheme
 
-### generate
+### GenerateURLScheme
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/url-scheme.html)
 
@@ -1199,7 +1203,7 @@ import (
 )
 
 
-scheme := cli.URLScheme{
+req := weapp.URLSchemeRequest{
     SchemedInfo:  &weapp.SchemedInfo{
         Path:  "mock/path",
         Query:  "",
@@ -1208,7 +1212,77 @@ scheme := cli.URLScheme{
     ExpireTime: 1234567890,
 }
 
-resp, res, err := cli.GenerateURLSchema(&scheme)
+resp, res, err := cli.GenerateURLScheme(&req)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## URL-Link
+
+### GenerateURLLink
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/url-link/urllink.generate.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp/v3"
+)
+
+
+req := weapp.URLLinkRequest{
+        // ...
+}
+
+resp, res, err := cli.GenerateURLLink(&req)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
+---
+
+## ShortLink
+
+### GenerateShortLink
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/short-link/shortlink.generate.html)
+
+```go
+
+import (
+    "ioutil"
+    "github.com/medivhzhan/weapp/v3"
+)
+
+
+req := weapp.ShortLinkRequest{
+        // ...
+}
+
+resp, res, err := cli.GenerateShortLink(&req)
 if err != nil {
     // 处理一般错误信息
     return

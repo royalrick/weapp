@@ -4,7 +4,7 @@ const (
 	apiURLScheme = "/wxa/generatescheme"
 )
 
-type URLScheme struct {
+type URLSchemeRequest struct {
 	// 跳转到的目标小程序信息。
 	SchemedInfo *SchemedInfo `json:"jump_wxa,omitempty"`
 	// 成的scheme码类型，到期失效：true，永久有效：false。
@@ -27,9 +27,7 @@ type URLSchemeResponse struct {
 }
 
 // 获取小程序scheme码，适用于短信、邮件、外部网页等拉起小程序的业务场景。
-//
-// token 微信access_token
-func (cli *Client) GenerateURLSchema(scheme *URLScheme) (*URLSchemeResponse, error) {
+func (cli *Client) GenerateURLScheme(scheme *URLSchemeRequest) (*URLSchemeResponse, error) {
 	api := baseURL + apiURLScheme
 
 	token, err := cli.AccessToken()
@@ -37,10 +35,10 @@ func (cli *Client) GenerateURLSchema(scheme *URLScheme) (*URLSchemeResponse, err
 		return nil, err
 	}
 
-	return cli.generateURLSchema(api, token, scheme)
+	return cli.generateURLScheme(api, token, scheme)
 }
 
-func (cli *Client) generateURLSchema(api, token string, scheme *URLScheme) (*URLSchemeResponse, error) {
+func (cli *Client) generateURLScheme(api, token string, scheme *URLSchemeRequest) (*URLSchemeResponse, error) {
 	uri, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err

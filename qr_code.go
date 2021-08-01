@@ -31,8 +31,6 @@ type QRCode struct {
 
 // Get 获取小程序码
 // 可接受path参数较长 生成个数受限 永久有效 适用于需要的码数量较少的业务场景
-//
-// token 微信access_token
 func (cli *Client) GetQRCode(code *QRCode) (*http.Response, *CommonError, error) {
 	api := baseURL + apiGetQrCode
 
@@ -61,8 +59,6 @@ type UnlimitedQRCode struct {
 // Get 获取小程序码
 // 可接受页面参数较短 生成个数不受限 适用于需要的码数量极多的业务场景
 // 根路径前不要填加'/' 不能携带参数（参数请放在scene字段里）
-//
-// token 微信access_token
 func (cli *Client) GetUnlimitedQRCode(code *UnlimitedQRCode) (*http.Response, *CommonError, error) {
 	api := baseURL + apiGetUnlimitedQRCode
 
@@ -86,8 +82,6 @@ type QRCodeCreator struct {
 
 // Create 获取小程序二维码，适用于需要的码数量较少的业务场景。通过该接口生成的小程序码，永久有效，有数量限制
 // 通过该接口生成的小程序码，永久有效，有数量限制
-//
-// token 微信access_token
 func (cli *Client) CreateQRCode(creator *QRCodeCreator) (*http.Response, *CommonError, error) {
 	api := baseURL + apiCreateQRCode
 
