@@ -4,8 +4,8 @@ const (
 	apiSearchSubmitPages = "/wxa/search/wxaapi_submitpages"
 )
 
-// SearchSubmitPages 小程序页面收录请求
-type SearchSubmitPages struct {
+// SearchSubmitPagesRequest 小程序页面收录请求
+type SearchSubmitPagesRequest struct {
 	Pages []SearchSubmitPage `json:"pages"`
 }
 
@@ -16,7 +16,7 @@ type SearchSubmitPage struct {
 }
 
 // Send 提交收录请求
-func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPages) (*CommonError, error) {
+func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPagesRequest) (*CommonError, error) {
 	api := baseURL + apiSearchSubmitPages
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -26,7 +26,7 @@ func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPages) (*CommonError, 
 	return cli.sendSearchSubmitPages(api, token, smp)
 }
 
-func (cli *Client) sendSearchSubmitPages(api, token string, smp *SearchSubmitPages) (*CommonError, error) {
+func (cli *Client) sendSearchSubmitPages(api, token string, smp *SearchSubmitPagesRequest) (*CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err

@@ -144,6 +144,7 @@ go get -u github.com/medivhzhan/weapp/v3
 - [运维中心](#运维中心)❌
   - [realTimeLogSearch](#realTimeLogSearch)
 - [小程序搜索](#小程序搜索)❌
+  - [imageSearch](#imageSearch)
   - [siteSearch](#siteSearch)
   - [submitPages](#submitPages)
 - [生物认证](#生物认证)
@@ -2826,7 +2827,55 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 小程序搜索
 
+### imageSearch
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/search/search.imageSearch.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v3"
+
+res, err := cli.searchImage("local-filename")
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
+
 ### siteSearch
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/search/search.siteSearch.html)
+
+```go
+
+import "github.com/medivhzhan/weapp/v3"
+
+req := weapp.SearchSiteRequest{
+   // ...
+}
+
+res, err := cli.SearchSite(&req)
+if err != nil {
+    // 处理一般错误信息
+    return
+}
+
+if err := res.GetResponseError(); err !=nil {
+    // 处理微信返回错误信息
+    return
+}
+
+fmt.Printf("返回结果: %#v", res)
+
+```
 
 ### submitPages
 
@@ -2836,7 +2885,7 @@ fmt.Printf("返回结果: %#v", res)
 
 import "github.com/medivhzhan/weapp/v3"
 
-sender := weapp.SearchSubmitPages{
+req := weapp.SearchSubmitPagesRequest{
     []weapp.SearchSubmitPage{
         {
             Path:  "pages/index/index",
@@ -2845,7 +2894,7 @@ sender := weapp.SearchSubmitPages{
     },
 }
 
-res, err := cli.SendSearchSubmitPages(&sender)
+res, err := cli.SendSearchSubmitPages(&req)
 if err != nil {
     // 处理一般错误信息
     return
