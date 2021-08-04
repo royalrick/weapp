@@ -177,9 +177,9 @@ import "github.com/medivhzhan/weapp/v3"
 cli := weapp.NewClient("your-appid", "your-secret")
 
 // 自定义缓存
-// 默认缓存在内存中
 // 用于缓存 AccessToken
-// 只需要实现 cache 模块下 的 Cache 接口即可使用
+// 默认使用内存存储
+// 需要实现 cache 模块下 的 Cache 接口
 cc := MyCache{
     //
 }
@@ -191,7 +191,7 @@ cli := weapp.NewClient(
 )
 
 // 自定义 HTTP 请求客户端
-// 默认为 http.DefaultClient
+// 默认使用 http.DefaultClient
 httpCli := &http.Client{
     Timeout: 10 * time.Second,
     Transport: &http.Transport{
