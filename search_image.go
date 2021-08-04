@@ -1,11 +1,13 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiImageSearch = "/wxa/imagesearch"
 )
 
 type SearchImageResponse struct {
-	CommonError
+	request.CommonError
 	// 生成的小程序 URL Link
 	URLLink string `json:"url_link"`
 }

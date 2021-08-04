@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 type dateRange struct {
 	BeginDate string `json:"begin_date"`
 	EndDate   string `json:"end_date"`
@@ -14,7 +16,7 @@ const (
 
 // UserPortrait response data of get user portrait
 type UserPortrait struct {
-	CommonError
+	request.CommonError
 	RefDate    string   `json:"ref_date"`
 	VisitUV    Portrait `json:"visit_uv"`     // 活跃用户画像
 	VisitUVNew Portrait `json:"visit_uv_new"` // 新用户画像
@@ -77,7 +79,7 @@ func (cli *Client) getUserPortrait(token, begin, end, api string) (*UserPortrait
 
 // VisitDistribution 用户小程序访问分布数据
 type VisitDistribution struct {
-	CommonError
+	request.CommonError
 	RefDate string         `json:"ref_date"`
 	List    []Distribution `json:"list"`
 }
@@ -136,7 +138,7 @@ func (cli *Client) getVisitDistribution(token, begin, end, api string) (*VisitDi
 
 // VisitPage 页面访问数据
 type VisitPage struct {
-	CommonError
+	request.CommonError
 	RefDate string `json:"ref_date"`
 	List    []Page `json:"list"`
 }
@@ -190,7 +192,7 @@ func (cli *Client) getVisitPage(token, begin, end, api string) (*VisitPage, erro
 
 // DailySummary 用户访问小程序数据概况
 type DailySummary struct {
-	CommonError
+	request.CommonError
 	List []Summary `json:"list"`
 }
 

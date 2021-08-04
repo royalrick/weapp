@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiBankcard        = "/cv/ocr/bankcard"
 	apiVehicleLicense  = "/cv/ocr/driving"
@@ -20,7 +22,7 @@ const (
 
 // BankCardResponse 识别银行卡返回数据
 type BankCardResponse struct {
-	CommonError
+	request.CommonError
 	Number string `json:"number"` // 银行卡号
 }
 
@@ -89,14 +91,14 @@ const (
 
 // CardResponse 识别卡片返回数据
 type CardResponse struct {
-	CommonError
+	request.CommonError
 	Type      CardType `json:"type"`       // 正面或背面，Front / Back
 	ValidDate string   `json:"valid_date"` // 有效期
 }
 
 // DrivingLicenseResponse 识别行驶证返回数据
 type DrivingLicenseResponse struct {
-	CommonError
+	request.CommonError
 	IDNum        string `json:"id_num"`        // 证号
 	Name         string `json:"name"`          // 姓名
 	Nationality  string `json:"nationality"`   // 国家
@@ -223,7 +225,7 @@ func (cli *Client) idCard(api, token, filename string, mode RecognizeMode) (*IDC
 
 // VehicleLicenseResponse 识别卡片返回数据
 type VehicleLicenseResponse struct {
-	CommonError
+	request.CommonError
 	VehicleType                string `json:"vehicle_type"`
 	Owner                      string `json:"owner"`
 	Addr                       string `json:"addr"`
@@ -300,7 +302,7 @@ type LicensePosition struct {
 
 // BusinessLicenseResponse 营业执照 OCR 识别返回数据
 type BusinessLicenseResponse struct {
-	CommonError
+	request.CommonError
 	RegNum              string `json:"reg_num"`              //	注册号
 	Serial              string `json:"serial"`               //	编号
 	LegalRepresentative string `json:"legal_representative"` //	法定代表人姓名
@@ -365,7 +367,7 @@ func (cli *Client) businessLicense(api, token, filename string) (*BusinessLicens
 
 // PrintedTextResponse 通用印刷体 OCR 识别返回数据
 type PrintedTextResponse struct {
-	CommonError
+	request.CommonError
 	Items []struct {
 		Text     string          `json:"text"`
 		Position LicensePosition `json:"pos"`
@@ -423,7 +425,7 @@ func (cli *Client) ocrByFile(api, token, filename string, mode RecognizeMode, re
 		"type":         mode,
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return err
 	}
@@ -445,7 +447,7 @@ func (cli *Client) ocrByURL(api, token, cardURL string, mode RecognizeMode, resp
 		queries["type"] = mode
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return err
 	}

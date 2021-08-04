@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiPlugin    = "/wxa/plugin"
 	apiDevPlugin = "/wxa/devplugin"
@@ -10,7 +12,7 @@ const (
 // action	string		是	此接口下填写 "apply"
 // appID	string		是	插件 appId
 // reason	string		否	申请使用理由
-func (cli *Client) ApplyPlugin(appID, reason string) (*CommonError, error) {
+func (cli *Client) ApplyPlugin(appID, reason string) (*request.CommonError, error) {
 	api := baseURL + apiPlugin
 
 	token, err := cli.AccessToken()
@@ -21,7 +23,7 @@ func (cli *Client) ApplyPlugin(appID, reason string) (*CommonError, error) {
 	return cli.applyPlugin(api, token, appID, reason)
 }
 
-func (cli *Client) applyPlugin(api, token, appID, reason string) (*CommonError, error) {
+func (cli *Client) applyPlugin(api, token, appID, reason string) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -36,7 +38,7 @@ func (cli *Client) applyPlugin(api, token, appID, reason string) (*CommonError, 
 		params["reason"] = reason
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
@@ -46,7 +48,7 @@ func (cli *Client) applyPlugin(api, token, appID, reason string) (*CommonError, 
 
 // GetPluginDevApplyListResponse 查询已添加的插件返回数据
 type GetPluginDevApplyListResponse struct {
-	CommonError
+	request.CommonError
 	ApplyList []struct {
 		AppID      string `json:"appid"`      // 插件 appId
 		Status     uint8  `json:"status"`     // 插件状态
@@ -99,7 +101,7 @@ func (cli *Client) getPluginDevApplyList(api, token string, page, num uint) (*Ge
 
 // GetPluginListResponse 查询已添加的插件返回数据
 type GetPluginListResponse struct {
-	CommonError
+	request.CommonError
 	PluginList []struct {
 		AppID      string `json:"appid"`      // 插件 appId
 		Status     int8   `json:"status"`     // 插件状态
@@ -154,7 +156,7 @@ const (
 // appID 使用者的 appid。同意申请时填写。
 // reason 拒绝理由。拒绝申请时填写。
 // action 修改操作
-func (cli *Client) SetDevPluginApplyStatus(appID, reason string, action DevAction) (*CommonError, error) {
+func (cli *Client) SetDevPluginApplyStatus(appID, reason string, action DevAction) (*request.CommonError, error) {
 	api := baseURL + apiDevPlugin
 
 	token, err := cli.AccessToken()
@@ -165,7 +167,7 @@ func (cli *Client) SetDevPluginApplyStatus(appID, reason string, action DevActio
 	return cli.setDevPluginApplyStatus(api, token, appID, reason, action)
 }
 
-func (cli *Client) setDevPluginApplyStatus(api, token, appID, reason string, action DevAction) (*CommonError, error) {
+func (cli *Client) setDevPluginApplyStatus(api, token, appID, reason string, action DevAction) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -177,7 +179,7 @@ func (cli *Client) setDevPluginApplyStatus(api, token, appID, reason string, act
 		"reason": reason,
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
@@ -188,7 +190,7 @@ func (cli *Client) setDevPluginApplyStatus(api, token, appID, reason string, act
 // UnbindPlugin 查询已添加的插件
 // accessToken 接口调用凭证
 // appID 插件 appId
-func (cli *Client) UnbindPlugin(appID string) (*CommonError, error) {
+func (cli *Client) UnbindPlugin(appID string) (*request.CommonError, error) {
 	api := baseURL + apiPlugin
 
 	token, err := cli.AccessToken()
@@ -199,7 +201,7 @@ func (cli *Client) UnbindPlugin(appID string) (*CommonError, error) {
 	return cli.unbindPlugin(api, token, appID)
 }
 
-func (cli *Client) unbindPlugin(api, token, appID string) (*CommonError, error) {
+func (cli *Client) unbindPlugin(api, token, appID string) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -210,7 +212,7 @@ func (cli *Client) unbindPlugin(api, token, appID string) (*CommonError, error) 
 		"plugin_appid": appID,
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}

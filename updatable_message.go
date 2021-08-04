@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiCreateActivityID = "/cgi-bin/message/wxopen/activityid/create"
 	apiSetUpdatableMsg  = "/cgi-bin/message/wxopen/updatablemsg/send"
@@ -7,7 +9,7 @@ const (
 
 // CreateActivityIDResponse 动态消息
 type CreateActivityIDResponse struct {
-	CommonError
+	request.CommonError
 	ActivityID     string `json:"activity_id"`     //	动态消息的 ID
 	ExpirationTime uint   `json:"expiration_time"` //	activity_id 的过期时间戳。默认24小时后过期。
 }
@@ -85,7 +87,7 @@ type UpdatableMsg struct {
 
 // 修改被分享的动态消息。
 // accessToken 接口调用凭证
-func (cli *Client) SetUpdatableMsg(msg *UpdatableMsg) (*CommonError, error) {
+func (cli *Client) SetUpdatableMsg(msg *UpdatableMsg) (*request.CommonError, error) {
 	api := baseURL + apiSetUpdatableMsg
 
 	token, err := cli.AccessToken()
@@ -96,13 +98,13 @@ func (cli *Client) SetUpdatableMsg(msg *UpdatableMsg) (*CommonError, error) {
 	return cli.setUpdatableMsg(api, token, msg)
 }
 
-func (cli *Client) setUpdatableMsg(api, token string, setter *UpdatableMsg) (*CommonError, error) {
+func (cli *Client) setUpdatableMsg(api, token string, setter *UpdatableMsg) (*request.CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(api, setter, res); err != nil {
 		return nil, err
 	}

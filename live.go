@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	// 创建直播间
 	apiCreateLiveRoom    = "/wxaapi/broadcast/room/create"
@@ -33,7 +35,7 @@ type createLiveRoomRequest struct {
 }
 
 type CreateLiveRoomResponse struct {
-	CommonError
+	request.CommonError
 	RoomID string `json:"roomId"` //房间ID
 	// 当主播微信号没有在 “小程序直播“ 小程序实名认证 返回该字段
 	QRCodeURL string `json:"qrcode_url"`
@@ -197,7 +199,7 @@ type LiveRoomItem struct {
 	FeedsIMG string `json:"feeds_img"`
 }
 type FetchLiveRoomListResponse struct {
-	CommonError
+	request.CommonError
 	// 拉取房间总数
 	Total int             `json:"total"`
 	List  []*LiveRoomItem `json:"room_info"`

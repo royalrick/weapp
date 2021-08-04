@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiSearchSubmitPages = "/wxa/search/wxaapi_submitpages"
 )
@@ -16,7 +18,7 @@ type SearchSubmitPage struct {
 }
 
 // Send 提交收录请求
-func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPagesRequest) (*CommonError, error) {
+func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPagesRequest) (*request.CommonError, error) {
 	api := baseURL + apiSearchSubmitPages
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -26,13 +28,13 @@ func (cli *Client) SendSearchSubmitPages(smp *SearchSubmitPagesRequest) (*Common
 	return cli.sendSearchSubmitPages(api, token, smp)
 }
 
-func (cli *Client) sendSearchSubmitPages(api, token string, smp *SearchSubmitPagesRequest) (*CommonError, error) {
+func (cli *Client) sendSearchSubmitPages(api, token string, smp *SearchSubmitPagesRequest) (*request.CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(api, smp, res); err != nil {
 		return nil, err
 	}

@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiURLScheme = "/wxa/generatescheme"
 )
@@ -21,7 +23,7 @@ type SchemedInfo struct {
 }
 
 type URLSchemeResponse struct {
-	CommonError
+	request.CommonError
 	// 生成的小程序scheme码
 	Openlink string `json:"openlink"`
 }

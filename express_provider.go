@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiGetContact      = "/cgi-bin/express/delivery/contact/get"
 	apiPreviewTemplate = "/cgi-bin/express/delivery/template/preview"
@@ -9,7 +11,7 @@ const (
 
 // GetContactResponse 获取面单联系人信息返回数据
 type GetContactResponse struct {
-	CommonError
+	request.CommonError
 	WaybillID string      `json:"waybill_id"` // 运单 ID
 	Sender    ContactUser `json:"sender"`     // 发件人信息
 	Receiver  ContactUser `json:"receiver"`   // 收件人信息
@@ -65,7 +67,7 @@ type ExpressTemplatePreviewer struct {
 
 // PreviewTemplateResponse 预览面单模板返回数据
 type PreviewTemplateResponse struct {
-	CommonError
+	request.CommonError
 	WaybillID               string `json:"waybill_id"`                // 运单 ID
 	RenderedWaybillTemplate string `json:"rendered_waybill_template"` // 渲染后的面单 HTML 文件（已经过 Base64 编码）
 }
@@ -116,7 +118,7 @@ type BusinessUpdater struct {
 
 // Update 更新商户审核结果
 // token 接口调用凭证
-func (cli *Client) UpdateLogisticsBusiness(updater *BusinessUpdater) (*CommonError, error) {
+func (cli *Client) UpdateLogisticsBusiness(updater *BusinessUpdater) (*request.CommonError, error) {
 	api := baseURL + apiUpdateBusiness
 
 	token, err := cli.AccessToken()
@@ -127,13 +129,13 @@ func (cli *Client) UpdateLogisticsBusiness(updater *BusinessUpdater) (*CommonErr
 	return cli.updateLogisticsBusiness(api, token, updater)
 }
 
-func (cli *Client) updateLogisticsBusiness(api, token string, updater *BusinessUpdater) (*CommonError, error) {
+func (cli *Client) updateLogisticsBusiness(api, token string, updater *BusinessUpdater) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}
@@ -152,7 +154,7 @@ type ExpressPathUpdater struct {
 
 // Update 更新运单轨迹
 // token 接口调用凭证
-func (cli *Client) UpdateLogisticsPath(updater *ExpressPathUpdater) (*CommonError, error) {
+func (cli *Client) UpdateLogisticsPath(updater *ExpressPathUpdater) (*request.CommonError, error) {
 	api := baseURL + apiUpdatePath
 
 	token, err := cli.AccessToken()
@@ -163,13 +165,13 @@ func (cli *Client) UpdateLogisticsPath(updater *ExpressPathUpdater) (*CommonErro
 	return cli.updateLogisticsPath(api, token, updater)
 }
 
-func (cli *Client) updateLogisticsPath(api, token string, updater *ExpressPathUpdater) (*CommonError, error) {
+func (cli *Client) updateLogisticsPath(api, token string, updater *ExpressPathUpdater) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}

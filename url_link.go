@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiURLLink = "/wxa/generate_urllink"
 )
@@ -43,7 +45,7 @@ type URLLinkCloudBase struct {
 }
 
 type URLLinkResponse struct {
-	CommonError
+	request.CommonError
 	// 生成的小程序 URL Link
 	URLLink string `json:"url_link"`
 }

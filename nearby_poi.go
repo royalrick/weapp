@@ -3,6 +3,8 @@ package weapp
 import (
 	"encoding/json"
 	"fmt"
+
+	"github.com/medivhzhan/weapp/v3/request"
 )
 
 // apis
@@ -55,7 +57,7 @@ type KFInfo struct {
 
 // AddNearbyPoiResponse response of add position.
 type AddNearbyPoiResponse struct {
-	CommonError
+	request.CommonError
 	Data struct {
 		AuditID           string `json:"audit_id"`           //	审核单 ID
 		PoiID             string `json:"poi_id"`             //	附近地点 ID
@@ -123,7 +125,7 @@ func (cli *Client) addNearByPoi(api, token string, poi *NearbyPoi) (*AddNearbyPo
 // DeleteNearbyPoi 删除地点
 // token  接口调用凭证
 // id  附近地点 ID
-func (cli *Client) DeleteNearbyPoi(id string) (*CommonError, error) {
+func (cli *Client) DeleteNearbyPoi(id string) (*request.CommonError, error) {
 	api := baseURL + apiDeleteNearbyPoi
 
 	token, err := cli.AccessToken()
@@ -134,7 +136,7 @@ func (cli *Client) DeleteNearbyPoi(id string) (*CommonError, error) {
 	return cli.deleteNearbyPoi(api, token, id)
 }
 
-func (cli *Client) deleteNearbyPoi(api, token, id string) (*CommonError, error) {
+func (cli *Client) deleteNearbyPoi(api, token, id string) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -144,7 +146,7 @@ func (cli *Client) deleteNearbyPoi(api, token, id string) (*CommonError, error) 
 		"poi_id": id,
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
@@ -154,7 +156,7 @@ func (cli *Client) deleteNearbyPoi(api, token, id string) (*CommonError, error) 
 
 // PositionList 地点列表
 type PositionList struct {
-	CommonError
+	request.CommonError
 	Data struct {
 		LeftApplyNum uint `json:"left_apply_num"` // 剩余可添加地点个数
 		MaxApplyNum  uint `json:"max_apply_num"`  // 最大可添加地点个数
@@ -224,7 +226,7 @@ const (
 // token  接口调用凭证
 // poiID  附近地点 ID
 // status  是否展示
-func (cli *Client) SetNearbyPoiShowStatus(poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+func (cli *Client) SetNearbyPoiShowStatus(poiID string, status NearbyPoiShowStatus) (*request.CommonError, error) {
 	api := baseURL + apiSetNearbyPoiShowStatus
 
 	token, err := cli.AccessToken()
@@ -235,7 +237,7 @@ func (cli *Client) SetNearbyPoiShowStatus(poiID string, status NearbyPoiShowStat
 	return cli.setNearbyPoiShowStatus(api, token, poiID, status)
 }
 
-func (cli *Client) setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus) (*CommonError, error) {
+func (cli *Client) setNearbyPoiShowStatus(api, token, poiID string, status NearbyPoiShowStatus) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -246,7 +248,7 @@ func (cli *Client) setNearbyPoiShowStatus(api, token, poiID string, status Nearb
 		"status": status,
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}

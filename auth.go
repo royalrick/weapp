@@ -1,6 +1,10 @@
 package weapp
 
-import "time"
+import (
+	"time"
+
+	"github.com/medivhzhan/weapp/v3/request"
+)
 
 const (
 	apiLogin          = "/sns/jscode2session"
@@ -10,7 +14,7 @@ const (
 
 // LoginResponse 返回给用户的数据
 type LoginResponse struct {
-	CommonError
+	request.CommonError
 	OpenID     string `json:"openid"`
 	SessionKey string `json:"session_key"`
 	// 用户在开放平台的唯一标识符
@@ -36,7 +40,7 @@ func (cli *Client) login(code, api string) (*LoginResponse, error) {
 		"grant_type": "authorization_code",
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -51,7 +55,7 @@ func (cli *Client) login(code, api string) (*LoginResponse, error) {
 
 // TokenResponse 获取 access_token 成功返回数据
 type TokenResponse struct {
-	CommonError
+	request.CommonError
 	AccessToken string `json:"access_token"` // 获取到的凭证
 	ExpiresIn   uint   `json:"expires_in"`   // 凭证有效时间，单位：秒。目前是7200秒之内的值。
 }
@@ -94,7 +98,7 @@ func (cli *Client) GetAccessToken() (*TokenResponse, error) {
 	}
 
 	api := baseURL + apiGetAccessToken
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -109,7 +113,7 @@ func (cli *Client) GetAccessToken() (*TokenResponse, error) {
 
 // GetPaidUnionIDResponse response data
 type GetPaidUnionIDResponse struct {
-	CommonError
+	request.CommonError
 	UnionID string `json:"unionid"`
 }
 
@@ -157,7 +161,7 @@ func (cli *Client) getPaidUnionIDWithMCH(accessToken, openID, outTradeNo, mchID,
 }
 
 func (cli *Client) getPaidUnionIDRequest(api string, queries requestQueries) (*GetPaidUnionIDResponse, error) {
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}

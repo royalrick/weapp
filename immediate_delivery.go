@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiAbnormalConfirm         = "/cgi-bin/express/local/business/order/confirm_return"
 	apiAddDeliveryOrder        = "/cgi-bin/express/local/business/order/add"
@@ -26,7 +28,7 @@ type AbnormalConfirmer struct {
 }
 
 // Confirm 异常件退回商家商家确认收货
-func (cli *Client) AbnormalImmediateDeliveryConfirm(confirmer *AbnormalConfirmer) (*CommonResult, error) {
+func (cli *Client) AbnormalImmediateDeliveryConfirm(confirmer *AbnormalConfirmer) (*request.CommonResult, error) {
 	api := baseURL + apiAbnormalConfirm
 
 	token, err := cli.AccessToken()
@@ -37,13 +39,13 @@ func (cli *Client) AbnormalImmediateDeliveryConfirm(confirmer *AbnormalConfirmer
 	return cli.abnormalImmediateDeliveryConfirm(api, token, confirmer)
 }
 
-func (cli *Client) abnormalImmediateDeliveryConfirm(api, token string, confirmer *AbnormalConfirmer) (*CommonResult, error) {
+func (cli *Client) abnormalImmediateDeliveryConfirm(api, token string, confirmer *AbnormalConfirmer) (*request.CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonResult)
+	res := new(request.CommonResult)
 	if err := cli.request.Post(url, confirmer, res); err != nil {
 		return nil, err
 	}
@@ -176,7 +178,7 @@ func (cli *Client) preAddImmediateDeliveryOrder(api, token string, creator *Deli
 
 // CreateDeliveryOrderResponse 返回数据
 type CreateDeliveryOrderResponse struct {
-	CommonResult
+	*request.CommonResult
 	Fee              uint    `json:"fee"`               //实际运费(单位：元)，运费减去优惠券费用
 	Deliverfee       uint    `json:"deliverfee"`        //运费(单位：元)
 	Couponfee        uint    `json:"couponfee"`         //优惠券费用(单位：元)
@@ -255,7 +257,7 @@ type DeliveryTipAdder struct {
 }
 
 // Add 对待接单状态的订单增加小费。需要注意：订单的小费，以最新一次加小费动作的金额为准，故下一次增加小费额必须大于上一次小费额
-func (cli *Client) AddImmediateDeliveryTip(adder *DeliveryTipAdder) (*CommonResult, error) {
+func (cli *Client) AddImmediateDeliveryTip(adder *DeliveryTipAdder) (*request.CommonResult, error) {
 	api := baseURL + apiAddDeliveryTip
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -265,13 +267,13 @@ func (cli *Client) AddImmediateDeliveryTip(adder *DeliveryTipAdder) (*CommonResu
 	return cli.addImmediateDeliveryTip(api, token, adder)
 }
 
-func (cli *Client) addImmediateDeliveryTip(api, token string, adder *DeliveryTipAdder) (*CommonResult, error) {
+func (cli *Client) addImmediateDeliveryTip(api, token string, adder *DeliveryTipAdder) (*request.CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonResult)
+	res := new(request.CommonResult)
 	if err := cli.request.Post(url, adder, res); err != nil {
 		return nil, err
 	}
@@ -293,7 +295,7 @@ type DeliveryOrderCanceler struct {
 
 // CancelDeliveryOrderResponse 取消配送单返回数据
 type CancelDeliveryOrderResponse struct {
-	CommonResult
+	*request.CommonResult
 	DeductFee float64 `json:"deduct_fee"` // 	预计扣除的违约金(单位：元)，精确到分
 	Desc      string  `json:"desc"`       //说明
 }
@@ -350,7 +352,7 @@ func (cli *Client) cancelImmediateDeliveryOrder(api, token string, canceler *Del
 
 // GetAllImmediateDeliveryResponse 获取已支持的配送公司列表接口返回数据
 type GetAllImmediateDeliveryResponse struct {
-	CommonResult
+	*request.CommonResult
 	List []struct {
 		ID   string `json:"delivery_id"`   //配送公司Id
 		Name string `json:"delivery_name"` //	配送公司名称
@@ -385,7 +387,7 @@ func (cli *Client) getAllImmediateDelivery(api, token string) (*GetAllImmediateD
 
 // GetBindAccountResponse 返回数据
 type GetBindAccountResponse struct {
-	CommonResult
+	*request.CommonResult
 	ShopList []struct {
 		DeliveryID  string `json:"delivery_id"`  // 配送公司Id
 		ShopID      string `json:"shopid"`       // 商家id
@@ -429,7 +431,7 @@ type DeliveryOrderGetter struct {
 
 // GetDeliveryOrderResponse 返回数据
 type GetDeliveryOrderResponse struct {
-	CommonResult
+	*request.CommonResult
 	OrderStatus int     `json:"order_status"` // 	配送状态，枚举值
 	WaybillID   string  `json:"waybill_id"`   // 配送单号
 	RiderName   string  `json:"rider_name"`   // 骑手姓名
@@ -474,7 +476,7 @@ type UpdateDeliveryOrderMocker struct {
 }
 
 // Mock 模拟配送公司更新配送单状态
-func (cli *Client) MockUpdateImmediateDeliveryOrder(mocker *UpdateDeliveryOrderMocker) (*CommonResult, error) {
+func (cli *Client) MockUpdateImmediateDeliveryOrder(mocker *UpdateDeliveryOrderMocker) (*request.CommonResult, error) {
 	api := baseURL + apiMockUpdateDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -485,13 +487,13 @@ func (cli *Client) MockUpdateImmediateDeliveryOrder(mocker *UpdateDeliveryOrderM
 	return cli.mockUpdateImmediateDeliveryOrder(api, token, mocker)
 }
 
-func (cli *Client) mockUpdateImmediateDeliveryOrder(api, token string, mocker *UpdateDeliveryOrderMocker) (*CommonResult, error) {
+func (cli *Client) mockUpdateImmediateDeliveryOrder(api, token string, mocker *UpdateDeliveryOrderMocker) (*request.CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonResult)
+	res := new(request.CommonResult)
 	if err := cli.request.Post(url, mocker, res); err != nil {
 		return nil, err
 	}
@@ -522,7 +524,7 @@ type DeliveryAgent struct {
 }
 
 // Update 模拟配送公司更新配送单状态
-func (cli *Client) UpdateImmediateDeliveryOrder(updater *DeliveryOrderUpdater) (*CommonResult, error) {
+func (cli *Client) UpdateImmediateDeliveryOrder(updater *DeliveryOrderUpdater) (*request.CommonResult, error) {
 	api := baseURL + apiUpdateDeliveryOrder
 
 	token, err := cli.AccessToken()
@@ -533,13 +535,13 @@ func (cli *Client) UpdateImmediateDeliveryOrder(updater *DeliveryOrderUpdater) (
 	return cli.updateImmediateDeliveryOrder(api, token, updater)
 }
 
-func (cli *Client) updateImmediateDeliveryOrder(api, token string, updater *DeliveryOrderUpdater) (*CommonResult, error) {
+func (cli *Client) updateImmediateDeliveryOrder(api, token string, updater *DeliveryOrderUpdater) (*request.CommonResult, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonResult)
+	res := new(request.CommonResult)
 	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}

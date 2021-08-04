@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiShortLink = "/wxa/genwxashortlink"
 )
@@ -14,7 +16,7 @@ type ShortLinkRequest struct {
 }
 
 type ShortLinkResponse struct {
-	CommonError
+	request.CommonError
 	// 生成的小程序 Short Link
 	Link string `json:"link"`
 }

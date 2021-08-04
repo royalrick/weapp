@@ -1,12 +1,14 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiVerifySignature = "/cgi-bin/soter/verify_signature"
 )
 
 // VerifySignatureResponse 生物认证秘钥签名验证请求返回数据
 type VerifySignatureResponse struct {
-	CommonError
+	request.CommonError
 	IsOk bool `json:"is_ok"`
 }
 

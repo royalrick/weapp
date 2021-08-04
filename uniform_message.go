@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiSendUniformMessage = "/cgi-bin/message/wxopen/template/uniform_send"
 )
@@ -51,9 +53,7 @@ type UniformMsgSender struct {
 }
 
 // Send 统一服务消息
-//
-// token access_token
-func (cli *Client) SendUniformMsg(msg *UniformMsgSender) (*CommonError, error) {
+func (cli *Client) SendUniformMsg(msg *UniformMsgSender) (*request.CommonError, error) {
 	api := baseURL + apiSendUniformMessage
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -63,13 +63,13 @@ func (cli *Client) SendUniformMsg(msg *UniformMsgSender) (*CommonError, error) {
 	return cli.sendUniformMsg(api, token, msg)
 }
 
-func (cli *Client) sendUniformMsg(api, token string, msg *UniformMsgSender) (*CommonError, error) {
+func (cli *Client) sendUniformMsg(api, token string, msg *UniformMsgSender) (*request.CommonError, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(api, msg, res); err != nil {
 		return nil, err
 	}

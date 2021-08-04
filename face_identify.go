@@ -1,12 +1,14 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiFaceIdentify = "/cityservice/face/identify/getinfo"
 )
 
 // FaceIdentifyResponse 人脸识别结果返回
 type FaceIdentifyResponse struct {
-	CommonError
+	request.CommonError
 	Result          int    `json:"identify_ret"`       // 认证结果
 	Time            uint32 `json:"identify_time"`      // 认证时间
 	Data            string `json:"validate_data"`      // 用户读的数字（如是读数字）
@@ -19,7 +21,6 @@ type FaceIdentifyResponse struct {
 
 // FaceIdentify 获取人脸识别结果
 //
-// token 微信 access_token
 // key 小程序 verify_result
 func (cli *Client) FaceIdentify(key string) (*FaceIdentifyResponse, error) {
 	api := baseURL + apiFaceIdentify

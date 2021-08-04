@@ -1,6 +1,8 @@
-package weapp
+package request
 
-import "errors"
+import (
+	"fmt"
+)
 
 // CommonError 微信返回错误信息
 type CommonError struct {
@@ -9,9 +11,9 @@ type CommonError struct {
 }
 
 // GetResponseError 获取微信服务器错返回误信息
-func (err *CommonError) GetResponseError() error {
+func (err CommonError) GetResponseError() error {
 	if err.ErrCode != 0 {
-		return errors.New(err.ErrMSG)
+		return fmt.Errorf("wechat server error: code[%d] msg[%s]", err.ErrCode, err.ErrMSG)
 	}
 
 	return nil
@@ -24,10 +26,10 @@ type CommonResult struct {
 }
 
 // GetResponseError 获取微信服务器错返回误信息
-func (err *CommonResult) GetResponseError() error {
+func (err CommonResult) GetResponseError() error {
 
 	if err.ResultCode != 0 {
-		return errors.New(err.ResultMsg)
+		return fmt.Errorf("wechat server error: code[%d] msg[%s]", err.ResultCode, err.ResultMsg)
 	}
 
 	return nil

@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiGetMonthlyVisitTrend = "/datacube/getweanalysisappidmonthlyvisittrend"
 	apiGetWeeklyVisitTrend  = "/datacube/getweanalysisappidweeklyvisittrend"
@@ -20,7 +22,7 @@ type Trend struct {
 
 // VisitTrend 生物认证秘钥签名验证请求返回数据
 type VisitTrend struct {
-	CommonError
+	request.CommonError
 	List []Trend `json:"list"`
 }
 

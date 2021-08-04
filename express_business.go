@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiBindAccount            = "/cgi-bin/express/business/account/bind"
 	apiGetAllLogisticsAccount = "/cgi-bin/express/business/account/getall"
@@ -34,7 +36,7 @@ const (
 
 // Bind 绑定、解绑物流账号
 // token 接口调用凭证
-func (cli *Client) BindLogisticsAccount(ea *ExpressAccount) (*CommonError, error) {
+func (cli *Client) BindLogisticsAccount(ea *ExpressAccount) (*request.CommonError, error) {
 	api := baseURL + apiBindAccount
 
 	token, err := cli.AccessToken()
@@ -45,13 +47,13 @@ func (cli *Client) BindLogisticsAccount(ea *ExpressAccount) (*CommonError, error
 	return cli.bindLogisticsAccount(api, token, ea)
 }
 
-func (cli *Client) bindLogisticsAccount(api, token string, ea *ExpressAccount) (*CommonError, error) {
+func (cli *Client) bindLogisticsAccount(api, token string, ea *ExpressAccount) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, ea, res); err != nil {
 		return nil, err
 	}
@@ -61,7 +63,7 @@ func (cli *Client) bindLogisticsAccount(api, token string, ea *ExpressAccount) (
 
 // AccountList 所有绑定的物流账号
 type AccountList struct {
-	CommonError
+	request.CommonError
 	Count uint `json:"count"` // 账号数量
 	List  []struct {
 		BizID           string     `json:"biz_id"`            // 	快递公司客户编码
@@ -117,7 +119,7 @@ type ExpressPathGetter ExpressOrderGetter
 
 // GetExpressPathResponse 运单轨迹
 type GetExpressPathResponse struct {
-	CommonError
+	request.CommonError
 	OpenID       string            `json:"openid"`         // 用户openid
 	DeliveryID   string            `json:"delivery_id"`    // 快递公司 ID
 	WaybillID    string            `json:"waybill_id"`     // 运单 ID
@@ -188,7 +190,7 @@ const (
 
 // CreateExpressOrderResponse 创建订单返回数据
 type CreateExpressOrderResponse struct {
-	CommonError
+	request.CommonError
 	OrderID     string `json:"order_id"`   //	订单ID，下单成功时返回
 	WaybillID   string `json:"waybill_id"` //	运单ID，下单成功时返回
 	WaybillData []struct {
@@ -227,7 +229,7 @@ func (cli *Client) addLogisticOrder(api, token string, creator *ExpressOrderCrea
 
 // CancelOrderResponse 取消订单返回数据
 type CancelOrderResponse struct {
-	CommonError
+	request.CommonError
 	Count uint `json:"count"` //快递公司数量
 	Data  []struct {
 		DeliveryID   string `json:"delivery_id"`   // 快递公司 ID
@@ -238,7 +240,7 @@ type CancelOrderResponse struct {
 
 // DeliveryList 支持的快递公司列表
 type DeliveryList struct {
-	CommonError
+	request.CommonError
 	Count uint `json:"count"` // 快递公司数量
 	Data  []struct {
 		ID   string `json:"delivery_id"`   // 快递公司 ID
@@ -263,7 +265,7 @@ func (cli *Client) getAllDelivery(api, token string) (*DeliveryList, error) {
 		"access_token": token,
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -286,7 +288,7 @@ type ExpressOrderGetter struct {
 
 // GetExpressOrderResponse 获取运单返回数据
 type GetExpressOrderResponse struct {
-	CommonError
+	request.CommonError
 	PrintHTML   string `json:"print_html"` // 运单 html 的 BASE64 结果
 	WaybillData []struct {
 		Key   string `json:"key"`   // 运单信息 key
@@ -325,7 +327,7 @@ type ExpressOrderCanceler ExpressOrderGetter
 
 // Cancel 取消运单
 // token 接 口调用凭证
-func (cli *Client) CancelLogisticsOrder(canceler *ExpressOrderCanceler) (*CommonError, error) {
+func (cli *Client) CancelLogisticsOrder(canceler *ExpressOrderCanceler) (*request.CommonError, error) {
 	api := baseURL + apiCancelExpressOrder
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -335,13 +337,13 @@ func (cli *Client) CancelLogisticsOrder(canceler *ExpressOrderCanceler) (*Common
 	return cli.cancelLogisticsOrder(api, token, canceler)
 }
 
-func (cli *Client) cancelLogisticsOrder(api, token string, canceler *ExpressOrderCanceler) (*CommonError, error) {
+func (cli *Client) cancelLogisticsOrder(api, token string, canceler *ExpressOrderCanceler) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, canceler, res); err != nil {
 		return nil, err
 	}
@@ -351,7 +353,7 @@ func (cli *Client) cancelLogisticsOrder(api, token string, canceler *ExpressOrde
 
 // GetPrinterResponse 获取打印员返回数据
 type GetPrinterResponse struct {
-	CommonError
+	request.CommonError
 	Count     uint     `json:"count"`  // 已经绑定的打印员数量
 	OpenID    []string `json:"openid"` // 打印员 openid 列表
 	TagIDList []string `json:"tagid_list"`
@@ -391,7 +393,7 @@ type QuotaGetter struct {
 
 // QuotaGetResponse 电子面单余额
 type QuotaGetResponse struct {
-	CommonError
+	request.CommonError
 	Number uint // 电子面单余额
 }
 
@@ -432,7 +434,7 @@ type UpdateExpressOrderTester struct {
 }
 
 // Test 模拟快递公司更新订单状态, 该接口只能用户测试
-func (cli *Client) TestUpdateExpressOrder(tester *UpdateExpressOrderTester) (*CommonError, error) {
+func (cli *Client) TestUpdateExpressOrder(tester *UpdateExpressOrderTester) (*request.CommonError, error) {
 	api := baseURL + apiTestUpdateOrder
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -442,13 +444,13 @@ func (cli *Client) TestUpdateExpressOrder(tester *UpdateExpressOrderTester) (*Co
 	return cli.testUpdateExpressOrder(api, token, tester)
 }
 
-func (cli *Client) testUpdateExpressOrder(api, token string, tester *UpdateExpressOrderTester) (*CommonError, error) {
+func (cli *Client) testUpdateExpressOrder(api, token string, tester *UpdateExpressOrderTester) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, tester, res); err != nil {
 		return nil, err
 	}
@@ -464,7 +466,7 @@ type PrinterUpdater struct {
 }
 
 // Update 更新打印员。若需要使用微信打单 PC 软件，才需要调用。
-func (cli *Client) UpdateExpressOrder(updater *PrinterUpdater) (*CommonError, error) {
+func (cli *Client) UpdateExpressOrder(updater *PrinterUpdater) (*request.CommonError, error) {
 	api := baseURL + apiUpdatePrinter
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -474,13 +476,13 @@ func (cli *Client) UpdateExpressOrder(updater *PrinterUpdater) (*CommonError, er
 	return cli.updateExpressOrder(api, token, updater)
 }
 
-func (cli *Client) updateExpressOrder(api, token string, updater *PrinterUpdater) (*CommonError, error) {
+func (cli *Client) updateExpressOrder(api, token string, updater *PrinterUpdater) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.Post(url, updater, res); err != nil {
 		return nil, err
 	}

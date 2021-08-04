@@ -2,10 +2,10 @@ package weapp
 
 import (
 	"net/http"
-	"net/url"
 
 	"github.com/medivhzhan/weapp/v3/cache"
 	"github.com/medivhzhan/weapp/v3/request"
+	"github.com/medivhzhan/weapp/v3/subscribemessage"
 )
 
 const (
@@ -72,25 +72,7 @@ func tokenAPI(api, token string) (string, error) {
 		"access_token": token,
 	}
 
-	return encodeURL(api, queries)
-}
-
-// encodeURL add and encode parameters.
-func encodeURL(api string, params requestQueries) (string, error) {
-	url, err := url.Parse(api)
-	if err != nil {
-		return "", err
-	}
-
-	query := url.Query()
-
-	for k, v := range params {
-		query.Set(k, v)
-	}
-
-	url.RawQuery = query.Encode()
-
-	return url.String(), nil
+	return request.EncodeURL(api, queries)
 }
 
 // convert bool to int
@@ -101,4 +83,25 @@ func bool2int(ok bool) uint8 {
 	}
 
 	return 0
+}
+
+// 拼凑完整的 URI
+func (cli *Client) conbineURI(url string, queries map[string]string) (string, error) {
+	token, err := cli.AccessToken()
+	if err != nil {
+		return "", err
+	}
+
+	if queries == nil {
+		queries = map[string]string{"access_token": token}
+	} else {
+		queries["access_token"] = token
+	}
+
+	return request.EncodeURL(baseURL+url, queries)
+}
+
+// 订阅消息
+func (cli *Client) NewSubscribeMessage() *subscribemessage.SubscribeMessage {
+	return subscribemessage.NewSubscribeMessage(cli.request, cli.conbineURI)
 }

@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 const (
 	apiAICrop          = "/cv/img/aicrop"
 	apiScanQRCode      = "/cv/img/qrcode"
@@ -8,7 +10,7 @@ const (
 
 // AICropResponse 图片智能裁剪后的返回数据
 type AICropResponse struct {
-	CommonError
+	request.CommonError
 	Results []struct {
 		CropLeft   uint `json:"crop_left"`
 		CropTop    uint `json:"crop_top"`
@@ -65,7 +67,7 @@ func (cli *Client) aiCropByURL(api, token, imgURL string) (*AICropResponse, erro
 		"img_url":      imgURL,
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +88,7 @@ type QRCodePoint struct {
 
 // ScanQRCodeResponse 小程序的条码/二维码识别后的返回数据
 type ScanQRCodeResponse struct {
-	CommonError
+	request.CommonError
 	CodeResults []struct {
 		TypeName string `json:"type_name"`
 		Data     string `json:"data"`
@@ -147,7 +149,7 @@ func (cli *Client) scanQRCodeByURL(api, token, imgURL string) (*ScanQRCodeRespon
 		"img_url":      imgURL,
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}
@@ -162,7 +164,7 @@ func (cli *Client) scanQRCodeByURL(api, token, imgURL string) (*ScanQRCodeRespon
 
 // SuperResolutionResponse 图片高清化后的返回数据
 type SuperResolutionResponse struct {
-	CommonError
+	request.CommonError
 	MediaID string `json:"media_id"`
 }
 
@@ -210,7 +212,7 @@ func (cli *Client) superResolutionByURL(api, token, imgURL string) (*SuperResolu
 		"img_url":      imgURL,
 	}
 
-	url, err := encodeURL(api, queries)
+	url, err := request.EncodeURL(api, queries)
 	if err != nil {
 		return nil, err
 	}

@@ -1,5 +1,7 @@
 package weapp
 
+import "github.com/medivhzhan/weapp/v3/request"
+
 // 检测地址
 const (
 	apiIMGSecCheck     = "/wxa/img_sec_check"
@@ -12,7 +14,7 @@ const (
 //
 // filename 要检测的图片本地路径
 // token 接口调用凭证(access_token)
-func (cli *Client) IMGSecCheck(filename string) (*CommonError, error) {
+func (cli *Client) IMGSecCheck(filename string) (*request.CommonError, error) {
 	api := baseURL + apiIMGSecCheck
 
 	token, err := cli.AccessToken()
@@ -23,14 +25,14 @@ func (cli *Client) IMGSecCheck(filename string) (*CommonError, error) {
 	return cli.imgSecCheck(api, token, filename)
 }
 
-func (cli *Client) imgSecCheck(api, token, filename string) (*CommonError, error) {
+func (cli *Client) imgSecCheck(api, token, filename string) (*request.CommonError, error) {
 
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err := cli.request.FormPostWithFile(url, "media", filename, res); err != nil {
 		return nil, err
 	}
@@ -43,7 +45,7 @@ func (cli *Client) imgSecCheck(api, token, filename string) (*CommonError, error
 //
 // content 要检测的文本内容，长度不超过 500KB，编码格式为utf-8
 // token 接口调用凭证(access_token)
-func (cli *Client) MSGSecCheck(content string) (*CommonError, error) {
+func (cli *Client) MSGSecCheck(content string) (*request.CommonError, error) {
 	api := baseURL + apiMSGSecCheck
 
 	token, err := cli.AccessToken()
@@ -54,7 +56,7 @@ func (cli *Client) MSGSecCheck(content string) (*CommonError, error) {
 	return cli.msgSecCheck(api, token, content)
 }
 
-func (cli *Client) msgSecCheck(api, token, content string) (*CommonError, error) {
+func (cli *Client) msgSecCheck(api, token, content string) (*request.CommonError, error) {
 	url, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
@@ -64,7 +66,7 @@ func (cli *Client) msgSecCheck(api, token, content string) (*CommonError, error)
 		"content": content,
 	}
 
-	res := new(CommonError)
+	res := new(request.CommonError)
 	if err = cli.request.Post(url, params, res); err != nil {
 		return nil, err
 	}
@@ -84,7 +86,7 @@ const (
 
 // CheckMediaResponse 异步校验图片/音频返回数据
 type CheckMediaResponse struct {
-	CommonError
+	request.CommonError
 	TraceID string `json:"trace_id"`
 }
 
