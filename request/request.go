@@ -41,6 +41,10 @@ func (cli *Request) Get(url string, response interface{}) error {
 	}
 }
 
+func (cli *Request) GetWithBody(url string) (*http.Response, error) {
+	return cli.http.Get(url)
+}
+
 func (cli *Request) Post(url string, params interface{}, response interface{}) error {
 	resp, err := cli.PostWithBody(url, params)
 	if err != nil {

@@ -4,8 +4,10 @@ import (
 	"net/http"
 
 	"github.com/medivhzhan/weapp/v3/cache"
+	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
+	"github.com/mitchellh/mapstructure"
 )
 
 const (
@@ -64,7 +66,7 @@ func WithCache(c cache.Cache) func(*Client) {
 type requestParams map[string]interface{}
 
 // URL 参数
-type requestQueries map[string]string
+type requestQueries map[string]interface{}
 
 // tokenAPI 获取带 token 的 API 地址
 func tokenAPI(api, token string) (string, error) {
@@ -86,22 +88,42 @@ func bool2int(ok bool) uint8 {
 }
 
 // 拼凑完整的 URI
-func (cli *Client) conbineURI(url string, queries map[string]string) (string, error) {
+func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
+
+	output := make(map[string]interface{})
+
+	config := &mapstructure.DecoderConfig{
+		Metadata: nil,
+		Result:   &output,
+		TagName:  "query",
+	}
+
+	decoder, err := mapstructure.NewDecoder(config)
+	if err != nil {
+		return "", err
+	}
+
+	err = decoder.Decode(req)
+	if err != nil {
+		return "", err
+	}
+
 	token, err := cli.AccessToken()
 	if err != nil {
 		return "", err
 	}
 
-	if queries == nil {
-		queries = map[string]string{"access_token": token}
-	} else {
-		queries["access_token"] = token
-	}
+	output["access_token"] = token
 
-	return request.EncodeURL(baseURL+url, queries)
+	return request.EncodeURL(baseURL+url, output)
 }
 
 // 订阅消息
 func (cli *Client) NewSubscribeMessage() *subscribemessage.SubscribeMessage {
 	return subscribemessage.NewSubscribeMessage(cli.request, cli.conbineURI)
+}
+
+// 运维中心
+func (cli *Client) NewOperation() *operation.Operation {
+	return operation.NewOperation(cli.request, cli.conbineURI)
 }

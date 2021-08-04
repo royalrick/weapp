@@ -1,8 +1,11 @@
 package request
 
-import "net/url"
+import (
+	"fmt"
+	"net/url"
+)
 
-func EncodeURL(api string, queries map[string]string) (string, error) {
+func EncodeURL(api string, queries map[string]interface{}) (string, error) {
 	url, err := url.Parse(api)
 	if err != nil {
 		return "", err
@@ -11,7 +14,7 @@ func EncodeURL(api string, queries map[string]string) (string, error) {
 	query := url.Query()
 
 	for k, v := range queries {
-		query.Set(k, v)
+		query.Set(k, fmt.Sprintf("%v", v))
 	}
 
 	url.RawQuery = query.Encode()
