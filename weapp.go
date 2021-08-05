@@ -7,6 +7,7 @@ import (
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
+	"github.com/medivhzhan/weapp/v3/wxacode"
 	"github.com/mitchellh/mapstructure"
 )
 
@@ -126,4 +127,9 @@ func (cli *Client) NewSubscribeMessage() *subscribemessage.SubscribeMessage {
 // 运维中心
 func (cli *Client) NewOperation() *operation.Operation {
 	return operation.NewOperation(cli.request, cli.conbineURI)
+}
+
+// 小程序码
+func (cli *Client) NewWXACode() *wxacode.WXACode {
+	return wxacode.NewWXACode(cli.request, cli.conbineURI)
 }
