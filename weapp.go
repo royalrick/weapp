@@ -4,6 +4,7 @@ import (
 	"net/http"
 
 	"github.com/medivhzhan/weapp/v3/cache"
+	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
@@ -132,4 +133,9 @@ func (cli *Client) NewOperation() *operation.Operation {
 // 小程序码
 func (cli *Client) NewWXACode() *wxacode.WXACode {
 	return wxacode.NewWXACode(cli.request, cli.conbineURI)
+}
+
+// OCR
+func (cli *Client) NewOCR() *ocr.OCR {
+	return ocr.NewOCR(cli.request, cli.conbineURI)
 }
