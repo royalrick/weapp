@@ -19,7 +19,7 @@ type AddTemplateResponse struct {
 }
 
 // 组合模板并添加至帐号下的个人模板库
-func (cli *SubscribeMessage) AddTemplate(req AddTemplateRequest) (*AddTemplateResponse, error) {
+func (cli *SubscribeMessage) AddTemplate(req *AddTemplateRequest) (*AddTemplateResponse, error) {
 
 	api, err := cli.conbineURI(apiAddTemplate, nil)
 	if err != nil {
