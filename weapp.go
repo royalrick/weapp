@@ -1,9 +1,13 @@
 package weapp
 
 import (
+	"log"
 	"net/http"
+	"os"
+	"time"
 
 	"github.com/medivhzhan/weapp/v3/cache"
+	"github.com/medivhzhan/weapp/v3/logger"
 	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
@@ -24,45 +28,63 @@ type Client struct {
 	request *request.Request
 	// 数据缓存器
 	cache cache.Cache
+	// 日志记录器
+	logger logger.Logger
 	// 小程序后台配置: 小程序ID
 	appid string
 	// 小程序后台配置: 小程序密钥
 	secret string
 }
 
-// 初始化客户端
-func newClient(appid, secret string) *Client {
-	cli := Client{
-		appid:   appid,
-		secret:  secret,
-		cache:   cache.NewMemoryCache(),
-		request: request.NewRequest(http.DefaultClient, request.ContentTypeJSON),
-	}
-
-	return &cli
-}
-
 // 初始化客户端并用自定义配置替换默认配置
 func NewClient(appid, secret string, opts ...func(*Client)) *Client {
-	cli := newClient(appid, secret)
+	cli := &Client{
+		appid:  appid,
+		secret: secret,
+	}
 
 	// 执行额外的配置函数
 	for _, fn := range opts {
 		fn(cli)
 	}
 
+	if cli.cache == nil {
+		cli.cache = cache.NewMemoryCache()
+	}
+
+	if cli.request == nil {
+		cli.request = request.NewRequest(http.DefaultClient, request.ContentTypeJSON, cli.Logger)
+	}
+
+	if cli.logger == nil {
+		cli.logger = logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
+			SlowThreshold: 3 * time.Second,
+			LogLevel:      logger.Info,
+			Colorful:      true,
+		})
+	}
+
 	return cli
 }
 
-func WithHttpClient(c *http.Client) func(*Client) {
+// 自定义 HTTP Client
+func WithHttpClient(hc *http.Client) func(*Client) {
 	return func(cli *Client) {
-		cli.request = request.NewRequest(c, request.ContentTypeJSON)
+		cli.request = request.NewRequest(hc, request.ContentTypeJSON, cli.Logger)
 	}
 }
 
-func WithCache(c cache.Cache) func(*Client) {
+// 自定义缓存
+func WithCache(cc cache.Cache) func(*Client) {
 	return func(cli *Client) {
-		cli.cache = c
+		cli.cache = cc
+	}
+}
+
+// 自定义日志
+func WithLogger(logger logger.Logger) func(*Client) {
+	return func(cli *Client) {
+		cli.logger = logger
 	}
 }
 
@@ -90,6 +112,9 @@ func bool2int(ok bool) uint8 {
 
 	return 0
 }
+
+// 获取日志记录器
+func (cli *Client) Logger() logger.Logger { return cli.logger }
 
 // 拼凑完整的 URI
 func (cli *Client) conbineURI(url string, req interface{}) (string, error) {

@@ -2,6 +2,7 @@ package request
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"errors"
@@ -9,24 +10,31 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"github.com/medivhzhan/weapp/v3/logger"
 )
 
 type Request struct {
-	http        *http.Client
+	http *http.Client
+	// 获取日志记录器
+	logger      func() logger.Logger
 	contentType ContentType
 }
 
-func NewRequest(http *http.Client, ctp ContentType) *Request {
+func NewRequest(http *http.Client, ctp ContentType, logger func() logger.Logger) *Request {
 	return &Request{
 		http:        http,
+		logger:      logger,
 		contentType: ctp,
 	}
 }
 
 func (cli *Request) Get(url string, response interface{}) error {
+	cli.logger().Info(context.Background(), "request url: %s", url)
 
 	resp, err := cli.http.Get(url)
 	if err != nil {
+		cli.logger().Error(context.Background(), "get error: %s", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -42,12 +50,23 @@ func (cli *Request) Get(url string, response interface{}) error {
 }
 
 func (cli *Request) GetWithBody(url string) (*http.Response, error) {
-	return cli.http.Get(url)
+	cli.logger().Info(context.Background(), "request url: %s", url)
+	rsp, err := cli.http.Get(url)
+	if err != nil {
+		cli.logger().Error(context.Background(), "get with body error: %s", url)
+		return nil, err
+	}
+
+	return rsp, nil
 }
 
 func (cli *Request) Post(url string, params interface{}, response interface{}) error {
+	cli.logger().Info(context.Background(), "request url: %s", url)
+	cli.logger().Info(context.Background(), "request params: %+v", params)
+
 	resp, err := cli.PostWithBody(url, params)
 	if err != nil {
+		cli.logger().Error(context.Background(), "post error: %s", err)
 		return err
 	}
 	defer resp.Body.Close()
@@ -63,6 +82,8 @@ func (cli *Request) Post(url string, params interface{}, response interface{}) e
 }
 
 func (cli *Request) PostWithBody(url string, params interface{}) (*http.Response, error) {
+	cli.logger().Info(context.Background(), "request url: %s", url)
+	cli.logger().Info(context.Background(), "request params: %+v", params)
 	buf := new(bytes.Buffer)
 	if params != nil {
 		switch cli.contentType {
@@ -83,7 +104,13 @@ func (cli *Request) PostWithBody(url string, params interface{}) (*http.Response
 		}
 	}
 
-	return cli.http.Post(url, cli.contentType.String(), buf)
+	rsp, err := cli.http.Post(url, cli.contentType.String(), buf)
+	if err != nil {
+		cli.logger().Error(context.Background(), "post with body error: %s", url)
+		return nil, err
+	}
+
+	return rsp, nil
 }
 
 func (cli *Request) FormPostWithFile(url, field, filename string, response interface{}) error {
@@ -97,6 +124,7 @@ func (cli *Request) FormPostWithFile(url, field, filename string, response inter
 }
 
 func (cli *Request) FormPost(url, field, filename string, reader io.Reader, response interface{}) error {
+	cli.logger().Info(context.Background(), "request url: %s", url)
 	// Prepare a form that you will submit to that URL.
 	buf := new(bytes.Buffer)
 	w := multipart.NewWriter(buf)
@@ -123,6 +151,7 @@ func (cli *Request) FormPost(url, field, filename string, reader io.Reader, resp
 
 	resp, err := cli.http.Do(req)
 	if err != nil {
+		cli.logger().Error(context.Background(), "form post error: %s", err)
 		return err
 	}
 	defer resp.Body.Close()
