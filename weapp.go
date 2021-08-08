@@ -7,7 +7,9 @@ import (
 	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
+	"github.com/medivhzhan/weapp/v3/search"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
+	"github.com/medivhzhan/weapp/v3/updatablemessage"
 	"github.com/medivhzhan/weapp/v3/wxacode"
 	"github.com/mitchellh/mapstructure"
 )
@@ -138,4 +140,14 @@ func (cli *Client) NewWXACode() *wxacode.WXACode {
 // OCR
 func (cli *Client) NewOCR() *ocr.OCR {
 	return ocr.NewOCR(cli.request, cli.conbineURI)
+}
+
+// 动态消息
+func (cli *Client) NewUpdatableMessage() *updatablemessage.UpdatableMessage {
+	return updatablemessage.NewUpdatableMessage(cli.request, cli.conbineURI)
+}
+
+// 小程序搜索
+func (cli *Client) NewSearch() *search.Search {
+	return search.NewSearch(cli.request, cli.conbineURI)
 }

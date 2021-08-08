@@ -39,7 +39,7 @@ type UpdatableMsgParameter struct {
 	Value string                `json:"value"` // 修改后的参数值
 }
 
-// 组合模板并添加至帐号下的个人模板库
+// 修改被分享的动态消息。
 func (cli *UpdatableMessage) SetUpdatableMsg(req *SetUpdatableMsgRequest) (*request.CommonError, error) {
 
 	api, err := cli.conbineURI(apiSetUpdatableMsg, nil)
