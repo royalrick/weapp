@@ -1,4 +1,4 @@
-# ![微信小程序服务端 SDK (for Golang)](weapp.png)
+# ![微信小程序服务端 SDK (for Golang)](https://repository-images.githubusercontent.com/126961623/e561e692-7eac-4cd1-955b-f4fe3ff6f7b7)
 
 ## `注意`
 
