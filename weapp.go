@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/medivhzhan/weapp/v3/cache"
+	"github.com/medivhzhan/weapp/v3/livebroadcast"
 	"github.com/medivhzhan/weapp/v3/logger"
 	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
@@ -175,4 +176,9 @@ func (cli *Client) NewUpdatableMessage() *updatablemessage.UpdatableMessage {
 // 小程序搜索
 func (cli *Client) NewSearch() *search.Search {
 	return search.NewSearch(cli.request, cli.conbineURI)
+}
+
+// 直播
+func (cli *Client) NewLiveBroadcast() *livebroadcast.LiveBroadcast {
+	return livebroadcast.NewLiveBroadcast(cli.request, cli.conbineURI)
 }
