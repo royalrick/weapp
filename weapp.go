@@ -13,6 +13,7 @@ import (
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/search"
+	"github.com/medivhzhan/weapp/v3/server"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
 	"github.com/medivhzhan/weapp/v3/updatablemessage"
 	"github.com/medivhzhan/weapp/v3/wxacode"
@@ -146,6 +147,11 @@ func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
 	output["access_token"] = token
 
 	return request.EncodeURL(baseURL+url, output)
+}
+
+// 微信通知监听服务
+func (cli *Client) NewServer(token, aesKey, mchID, apiKey string, validate bool, handler func(map[string]interface{}) map[string]interface{}) (*server.Server, error) {
+	return server.NewServer(cli.appid, token, aesKey, mchID, apiKey, validate, handler)
 }
 
 // 订阅消息
