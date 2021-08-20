@@ -110,7 +110,7 @@ type UserInfo struct {
 // iv 加密算法的初始向量
 func (cli *Client) DecryptUserInfo(sessionKey, rawData, encryptedData, signature, iv string) (*UserInfo, error) {
 
-	if encrypt.NewSigner(false, rawData, sessionKey).CompareWith(signature) {
+	if !encrypt.NewSignable(false, rawData, sessionKey).IsEqual(signature) {
 		return nil, errors.New("failed to validate signature")
 	}
 

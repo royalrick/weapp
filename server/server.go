@@ -272,7 +272,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 		nonce, signature, timestamp := query.Get("nonce"), query.Get("signature"), query.Get("timestamp")
 
 		// 检验消息是否来自微信服务器
-		if encrypt.NewSigner(true, srv.token, timestamp, nonce).CompareWith(signature) {
+		if !encrypt.NewSignable(true, srv.token, timestamp, nonce).IsEqual(signature) {
 			return nil, errors.New("failed to validate signature")
 		}
 
@@ -658,7 +658,7 @@ func (srv *Server) validateServer(req *http.Request) bool {
 	signature := query.Get("signature")
 	timestamp := query.Get("timestamp")
 
-	return encrypt.NewSigner(true, nonce, timestamp, srv.token).CompareWith(signature)
+	return encrypt.NewSignable(true, nonce, timestamp, srv.token).IsEqual(signature)
 }
 
 // 加密消息
@@ -679,7 +679,7 @@ func (srv *Server) encryptMsg(message string, timestamp int64) (*EncryptedMsgReq
 	timestr := strconv.FormatInt(timestamp, 10)
 
 	//生成安全签名
-	signature := encrypt.NewSigner(true, srv.token, timestr, nonce, cipher).Sign()
+	signature := encrypt.NewSignable(true, srv.token, timestr, nonce, cipher).Sign()
 	request := EncryptedMsgRequest{
 		Nonce:        nonce,
 		Encrypt:      cipher,
