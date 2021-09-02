@@ -5,7 +5,8 @@ import "github.com/medivhzhan/weapp/v3/request"
 const apiGetAssistantList = "/wxaapi/broadcast/room/getassistantlist"
 
 type GetAssistantListRequest struct {
-	RoomId int64 `query:"roomId"` // 必填	直播间id
+	// 必填	直播间id
+	RoomId int64 `query:"roomId"`
 }
 
 type GetAssistantListResponse struct {
