@@ -4,10 +4,12 @@ import "github.com/medivhzhan/weapp/v3/request"
 
 const apiAddRole = "/wxaapi/broadcast/role/addrole"
 
-type Role = uint8
+type Role = int8
 
 const (
-	_ Role = iota
+	RoleALl Role = iota - 1
+	// 超级管理员
+	RoleRoot
 	// 管理员
 	RoleAdministrator
 	// 主播

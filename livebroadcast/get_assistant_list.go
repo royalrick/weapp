@@ -11,16 +11,23 @@ type GetAssistantListRequest struct {
 
 type GetAssistantListResponse struct {
 	request.CommonError
+	// 小助手列表
 	List []struct {
-		Timestamp int    `json:"timestamp"` // 修改时间
-		Headimg   string `json:"headimg"`   // 头像
-		Nickname  string `json:"nickname"`  // 昵称
-		Alias     string `json:"alias"`     // 微信号
-		Openid    string `json:"openid"`    // openid
-	} `json:"list"` //	小助手列表
-	Count    int `json:"count"`    // 小助手个数
-	MaxCount int `json:"maxCount"` // 小助手最大个数
-
+		// 修改时间// 修改时间
+		Timestamp int `json:"timestamp"`
+		// 头像// 头像
+		Headimg string `json:"headimg"`
+		// 昵称// 昵称
+		Nickname string `json:"nickname"`
+		// 微信号// 微信号
+		Alias string `json:"alias"`
+		// openid// openid
+		Openid string `json:"openid"`
+	} `json:"list"`
+	// 小助手个数// 小助手个数
+	Count int `json:"count"`
+	// 小助手最大个数// 小助手最大个数
+	MaxCount int `json:"maxCount"`
 }
 
 // 查询管理直播间小助手
