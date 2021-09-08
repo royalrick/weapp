@@ -36,7 +36,12 @@ type Client struct {
 	appid string
 	// 小程序后台配置: 小程序密钥
 	secret string
+	// 用户自定义获取access_token的方法
+	accessTokenGetter AccessTokenGetter
 }
+
+// 用户自定义获取access_token的方法
+type AccessTokenGetter func() (token string, expireIn uint)
 
 // 初始化客户端并用自定义配置替换默认配置
 func NewClient(appid, secret string, opts ...func(*Client)) *Client {
@@ -80,6 +85,13 @@ func WithHttpClient(hc *http.Client) func(*Client) {
 func WithCache(cc cache.Cache) func(*Client) {
 	return func(cli *Client) {
 		cli.cache = cc
+	}
+}
+
+// 自定义获取access_token的方法
+func WithAccessTokenSetter(getter AccessTokenGetter) func(*Client) {
+	return func(cli *Client) {
+		cli.accessTokenGetter = getter
 	}
 }
 

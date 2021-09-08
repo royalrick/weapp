@@ -75,18 +75,22 @@ func (cli *Client) AccessToken() (string, error) {
 		return data.(string), nil
 	}
 
-	rsp, err := cli.GetAccessToken()
-	if err != nil {
-		return "", err
+	if cli.accessTokenGetter != nil {
+		token, expireIn := cli.accessTokenGetter()
+		cli.cache.Set(key, token, time.Duration(expireIn))
+		return token, nil
+	} else {
+		rsp, err := cli.GetAccessToken()
+		if err != nil {
+			return "", err
+		}
+
+		if err := rsp.GetResponseError(); err != nil {
+			return "", err
+		}
+		cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn))
+		return rsp.AccessToken, nil
 	}
-
-	if err := rsp.GetResponseError(); err != nil {
-		return "", err
-	}
-
-	cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn))
-
-	return rsp.AccessToken, nil
 }
 
 func (cli *Client) GetAccessToken() (*TokenResponse, error) {
