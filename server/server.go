@@ -564,12 +564,11 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 
 // 判断 interface{} 是否为空
 func isNil(i interface{}) bool {
-	defer func() {
-		recover()
-	}()
+	if i == nil {
+		return false
+	}
 
-	vi := reflect.ValueOf(i)
-	return vi.IsNil()
+	return reflect.ValueOf(i).IsZero()
 }
 
 // Serve 接收并处理微信通知服务
