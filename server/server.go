@@ -58,8 +58,8 @@ type Server struct {
 	deliveryOrderReaddHandler         func(*DeliveryOrderReaddResult) *DeliveryOrderReaddReturn
 	preAuthCodeGetHandler             func(*PreAuthCodeGetResult) *PreAuthCodeGetReturn
 	riderScoreSetHandler              func(*RiderScoreSetResult) *RiderScoreSetReturn
-	subscribeMsgPopup                 func(*SubscribeMsgPopupEvent)
-	subscribeMsgChange                func(*SubscribeMsgChangeEvent)
+	subscribeMsgPopupHandler          func(*SubscribeMsgPopupEvent)
+	subscribeMsgChangeHandler         func(*SubscribeMsgChangeEvent)
 }
 
 // OnCustomerServiceTextMessage add handler to handle customer text service message.
@@ -190,12 +190,12 @@ func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetR
 
 // 当用户触发订阅消息弹框后
 func (srv *Server) OnSubscribeMsgPopup(fn func(*SubscribeMsgPopupEvent)) {
-	srv.subscribeMsgPopup = fn
+	srv.subscribeMsgPopupHandler = fn
 }
 
 // 当用户通过设置界面改变订阅消息事件内容
 func (srv *Server) OnSubscribeMsgChange(fn func(*SubscribeMsgChangeEvent)) {
-	srv.subscribeMsgChange = fn
+	srv.subscribeMsgChangeHandler = fn
 }
 
 // NewServer 返回经过初始化的Server
@@ -534,8 +534,8 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
-			if srv.riderScoreSetHandler != nil {
-				srv.subscribeMsgPopup(msg)
+			if srv.subscribeMsgPopupHandler != nil {
+				srv.subscribeMsgPopupHandler(msg)
 			}
 
 		case EventSubscribeMsgChange:
@@ -543,8 +543,8 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if err := unmarshal(raw, ctp, msg); err != nil {
 				return nil, err
 			}
-			if srv.riderScoreSetHandler != nil {
-				srv.subscribeMsgChange(msg)
+			if srv.subscribeMsgChangeHandler != nil {
+				srv.subscribeMsgChangeHandler(msg)
 			}
 		}
 
