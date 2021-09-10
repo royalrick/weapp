@@ -520,14 +520,6 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			if srv.addNearbyPoiAuditHandler != nil {
 				srv.addNearbyPoiAuditHandler(msg)
 			}
-		default:
-			msg := make(map[string]interface{})
-			if err := unmarshal(raw, ctp, msg); err != nil {
-				return nil, err
-			}
-			if srv.handler != nil {
-				return srv.handler(msg), nil
-			}
 
 		case EventSubscribeMsgPopup:
 			msg := new(SubscribeMsgPopupEvent)
@@ -545,6 +537,15 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 			if srv.subscribeMsgChangeHandler != nil {
 				srv.subscribeMsgChangeHandler(msg)
+			}
+
+		default:
+			msg := make(map[string]interface{})
+			if err := unmarshal(raw, ctp, msg); err != nil {
+				return nil, err
+			}
+			if srv.handler != nil {
+				return srv.handler(msg), nil
 			}
 		}
 
