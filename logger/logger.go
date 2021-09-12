@@ -2,10 +2,9 @@ package logger
 
 import (
 	"context"
-	"time"
 )
 
-// Colors
+// Console Colors
 const (
 	Reset       = "\033[0m"
 	Red         = "\033[31m"
@@ -21,11 +20,11 @@ const (
 	YellowBold  = "\033[33;1m"
 )
 
-// LogLevel
-type LogLevel int
+// Log Level
+type Level int
 
 const (
-	Silent LogLevel = iota + 1
+	Silent Level = iota
 	Error
 	Warn
 	Info
@@ -36,65 +35,63 @@ type Writer interface {
 	Printf(string, ...interface{})
 }
 
-type Config struct {
-	SlowThreshold             time.Duration
-	Colorful                  bool
-	IgnoreRecordNotFoundError bool
-	LogLevel                  LogLevel
-}
-
 // Logger interface
 type Logger interface {
 	Info(context.Context, string, ...interface{})
 	Warn(context.Context, string, ...interface{})
 	Error(context.Context, string, ...interface{})
+	SetLevel(Level)
 }
 
-func NewLogger(writer Writer, config Config) Logger {
-	var (
-		infoStr = "[info] "
-		warnStr = "[warn] "
-		errStr  = "[error] "
-	)
+func NewLogger(writer Writer, level Level, colorful bool) Logger {
+	infoStr := "[info] "
+	warnStr := "[warn] "
+	errStr := "[error] "
 
-	if config.Colorful {
+	if colorful {
 		infoStr = Green + "[info] " + Reset
 		warnStr = Magenta + "[warn] " + Reset
 		errStr = Red + "[error] " + Reset
 	}
 
 	return &logger{
-		Writer:  writer,
-		Config:  config,
-		infoStr: infoStr,
-		warnStr: warnStr,
-		errStr:  errStr,
+		Writer:   writer,
+		Colorful: colorful,
+		infoStr:  infoStr,
+		warnStr:  warnStr,
+		errStr:   errStr,
+		Level:    level,
 	}
 }
 
 type logger struct {
 	Writer
-	Config
+	Colorful                 bool
+	Level                    Level
 	infoStr, warnStr, errStr string
 }
 
 // Info print info
-func (l logger) Info(ctx context.Context, msg string, data ...interface{}) {
-	if l.LogLevel >= Info {
+func (l *logger) Info(ctx context.Context, msg string, data ...interface{}) {
+	if l.Level >= Info {
 		l.Printf(l.infoStr+msg, data...)
 	}
 }
 
 // Warn print warn messages
-func (l logger) Warn(ctx context.Context, msg string, data ...interface{}) {
-	if l.LogLevel >= Warn {
+func (l *logger) Warn(ctx context.Context, msg string, data ...interface{}) {
+	if l.Level >= Warn {
 		l.Printf(l.warnStr+msg, data...)
 	}
 }
 
 // Error print error messages
-func (l logger) Error(ctx context.Context, msg string, data ...interface{}) {
-	if l.LogLevel >= Error {
+func (l *logger) Error(ctx context.Context, msg string, data ...interface{}) {
+	if l.Level >= Error {
 		l.Printf(l.errStr+msg, data...)
 	}
+}
+
+func (l *logger) SetLevel(lv Level) {
+	l.Level = lv
 }

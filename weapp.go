@@ -4,7 +4,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/medivhzhan/weapp/v3/cache"
 	"github.com/medivhzhan/weapp/v3/livebroadcast"
@@ -64,11 +63,7 @@ func NewClient(appid, secret string, opts ...func(*Client)) *Client {
 	}
 
 	if cli.logger == nil {
-		cli.logger = logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Config{
-			SlowThreshold: 3 * time.Second,
-			LogLevel:      logger.Info,
-			Colorful:      true,
-		})
+		cli.logger = logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Info, true)
 	}
 
 	return cli
@@ -129,6 +124,13 @@ func bool2int(ok bool) uint8 {
 
 // 获取日志记录器
 func (cli *Client) Logger() logger.Logger { return cli.logger }
+
+// 设置日志等级
+func (cli *Client) SetLogLevel(lv logger.Level) {
+	if cli.logger != nil {
+		cli.logger.SetLevel(lv)
+	}
+}
 
 // 拼凑完整的 URI
 func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
