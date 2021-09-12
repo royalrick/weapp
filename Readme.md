@@ -134,6 +134,7 @@ go get -u github.com/medivhzhan/weapp/v3
     - [previewExpressTemplate](#previewExpressTemplate)
     - [updateExpressBusiness](#updateExpressBusiness)
     - [updateExpressPath](#updateExpressPath)
+- [直播](#直播)
 - [OCR](#OCR)
   - [bankcard](#bankcard) ✅
   - [businessLicense](#businessLicense) ✅
@@ -169,71 +170,174 @@ go get -u github.com/medivhzhan/weapp/v3
 
 ## 初始化
 
-1. 初始化接口客户端
+- 初始化 SDK
 
 ```go
-import "github.com/medivhzhan/weapp/v3"
+package main
 
-cli := weapp.NewClient("your-appid", "your-secret")
-
-// 自定义缓存
-// 用于缓存 AccessToken
-// 默认使用内存存储
-// 需要实现 cache 模块下 的 Cache 接口
-cc := MyCache{
-    //
-}
-
-cli := weapp.NewClient(
-    "your-appid",
-    "your-secret",
-    weapp.WithCache(cc),
+import (
+	"github.com/medivhzhan/weapp/v3"
 )
 
-// 自定义 HTTP 请求客户端
-// 默认使用 http.DefaultClient
-httpCli := &http.Client{
-    Timeout: 10 * time.Second,
-    Transport: &http.Transport{
-        // 跳过校验
-        TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-    },
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
 }
+```
 
-cli := weapp.NewClient(
-    "your-appid",
-    "your-secret",
-    weapp.WithHttpClient(httpCli),
+- 自定义 HTTP 客户端
+
+```go
+package main
+
+import (
+	"crypto/tls"
+	"net/http"
+	"time"
+
+	"github.com/medivhzhan/weapp/v3"
 )
+
+func main() {
+	cli := &http.Client{
+		Timeout: 10 * time.Second,
+		Transport: &http.Transport{
+			// 跳过安全校验
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		},
+	}
+
+	sdk := weapp.NewClient(
+		"your-appid",
+		"your-secret",
+		weapp.WithHttpClient(cli),
+	)
+}
 
 ```
 
-1. 初始化微信通知服务
+- 自定义日志
 
 ```go
-import "github.com/medivhzhan/weapp/v3/server"
+package main
 
-//  通用处理器
-handler := func(req map[string]interface{}) map[string]interface{}{
+import (
+	"log"
+	"os"
 
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/logger"
+)
 
-    switch req["MsgType"] {
+func main() {
+	lgr := logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Info, true)
 
-        case "text":
-        // Do something cool ...
-    }
+	sdk := weapp.NewClient(
+		"your-appid",
+		"your-secret",
+		weapp.WithLogger(lgr),
+	)
 
-    return nil
+	// 任意切换日志等级
+	sdk.SetLogLevel(logger.Silent)
 }
 
-srv, err := server.NewServer("appid", "token", "aesKey", "mchID", "apiKey", false, handler)
-if err != nil {
-    lof.Fatalf("init server error: %s", err)
+```
+
+- 自定义缓存
+
+```go
+package main
+
+import (
+	"time"
+
+	"github.com/medivhzhan/weapp/v3"
+)
+
+type MyCache struct{}
+
+func (cc *MyCache) Set(key string, val interface{}, timeout time.Duration) {
+	// ...
 }
 
-err:= srv.Serve()
-if err != nil {
-    lof.Fatalf("serving error: %s", err)
+func (cc *MyCache) Get(key string) (interface{}, bool) {
+	return "your-access-token", true
+}
+
+func main() {
+	cc := new(MyCache)
+
+	sdk := weapp.NewClient(
+		"your-appid",
+		"your-secret",
+		weapp.WithCache(cc),
+	)
+}
+
+```
+
+- 自定义 token 设置方法
+
+```go
+package main
+
+import (
+	"github.com/medivhzhan/weapp/v3"
+)
+
+func main() {
+	tokenGetter := func() (token string, expireIn uint) {
+
+		expireIn = 1000
+		token = "your-custom-token"
+
+		return token, expireIn
+	}
+
+	sdk := weapp.NewClient(
+		"your-appid",
+		"your-secret",
+		weapp.WithAccessTokenSetter(tokenGetter),
+	)
+}
+
+```
+
+- 初始化微信通知服务
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"github.com/medivhzhan/weapp/v3"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	//  通用处理器
+	handler := func(req map[string]interface{}) map[string]interface{} {
+		switch req["MsgType"] {
+		case "text":
+			// Do something cool ...
+		}
+
+		return nil
+	}
+
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		srv, err := sdk.NewServer("token", "aesKey", "mchID", "apiKey", false, handler)
+		if err != nil {
+			log.Fatalf("init server error: %s", err)
+		}
+
+		if err := srv.Serve(w, r); err != nil {
+			log.Fatalf("serving error: %s", err)
+		}
+	})
 }
 
 ```
@@ -771,6 +875,38 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 动态消息
 
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/updatablemessage"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewUpdatableMessage()
+
+	rsp, err := cli.CreateActivityId(&updatablemessage.CreateActivityIdRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
+
 ### createActivityId
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/updatable-message/updatableMessage.createActivityId.html)
@@ -1078,6 +1214,45 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 小程序码
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"io/ioutil"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/wxacode"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewWXACode()
+
+	res, rsp, err := cli.QRCode(&wxacode.GetRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer res.Body.Close()
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	raw, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(string(raw))
+}
+
+```
 
 ### createQRCode
 
@@ -2671,7 +2846,75 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
+## 直播
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/livebroadcast"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewLiveBroadcast()
+
+	rsp, err := cli.AddAssistant(&livebroadcast.AddAssistantRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
+
+---
+
 ## OCR
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/ocr"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewOCR()
+
+	rsp, err := cli.IDCardByFile("filename.png", ocr.RecognizeModePhoto)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
 
 ### bankcard
 
@@ -2825,7 +3068,75 @@ fmt.Printf("返回结果: %#v", res)
 
 ---
 
+## 运维中心
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/operation"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewOperation()
+
+	rsp, err := cli.GetFeedback(&operation.GetFeedbackRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
+
+---
+
 ## 小程序搜索
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/search"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewSearch()
+
+	rsp, err := cli.SiteSearch(&search.SiteSearchRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
 
 ### imageSearch
 
@@ -2939,6 +3250,38 @@ fmt.Printf("返回结果: %#v", res)
 ---
 
 ## 订阅消息
+
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/subscribemessage"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewSubscribeMessage()
+
+	rsp, err := cli.Send(&subscribemessage.SendRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
 
 ### addTemplate
 
