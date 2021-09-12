@@ -5,7 +5,7 @@
 - `v3` 版本为测试版本 请斟酌使用
 - [v1 版本入口](https://github.com/medivhzhan/weapp/tree/v1)
 - [v2 版本入口](https://github.com/medivhzhan/weapp/tree/v2)
-- 新版本不包含支付相关内容, 已有很多优秀的支付相关模块;
+- SDK 暂不包含支付相关内容 已有很多优秀的支付相关模块
 
 ## 获取代码
 
@@ -152,7 +152,7 @@ func main() {
 
 ---
 
-## `目录`
+## `接口目录`
 
 > 文档按照[小程序服务端官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)排版，方便一一对照查找相关内容。
 
@@ -298,6 +298,8 @@ func main() {
 ---
 
 ## 微信通知
+
+[官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/server-ability/message-push.html#option-url)
 
 ```go
 package main
