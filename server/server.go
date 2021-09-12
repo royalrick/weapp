@@ -565,7 +565,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 // 判断 interface{} 是否为空
 func isNil(i interface{}) bool {
 	if i == nil {
-		return false
+		return true
 	}
 
 	return reflect.ValueOf(i).IsZero()
