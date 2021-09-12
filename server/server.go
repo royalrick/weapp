@@ -714,7 +714,7 @@ func (srv *Server) decryptMsg(encrypted string) ([]byte, error) {
 		return nil, err
 	}
 
-	data, err := encrypt.NewCBC(key, ciphertext, key).Decrypt()
+	data, err := encrypt.NewCBC(key, key, ciphertext).Decrypt()
 	if err != nil {
 		return nil, err
 	}
