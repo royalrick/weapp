@@ -276,7 +276,7 @@ func main() {
 
 ```
 
-- 自定义 token 设置方法
+- 自定义 token 获取方法
 
 ```go
 package main
@@ -303,7 +303,7 @@ func main() {
 
 ```
 
-- 初始化微信通知服务
+- 接收微信通知服务
 
 ```go
 package main
@@ -313,6 +313,7 @@ import (
 	"net/http"
 
 	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/server"
 )
 
 func main() {
@@ -328,11 +329,18 @@ func main() {
 		return nil
 	}
 
-	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+    // HTTP handler
+	http.HandleFunc("/wechat/notify", func(w http.ResponseWriter, r *http.Request) {
 		srv, err := sdk.NewServer("token", "aesKey", "mchID", "apiKey", false, handler)
 		if err != nil {
 			log.Fatalf("init server error: %s", err)
 		}
+
+		// 调用事件处理器后 通用处理器不再处理该事件
+		srv.OnCustomerServiceTextMessage(func(tmr *server.TextMessageResult) *server.TransferCustomerMessage {
+
+			return &server.TransferCustomerMessage{}
+		})
 
 		if err := srv.Serve(w, r); err != nil {
 			log.Fatalf("serving error: %s", err)
