@@ -670,7 +670,8 @@ const (
 // 用户触发订阅消息弹框事件内容
 type SubscribeMsgPopupEvent struct {
 	CommonServerResult
-	SubscribeMsgPopupEvent []*UserSubscribedMsg `json:"SubscribeMsgPopupEvent" xml:"SubscribeMsgPopupEvent"`
+	// https://developers.weixin.qq.com/community/develop/doc/000e0c47cb85b070d1bc00fcf51c00?fromCreate=0
+	SubscribeMsgPopupEvent []*UserSubscribedMsg `json:"List" xml:"SubscribeMsgPopupEvent"`
 }
 
 // 订阅的模板
@@ -686,7 +687,8 @@ type UserSubscribedMsg struct {
 // 用户改变订阅消息事件内容
 type SubscribeMsgChangeEvent struct {
 	CommonServerResult
-	SubscribeMsgChangeEvent []*UserChangesSubscribeMsg `json:"SubscribeMsgChangeEvent" xml:"SubscribeMsgChangeEvent"`
+	// https://developers.weixin.qq.com/community/develop/doc/000e0c47cb85b070d1bc00fcf51c00?fromCreate=0
+	SubscribeMsgChangeEvent []*UserChangesSubscribeMsg `json:"List" xml:"SubscribeMsgChangeEvent"`
 }
 
 // 订阅的模板
