@@ -670,6 +670,7 @@ const (
 // 用户触发订阅消息弹框事件内容
 type SubscribeMsgPopupEvent struct {
 	CommonServerResult
+	List                   []*UserSubscribedMsg `json:"List" xml:"List"`
 	SubscribeMsgPopupEvent []*UserSubscribedMsg `json:"SubscribeMsgPopupEvent" xml:"SubscribeMsgPopupEvent"`
 }
 
