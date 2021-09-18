@@ -687,6 +687,7 @@ type UserSubscribedMsg struct {
 // 用户改变订阅消息事件内容
 type SubscribeMsgChangeEvent struct {
 	CommonServerResult
+	List                    []*UserChangesSubscribeMsg `json:"List" xml:"List"`
 	SubscribeMsgChangeEvent []*UserChangesSubscribeMsg `json:"SubscribeMsgChangeEvent" xml:"SubscribeMsgChangeEvent"`
 }
 
