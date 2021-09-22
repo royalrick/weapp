@@ -674,6 +674,23 @@ type SubscribeMsgPopupEvent struct {
 	SubscribeMsgPopupEvent []*UserSubscribedMsg `json:"SubscribeMsgPopupEvent" xml:"SubscribeMsgPopupEvent"`
 }
 
+// 订阅消息发送结果通知事件内容
+type SubscribeMsgSentEvent struct {
+	CommonServerResult
+	SubscribeMsgSentEvent struct {
+		List struct {
+			// 模板id（一次订阅可能有多个id）
+			TemplateId string `json:"TemplateId" xml:"TemplateId"`
+			// 消息id（调用接口时也会返回）
+			MsgID int `json:"MsgId" xml:"MsgId"`
+			// 推送结果状态码（0表示成功）
+			ErrorCode int `json:"ErrorCode" xml:"ErrorCode"`
+			// 推送结果状态码对应的含义
+			ErrorStatus int `json:"ErrorStatus" xml:"ErrorStatus"`
+		} `json:"List" xml:"List"`
+	} `json:"SubscribeMsgSentEvent" xml:"SubscribeMsgSentEvent"`
+}
+
 // 订阅的模板
 type UserSubscribedMsg struct {
 	// 模板id（一次订阅可能有多个id）
