@@ -8,7 +8,7 @@ type PriceType uint8
 
 const (
 	_                 PriceType = iota
-	PriceTypeOne                // 一口价
+	PriceTypeNormal             // 一口价
 	PriceTypeRange              // 区间价格
 	PriceTypeDiscount           // 折扣价格
 )

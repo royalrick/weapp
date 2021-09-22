@@ -2,27 +2,27 @@ package livebroadcast
 
 import "github.com/medivhzhan/weapp/v3/request"
 
-const apigetSubAnchor = "/wxaapi/broadcast/room/getsubanchor"
+const apiGetSubAnchor = "/wxaapi/broadcast/room/GetSubAnchor"
 
-type getSubAnchorRequest struct {
+type GetSubAnchorRequest struct {
 	//	房间ID
 	RoomId int64 `json:"roomId"`
 }
 
-type getSubAnchorResponse struct {
+type GetSubAnchorResponse struct {
 	request.CommonError
 	Username string `json:"username"`
 }
 
 // 获取主播副号
-func (cli *LiveBroadcast) GetSubAnchor(req *getSubAnchorRequest) (*getSubAnchorResponse, error) {
+func (cli *LiveBroadcast) GetSubAnchor(req *GetSubAnchorRequest) (*GetSubAnchorResponse, error) {
 
-	api, err := cli.conbineURI(apigetSubAnchor, req)
+	api, err := cli.conbineURI(apiGetSubAnchor, req)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(getSubAnchorResponse)
+	res := new(GetSubAnchorResponse)
 	err = cli.request.Get(api, res)
 	if err != nil {
 		return nil, err
