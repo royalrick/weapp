@@ -377,6 +377,45 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 用户信息
 
+- 初始化
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/medivhzhan/weapp/v3"
+	"github.com/medivhzhan/weapp/v3/auth"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewAuth()
+
+    // 用户支付完成后，获取该用户的 UnionId，无需用户授权。
+	rsp, err := cli.GetPaidUnionId(&auth.GetPaidUnionIdRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+    // 检查加密信息是否由微信生成（当前只支持手机号加密数据），只能检测最近3天生成的加密数据
+	rsp, err := cli.CheckEncryptedData(&auth.CheckEncryptedDataRequest{})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	if err := rsp.GetResponseError(); err != nil {
+		log.Println(err)
+	}
+
+	fmt.Println(rsp)
+}
+
+```
+
 ### getPaidUnionId
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/user-info/auth.getPaidUnionId.html)
