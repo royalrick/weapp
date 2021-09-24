@@ -2,16 +2,16 @@ package livebroadcast
 
 import "github.com/medivhzhan/weapp/v3/request"
 
-const apigetSharedCode = "/wxaapi/broadcast/room/getsharedcode"
+const apiGetSharedCode = "/wxaapi/broadcast/room/GetSharedCode"
 
-type getSharedCodeRequest struct {
+type GetSharedCodeRequest struct {
 	//	房间ID
 	RoomId int64 `json:"roomId"`
 	// 自定义参数
 	Params int64 `json:"params"`
 }
 
-type getSharedCodeResponse struct {
+type GetSharedCodeResponse struct {
 	request.CommonError
 	// 分享二维码地址
 	CdnUrl string `json:"cdnUrl"`
@@ -22,14 +22,14 @@ type getSharedCodeResponse struct {
 }
 
 // 获取直播间分享二维码
-func (cli *LiveBroadcast) GetSharedCode(req *getSharedCodeRequest) (*getSharedCodeResponse, error) {
+func (cli *LiveBroadcast) GetSharedCode(req *GetSharedCodeRequest) (*GetSharedCodeResponse, error) {
 
-	api, err := cli.conbineURI(apigetSharedCode, req)
+	api, err := cli.conbineURI(apiGetSharedCode, req)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(getSharedCodeResponse)
+	res := new(GetSharedCodeResponse)
 	err = cli.request.Get(api, res)
 	if err != nil {
 		return nil, err

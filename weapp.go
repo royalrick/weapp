@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/medivhzhan/weapp/v3/auth"
 	"github.com/medivhzhan/weapp/v3/cache"
 	"github.com/medivhzhan/weapp/v3/livebroadcast"
 	"github.com/medivhzhan/weapp/v3/logger"
@@ -161,6 +162,11 @@ func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
 	output["access_token"] = token
 
 	return request.EncodeURL(baseURL+url, output)
+}
+
+// 用户信息
+func (cli *Client) NewAuth() *auth.Auth {
+	return auth.NewAuth(cli.request, cli.conbineURI)
 }
 
 // 微信通知监听服务
