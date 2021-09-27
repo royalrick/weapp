@@ -1522,6 +1522,23 @@ fmt.Printf("返回结果: %#v", res)
 
 ## 内容安全
 
+- 初始化
+
+```go
+package main
+
+import (
+	"github.com/medivhzhan/weapp/v3"
+)
+
+func main() {
+	sdk := weapp.NewClient("your-appid", "your-secret")
+
+	cli := sdk.NewSecurity()
+}
+
+```
+
 ### imgSecCheck
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.imgSecCheck.html)
