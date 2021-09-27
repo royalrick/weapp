@@ -13,6 +13,7 @@ import (
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/search"
+	"github.com/medivhzhan/weapp/v3/security"
 	"github.com/medivhzhan/weapp/v3/server"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
 	"github.com/medivhzhan/weapp/v3/updatablemessage"
@@ -207,4 +208,9 @@ func (cli *Client) NewSearch() *search.Search {
 // 直播
 func (cli *Client) NewLiveBroadcast() *livebroadcast.LiveBroadcast {
 	return livebroadcast.NewLiveBroadcast(cli.request, cli.conbineURI)
+}
+
+// 内容安全
+func (cli *Client) NewSecurity() *security.Security {
+	return security.NewSecurity(cli.request, cli.conbineURI)
 }

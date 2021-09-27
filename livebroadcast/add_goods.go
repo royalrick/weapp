@@ -5,9 +5,9 @@ import "github.com/medivhzhan/weapp/v3/request"
 const apiAddGoods = "/wxaapi/broadcast/room/addgoods"
 
 type AddGoodsRequest struct {
-	// 必传	数组列表，可传入多个，里面填写 商品 ID
+	// 必填	数组列表，可传入多个，里面填写 商品 ID
 	Ids []int64 `json:"ids"`
-	// 必传	房间ID
+	// 必填	房间ID
 	RoomId int64 `json:"roomId"`
 }
 

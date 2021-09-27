@@ -74,11 +74,29 @@ type CardMessageResult struct {
 // MediaCheckAsyncResult 异步校验的图片/音频结果
 type MediaCheckAsyncResult struct {
 	CommonServerResult
-	IsRisky       uint8  `json:"isrisky" xml:"isrisky"`                 // 检测结果，0：暂未检测到风险，1：风险
-	ExtraInfoJSON string `json:"extra_info_json" xml:"extra_info_json"` // 附加信息，默认为空
-	AppID         string `json:"appid" xml:"appid"`                     // 小程序的appid
-	TraceID       string `json:"trace_id" xml:"trace_id"`               // 任务id
-	StatusCode    int    `json:"status_code" xml:"status_code"`         // 默认为：0，4294966288(-1008)为链接无法下载
+	AppID   string `json:"appid" xml:"appid"`       // 小程序的appid
+	TraceID string `json:"trace_id" xml:"trace_id"` // 任务id
+	Version string `json:"version" xml:"version"`   // 可用于区分接口版本
+	// 综合结果
+	Result struct {
+		// 建议，有risky、pass、review三种值
+		Suggest string `json:"suggest" xml:"suggest"`
+		// 命中标签枚举值，100 正常；10001 广告；20001 时政；20002 色情；20003 辱骂；20006 违法犯罪；20008 欺诈；20012 低俗；20013 版权；21000 其他
+		Label string `json:"label" xml:"label"`
+	} `json:"result" xml:"result"`
+	// 详细检测结果
+	Detail []struct {
+		// 策略类型
+		Strategy string `json:"strategy" xml:"strategy"`
+		// 错误码，仅当该值为0时，该项结果有效
+		Errcode int `json:"errcode" xml:"errcode"`
+		// 建议，有risky、pass、review三种值
+		Suggest string `json:"suggest" xml:"suggest"`
+		// 命中标签枚举值，100 正常；10001 广告；20001 时政；20002 色情；20003 辱骂；20006 违法犯罪；20008 欺诈；20012 低俗；20013 版权；21000 其他
+		Label int `json:"label" xml:"label"`
+		// 0-100，代表置信度，越高代表越有可能属于当前返回的标签（label）
+		Prob int `json:"prob" xml:"prob"`
+	} `json:"detail" xml:"detail"`
 }
 
 // AddNearbyPoiResult 附近小程序添加地点审核状态通知数据

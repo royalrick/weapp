@@ -5,7 +5,7 @@ import "github.com/medivhzhan/weapp/v3/request"
 const apiDeleteSubAnchor = "/wxaapi/broadcast/room/deletesubanchor"
 
 type DeleteSubAnchorRequest struct {
-	// 必传	房间ID
+	// 必填	房间ID
 	RoomId int64 `json:"roomId"`
 }
 

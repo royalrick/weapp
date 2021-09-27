@@ -14,7 +14,7 @@ type GoodsInfo struct {
 	CoverImgUrl string `json:"coverImgUrl"`
 	// 必填 商品名称，最长14个汉字，1个汉字相当于2个字符
 	Name string `json:"name"`
-	// 必填 价格类型，1：一口价（只需要传入price，price2不传） 2：价格区间（price字段为左边界，price2字段为右边界，price和price2必传） 3：显示折扣价（price字段为原价，price2字段为现价， price和price2必传）
+	// 必填 价格类型，1：一口价（只需要传入price，price2不传） 2：价格区间（price字段为左边界，price2字段为右边界，price和price2必填） 3：显示折扣价（price字段为原价，price2字段为现价， price和price2必填）
 	PriceType PriceType `json:"priceType"`
 	// 必填 数字，最多保留两位小数，单位元
 	Price float64 `json:"price"`
