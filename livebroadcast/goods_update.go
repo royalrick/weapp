@@ -2,14 +2,16 @@ package livebroadcast
 
 import "github.com/medivhzhan/weapp/v3/request"
 
-const apiGoodsAdd = "/wxaapi/broadcast/goods/add"
+const apiGoodsUpdate = "/wxaapi/broadcast/goods/update"
 
-type GoodsAddRequest struct {
+type GoodsUpdateRequest struct {
 	//	商品信息
-	GoodsInfo *GoodsAddInfo `json:"goodsInfo"`
+	GoodsInfo *GoodsUpdateInfo `json:"goodsInfo"`
 }
 
-type GoodsAddInfo struct {
+type GoodsUpdateInfo struct {
+	// 必填 商品ID
+	GoodsId int64 `json:"goodsId"`
 	// 必填 填入mediaID（mediaID获取后，三天内有效）；图片mediaID的获取，请参考以下文档： https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/New_temporary_materials.html；图片规则：图片尺寸最大300像素*300像素；
 	CoverImgUrl string `json:"coverImgUrl"`
 	// 必填 商品名称，最长14个汉字，1个汉字相当于2个字符
@@ -26,23 +28,19 @@ type GoodsAddInfo struct {
 	ThirdPartyAppid string `json:"thirdPartyAppid"`
 }
 
-type GoodsAddResponse struct {
+type GoodsUpdateResponse struct {
 	request.CommonError
-	// 商品ID
-	GoodsId int64 `json:"goodsId"`
-	// 审核单ID
-	AuditId int64 `json:"auditId"`
 }
 
-// 商品添加并提审
-func (cli *LiveBroadcast) GoodsAdd(req *GoodsAddRequest) (*GoodsAddResponse, error) {
+// 更新商品
+func (cli *LiveBroadcast) GoodsUpdate(req *GoodsUpdateRequest) (*GoodsUpdateResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsAdd, nil)
+	api, err := cli.conbineURI(apiGoodsUpdate, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(GoodsAddResponse)
+	res := new(GoodsUpdateResponse)
 	err = cli.request.Post(api, req, res)
 	if err != nil {
 		return nil, err
