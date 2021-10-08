@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/medivhzhan/weapp/v3/auth"
 	"github.com/medivhzhan/weapp/v3/cache"
@@ -131,6 +132,40 @@ func (cli *Client) Logger() logger.Logger { return cli.logger }
 func (cli *Client) SetLogLevel(lv logger.Level) {
 	if cli.logger != nil {
 		cli.logger.SetLevel(lv)
+	}
+}
+
+// 获取小程序全局唯一后台接口调用凭据（access_token）。
+// 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
+func (cli *Client) AccessToken() (string, error) {
+
+	key := cli.tokenCacheKey()
+	data, ok := cli.cache.Get(key)
+	if ok {
+		return data.(string), nil
+	}
+
+	if cli.accessTokenGetter != nil {
+		token, expireIn := cli.accessTokenGetter()
+		cli.cache.Set(key, token, time.Duration(expireIn)*time.Second)
+		return token, nil
+	} else {
+
+		req := auth.GetAccessTokenRequest{
+			Appid:     cli.appid,
+			Secret:    cli.secret,
+			GrantType: "client_credential",
+		}
+		rsp, err := cli.NewAuth().GetAccessToken(&req)
+		if err != nil {
+			return "", err
+		}
+
+		if err := rsp.GetResponseError(); err != nil {
+			return "", err
+		}
+		cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn)*time.Second)
+		return rsp.AccessToken, nil
 	}
 }
 
