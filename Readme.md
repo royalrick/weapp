@@ -154,7 +154,7 @@ func main() {
 
 ---
 
-## 使用接口示例
+## 调用接口示例
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/api-backend/)
 
@@ -210,7 +210,7 @@ func main() {
 
 ---
 
-## 微信通知
+## 接收微信通知
 
 [官方文档](https://developers.weixin.qq.com/miniprogram/dev/framework/server-ability/message-push.html#option-url)
 
