@@ -6,9 +6,9 @@ const apiGetSharedCode = "/wxaapi/broadcast/room/GetSharedCode"
 
 type GetSharedCodeRequest struct {
 	//	房间ID
-	RoomId int64 `json:"roomId"`
+	RoomId int64 `query:"roomId"`
 	// 自定义参数
-	Params int64 `json:"params"`
+	Params int64 `query:"params"`
 }
 
 type GetSharedCodeResponse struct {

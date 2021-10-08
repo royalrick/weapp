@@ -6,13 +6,13 @@ const apiGetPaidUnionId = "/wxa/getpaidunionid"
 
 type GetPaidUnionIdRequest struct {
 	// 必填	支付用户唯一标识
-	Openid string `json:"openid"`
+	Openid string `query:"openid"`
 	// 非必填	微信支付订单号
-	TransactionId string `json:"transaction_id"`
+	TransactionId string `query:"transaction_id"`
 	// 非必填	微信支付分配的商户号，和商户订单号配合使用
-	MchId string `json:"mch_id"`
+	MchId string `query:"mch_id"`
 	// 非必填	微信支付商户订单号，和商户号配合使用
-	OutTradeNo string `json:"out_trade_no"`
+	OutTradeNo string `query:"out_trade_no"`
 }
 
 type GetPaidUnionIdResponse struct {

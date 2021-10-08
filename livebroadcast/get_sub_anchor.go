@@ -6,7 +6,7 @@ const apiGetSubAnchor = "/wxaapi/broadcast/room/GetSubAnchor"
 
 type GetSubAnchorRequest struct {
 	//	房间ID
-	RoomId int64 `json:"roomId"`
+	RoomId int64 `query:"roomId"`
 }
 
 type GetSubAnchorResponse struct {
