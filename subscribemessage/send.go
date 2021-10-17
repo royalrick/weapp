@@ -12,7 +12,15 @@ type SendRequest struct {
 	TemplateID       string           `json:"template_id"`
 	Page             string           `json:"page,omitempty"`
 	MiniprogramState MiniprogramState `json:"miniprogram_state,omitempty"`
-	Data             string           `json:"data"`
+	Data             SendData         `json:"data"`
+}
+
+// 模板数据内容
+type SendData map[string]SendValue
+
+// 模板变量值
+type SendValue struct {
+	Value string `json:"value"`
 }
 
 // MiniprogramState 跳转小程序类型
