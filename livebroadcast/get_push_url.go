@@ -18,7 +18,7 @@ type GetPushUrlResponse struct {
 // 获取直播间推流地址
 func (cli *LiveBroadcast) GetPushUrl(req *GetPushUrlRequest) (*GetPushUrlResponse, error) {
 
-	api, err := cli.conbineURI(apiGetPushUrl, req)
+	api, err := cli.conbineURI(apiGetPushUrl, req, true)
 	if err != nil {
 		return nil, err
 	}

@@ -20,7 +20,7 @@ type CheckEncryptedDataResponse struct {
 // 检查加密信息是否由微信生成（当前只支持手机号加密数据），只能检测最近3天生成的加密数据
 func (cli *Auth) CheckEncryptedData(req *CheckEncryptedDataRequest) (*CheckEncryptedDataResponse, error) {
 
-	api, err := cli.conbineURI(apiCheckEncryptedData, nil)
+	api, err := cli.conbineURI(apiCheckEncryptedData, nil, true)
 	if err != nil {
 		return nil, err
 	}

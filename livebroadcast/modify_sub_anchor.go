@@ -18,7 +18,7 @@ type ModifySubAnchorResponse struct {
 // 修改主播副号
 func (cli *LiveBroadcast) ModifySubAnchor(req *ModifySubAnchorRequest) (*ModifySubAnchorResponse, error) {
 
-	api, err := cli.conbineURI(apiModifySubAnchor, nil)
+	api, err := cli.conbineURI(apiModifySubAnchor, nil, true)
 	if err != nil {
 		return nil, err
 	}

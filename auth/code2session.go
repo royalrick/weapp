@@ -29,7 +29,7 @@ type Code2SessionResponse struct {
 // 通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。
 func (cli *Auth) Code2Session(req *Code2SessionRequest) (*Code2SessionResponse, error) {
 
-	api, err := cli.conbineURI(apiCode2Session, req)
+	api, err := cli.conbineURI(apiCode2Session, req, false)
 	if err != nil {
 		return nil, err
 	}

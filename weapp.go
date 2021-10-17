@@ -170,7 +170,7 @@ func (cli *Client) AccessToken() (string, error) {
 }
 
 // 拼凑完整的 URI
-func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
+func (cli *Client) conbineURI(url string, req interface{}, withToken bool) (string, error) {
 
 	output := make(map[string]interface{})
 
@@ -190,12 +190,14 @@ func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
 		return "", err
 	}
 
-	token, err := cli.AccessToken()
-	if err != nil {
-		return "", err
-	}
+	if withToken {
+		token, err := cli.AccessToken()
+		if err != nil {
+			return "", err
+		}
 
-	output["access_token"] = token
+		output["access_token"] = token
+	}
 
 	return request.EncodeURL(baseURL+url, output)
 }

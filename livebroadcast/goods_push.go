@@ -18,7 +18,7 @@ type GoodsPushResponse struct {
 // 推送商品
 func (cli *LiveBroadcast) GoodsPush(req *GoodsPushRequest) (*GoodsPushResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsPush, nil)
+	api, err := cli.conbineURI(apiGoodsPush, nil, true)
 	if err != nil {
 		return nil, err
 	}

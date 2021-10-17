@@ -18,7 +18,7 @@ type GoodsAuditResponse struct {
 // 重新提交审核
 func (cli *LiveBroadcast) GoodsAudit(req *GoodsAuditRequest) (*GoodsAuditResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsAudit, nil)
+	api, err := cli.conbineURI(apiGoodsAudit, nil, true)
 	if err != nil {
 		return nil, err
 	}

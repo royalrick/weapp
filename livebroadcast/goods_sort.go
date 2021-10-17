@@ -24,7 +24,7 @@ type GoodsSortResponse struct {
 // 直播间商品排序
 func (cli *LiveBroadcast) GoodsSort(req *GoodsSortRequest) (*GoodsSortResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsSort, nil)
+	api, err := cli.conbineURI(apiGoodsSort, nil, true)
 	if err != nil {
 		return nil, err
 	}

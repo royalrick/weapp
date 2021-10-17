@@ -43,7 +43,7 @@ type GoodsListResponse struct {
 // 获取商品列表
 func (cli *LiveBroadcast) GoodsList(req *GoodsListRequest) (*GoodsListResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsList, req)
+	api, err := cli.conbineURI(apiGoodsList, req, true)
 	if err != nil {
 		return nil, err
 	}

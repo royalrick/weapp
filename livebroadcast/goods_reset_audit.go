@@ -18,7 +18,7 @@ type GoodsResetAuditResponse struct {
 // 撤回商品审核
 func (cli *LiveBroadcast) GoodsResetAudit(req *GoodsResetAuditRequest) (*GoodsResetAuditResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsResetAudit, nil)
+	api, err := cli.conbineURI(apiGoodsResetAudit, nil, true)
 	if err != nil {
 		return nil, err
 	}

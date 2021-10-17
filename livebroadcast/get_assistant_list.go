@@ -33,7 +33,7 @@ type GetAssistantListResponse struct {
 // 查询管理直播间小助手
 func (cli *LiveBroadcast) GetAssistantList(req *GetAssistantListRequest) (*GetAssistantListResponse, error) {
 
-	api, err := cli.conbineURI(apiGetAssistantList, req)
+	api, err := cli.conbineURI(apiGetAssistantList, req, true)
 	if err != nil {
 		return nil, err
 	}

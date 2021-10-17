@@ -14,7 +14,7 @@ type AddSubAnchorRequest struct {
 // 添加主播副号
 func (cli *LiveBroadcast) AddSubAnchor(req *AddSubAnchorRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiAddSubAnchor, nil)
+	api, err := cli.conbineURI(apiAddSubAnchor, nil, true)
 	if err != nil {
 		return nil, err
 	}

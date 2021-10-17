@@ -42,7 +42,7 @@ type UpdatableMsgParameter struct {
 // 修改被分享的动态消息。
 func (cli *UpdatableMessage) SetUpdatableMsg(req *SetUpdatableMsgRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiSetUpdatableMsg, nil)
+	api, err := cli.conbineURI(apiSetUpdatableMsg, nil, true)
 	if err != nil {
 		return nil, err
 	}

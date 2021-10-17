@@ -18,7 +18,7 @@ type UpdateFeedPublicResponse struct {
 // 开启/关闭直播间官方收录
 func (cli *LiveBroadcast) UpdateFeedPublic(req *UpdateFeedPublicRequest) (*UpdateFeedPublicResponse, error) {
 
-	api, err := cli.conbineURI(apiUpdateFeedPublic, nil)
+	api, err := cli.conbineURI(apiUpdateFeedPublic, nil, true)
 	if err != nil {
 		return nil, err
 	}

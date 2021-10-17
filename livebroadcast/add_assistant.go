@@ -21,7 +21,7 @@ type Assistant struct {
 // 添加管理直播间小助手
 func (cli *LiveBroadcast) AddAssistant(req *AddAssistantRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiAddAssistant, nil)
+	api, err := cli.conbineURI(apiAddAssistant, nil, true)
 	if err != nil {
 		return nil, err
 	}

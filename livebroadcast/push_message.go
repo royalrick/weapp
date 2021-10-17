@@ -20,7 +20,7 @@ type PushMessageResponse struct {
 // 向长期订阅用户群发直播间开始事件
 func (cli *LiveBroadcast) PushMessage(req *PushMessageRequest) (*PushMessageResponse, error) {
 
-	api, err := cli.conbineURI(apiPushMessage, nil)
+	api, err := cli.conbineURI(apiPushMessage, nil, true)
 	if err != nil {
 		return nil, err
 	}

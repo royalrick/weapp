@@ -12,7 +12,7 @@ type DeleteSubAnchorRequest struct {
 // 删除主播副号
 func (cli *LiveBroadcast) DeleteSubAnchor(req *DeleteSubAnchorRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiDeleteSubAnchor, nil)
+	api, err := cli.conbineURI(apiDeleteSubAnchor, nil, true)
 	if err != nil {
 		return nil, err
 	}

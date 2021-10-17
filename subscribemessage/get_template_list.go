@@ -17,7 +17,7 @@ type GetTemplateListResponse struct {
 
 // 获取帐号下已存在的模板列表
 func (cli *SubscribeMessage) GetTemplateList() (*GetTemplateListResponse, error) {
-	uri, err := cli.conbineURI(apiGetTemplateList, nil)
+	uri, err := cli.conbineURI(apiGetTemplateList, nil, true)
 	if err != nil {
 		return nil, err
 	}

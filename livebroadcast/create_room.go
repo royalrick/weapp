@@ -54,7 +54,7 @@ type CreateRoomResponse struct {
 // 创建直播间
 func (cli *LiveBroadcast) CreateRoom(req *CreateRoomRequest) (*CreateRoomResponse, error) {
 
-	api, err := cli.conbineURI(apiCreateRoom, nil)
+	api, err := cli.conbineURI(apiCreateRoom, nil, true)
 	if err != nil {
 		return nil, err
 	}

@@ -13,7 +13,7 @@ type CreateActivityIDResponse struct {
 // 本接口提供基于小程序的站内搜商品图片搜索能力
 func (cli *Search) ImageSearch(filename string) (*CreateActivityIDResponse, error) {
 
-	url, err := cli.conbineURI(apiImageSearch, nil)
+	url, err := cli.conbineURI(apiImageSearch, nil, true)
 	if err != nil {
 		return nil, err
 	}

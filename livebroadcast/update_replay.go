@@ -18,7 +18,7 @@ type UpdateReplayResponse struct {
 // 开开启/关闭回放功能
 func (cli *LiveBroadcast) UpdateReplay(req *UpdateReplayRequest) (*UpdateReplayResponse, error) {
 
-	api, err := cli.conbineURI(apiUpdateReplay, nil)
+	api, err := cli.conbineURI(apiUpdateReplay, nil, true)
 	if err != nil {
 		return nil, err
 	}
