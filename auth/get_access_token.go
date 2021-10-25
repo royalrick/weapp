@@ -25,7 +25,7 @@ type GetAccessTokenResponse struct {
 // 通过 wx.login 接口获得临时登录凭证 code 后传到开发者服务器调用此接口完成登录流程。
 func (cli *Auth) GetAccessToken(req *GetAccessTokenRequest) (*GetAccessTokenResponse, error) {
 
-	api, err := cli.conbineURI(apiGetAccessToken, req, true)
+	api, err := cli.conbineURI(apiGetAccessToken, req, false)
 	if err != nil {
 		return nil, err
 	}
