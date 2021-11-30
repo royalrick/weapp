@@ -51,9 +51,10 @@ func (cli *Client) DecryptMobile(sessionKey, encryptedData, iv string) (*Mobile,
 	if err != nil {
 		return nil, err
 	}
-
+	resStr := strings.Trim(string(raw), "\x02")
+	
 	mobile := new(Mobile)
-	if err := json.Unmarshal(raw, mobile); err != nil {
+	if err := json.Unmarshal([]byte(resStr), mobile); err != nil {
 		return nil, err
 	}
 
