@@ -12,6 +12,7 @@ import (
 	"github.com/medivhzhan/weapp/v3/logger"
 	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
+	"github.com/medivhzhan/weapp/v3/phonenumber"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/search"
 	"github.com/medivhzhan/weapp/v3/security"
@@ -250,4 +251,9 @@ func (cli *Client) NewLiveBroadcast() *livebroadcast.LiveBroadcast {
 // 内容安全
 func (cli *Client) NewSecurity() *security.Security {
 	return security.NewSecurity(cli.request, cli.conbineURI)
+}
+
+// 手机号
+func (cli *Client) NewPhonenumber() *phonenumber.Phonenumber {
+	return phonenumber.NewPhonenumber(cli.request, cli.conbineURI)
 }
