@@ -1,6 +1,8 @@
 package weapp
 
 import (
+	"fmt"
+
 	"github.com/medivhzhan/weapp/v3/request"
 )
 
@@ -60,7 +62,7 @@ type TokenResponse struct {
 
 // access_token 缓存 KEY
 func (cli *Client) tokenCacheKey() string {
-	return "weapp.access.token"
+	return fmt.Sprintf("weapp.%s.access.token", cli.appid)
 }
 
 func (cli *Client) GetAccessToken() (*TokenResponse, error) {
