@@ -37,7 +37,7 @@ type GetRoleListResponse struct {
 // 查询小程序直播成员列表
 func (cli *LiveBroadcast) GetRoleList(req *GetRoleListRequest) (*GetRoleListResponse, error) {
 
-	api, err := cli.conbineURI(apiGetRoleList, req)
+	api, err := cli.conbineURI(apiGetRoleList, req, true)
 	if err != nil {
 		return nil, err
 	}

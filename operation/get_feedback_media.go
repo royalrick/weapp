@@ -21,7 +21,7 @@ type GetFeedbackMediaRequest struct {
 // 获取 mediaId 图片
 func (cli *Operation) GetFeedbackMedia(req *GetFeedbackMediaRequest) (*http.Response, *request.CommonError, error) {
 
-	uri, err := cli.conbineURI(apiGetFeedbackMedia, req)
+	uri, err := cli.conbineURI(apiGetFeedbackMedia, req, true)
 	if err != nil {
 		return nil, nil, err
 	}

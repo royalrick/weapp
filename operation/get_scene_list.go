@@ -19,7 +19,7 @@ type GetSceneListResponse struct {
 // 获取访问来源
 func (cli *Operation) GetSceneList() (*GetSceneListResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetSceneList, nil)
+	uri, err := cli.conbineURI(apiGetSceneList, nil, true)
 	if err != nil {
 		return nil, err
 	}

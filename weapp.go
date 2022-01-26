@@ -4,14 +4,18 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
+	"github.com/medivhzhan/weapp/v3/auth"
 	"github.com/medivhzhan/weapp/v3/cache"
 	"github.com/medivhzhan/weapp/v3/livebroadcast"
 	"github.com/medivhzhan/weapp/v3/logger"
 	"github.com/medivhzhan/weapp/v3/ocr"
 	"github.com/medivhzhan/weapp/v3/operation"
+	"github.com/medivhzhan/weapp/v3/phonenumber"
 	"github.com/medivhzhan/weapp/v3/request"
 	"github.com/medivhzhan/weapp/v3/search"
+	"github.com/medivhzhan/weapp/v3/security"
 	"github.com/medivhzhan/weapp/v3/server"
 	"github.com/medivhzhan/weapp/v3/subscribemessage"
 	"github.com/medivhzhan/weapp/v3/updatablemessage"
@@ -132,8 +136,42 @@ func (cli *Client) SetLogLevel(lv logger.Level) {
 	}
 }
 
+// 获取小程序全局唯一后台接口调用凭据（access_token）。
+// 调调用绝大多数后台接口时都需使用 access_token，开发者需要进行妥善保存，注意缓存。
+func (cli *Client) AccessToken() (string, error) {
+
+	key := cli.tokenCacheKey()
+	data, ok := cli.cache.Get(key)
+	if ok {
+		return data.(string), nil
+	}
+
+	if cli.accessTokenGetter != nil {
+		token, expireIn := cli.accessTokenGetter()
+		cli.cache.Set(key, token, time.Duration(expireIn)*time.Second)
+		return token, nil
+	} else {
+
+		req := auth.GetAccessTokenRequest{
+			Appid:     cli.appid,
+			Secret:    cli.secret,
+			GrantType: "client_credential",
+		}
+		rsp, err := cli.NewAuth().GetAccessToken(&req)
+		if err != nil {
+			return "", err
+		}
+
+		if err := rsp.GetResponseError(); err != nil {
+			return "", err
+		}
+		cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn)*time.Second)
+		return rsp.AccessToken, nil
+	}
+}
+
 // 拼凑完整的 URI
-func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
+func (cli *Client) conbineURI(url string, req interface{}, withToken bool) (string, error) {
 
 	output := make(map[string]interface{})
 
@@ -153,14 +191,21 @@ func (cli *Client) conbineURI(url string, req interface{}) (string, error) {
 		return "", err
 	}
 
-	token, err := cli.AccessToken()
-	if err != nil {
-		return "", err
+	if withToken {
+		token, err := cli.AccessToken()
+		if err != nil {
+			return "", err
+		}
+
+		output["access_token"] = token
 	}
 
-	output["access_token"] = token
-
 	return request.EncodeURL(baseURL+url, output)
+}
+
+// 用户信息
+func (cli *Client) NewAuth() *auth.Auth {
+	return auth.NewAuth(cli.request, cli.conbineURI)
 }
 
 // 微信通知监听服务
@@ -201,4 +246,14 @@ func (cli *Client) NewSearch() *search.Search {
 // 直播
 func (cli *Client) NewLiveBroadcast() *livebroadcast.LiveBroadcast {
 	return livebroadcast.NewLiveBroadcast(cli.request, cli.conbineURI)
+}
+
+// 内容安全
+func (cli *Client) NewSecurity() *security.Security {
+	return security.NewSecurity(cli.request, cli.conbineURI)
+}
+
+// 手机号
+func (cli *Client) NewPhonenumber() *phonenumber.Phonenumber {
+	return phonenumber.NewPhonenumber(cli.request, cli.conbineURI)
 }

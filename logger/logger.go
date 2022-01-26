@@ -2,22 +2,24 @@ package logger
 
 import (
 	"context"
+	"fmt"
+	"io"
+
+	"github.com/fatih/color"
 )
 
-// Console Colors
-const (
-	Reset       = "\033[0m"
-	Red         = "\033[31m"
-	Green       = "\033[32m"
-	Yellow      = "\033[33m"
-	Blue        = "\033[34m"
-	Magenta     = "\033[35m"
-	Cyan        = "\033[36m"
-	White       = "\033[37m"
-	BlueBold    = "\033[34;1m"
-	MagentaBold = "\033[35;1m"
-	RedBold     = "\033[31;1m"
-	YellowBold  = "\033[33;1m"
+var (
+	Red         = color.New(color.FgRed)
+	Green       = color.New(color.FgGreen)
+	Yellow      = color.New(color.FgYellow)
+	Blue        = color.New(color.FgBlue)
+	Magenta     = color.New(color.FgMagenta)
+	Cyan        = color.New(color.FgCyan)
+	White       = color.New(color.FgWhite)
+	BlueBold    = color.New(color.Bold, color.FgBlue)
+	MagentaBold = color.New(color.Bold, color.FgMagenta)
+	RedBold     = color.New(color.Bold, color.FgRed)
+	YellowBold  = color.New(color.Bold, color.FgYellow)
 )
 
 // Log Level
@@ -31,8 +33,9 @@ const (
 )
 
 // Writer log writer interface
-type Writer interface {
+type CustomLogger interface {
 	Printf(string, ...interface{})
+	Writer() io.Writer
 }
 
 // Logger interface
@@ -43,52 +46,91 @@ type Logger interface {
 	SetLevel(Level)
 }
 
-func NewLogger(writer Writer, level Level, colorful bool) Logger {
-	infoStr := "[info] "
-	warnStr := "[warn] "
-	errStr := "[error] "
+func NewLogger(customLogger CustomLogger, level Level, colorful bool) Logger {
+
+	lg := logger{
+		customLogger: customLogger,
+		Colorful:     colorful,
+		info:         make([]*content, 0),
+		warn:         make([]*content, 0),
+		err:          make([]*content, 0),
+		Level:        level,
+	}
 
 	if colorful {
-		infoStr = Green + "[info] " + Reset
-		warnStr = Magenta + "[warn] " + Reset
-		errStr = Red + "[error] " + Reset
+		lg.info = append(lg.info, &content{"[info] ", false, Green})
+		lg.warn = append(lg.warn, &content{"[warn] ", false, Magenta})
+		lg.err = append(lg.err, &content{"[error] ", false, Red})
+	} else {
+		lg.info = append(lg.info, &content{"[info] ", false, White})
+		lg.warn = append(lg.warn, &content{"[warn] ", false, White})
+		lg.err = append(lg.err, &content{"[error] ", false, White})
 	}
 
-	return &logger{
-		Writer:   writer,
-		Colorful: colorful,
-		infoStr:  infoStr,
-		warnStr:  warnStr,
-		errStr:   errStr,
-		Level:    level,
-	}
+	return &lg
 }
 
 type logger struct {
-	Writer
-	Colorful                 bool
-	Level                    Level
-	infoStr, warnStr, errStr string
+	customLogger    CustomLogger
+	Colorful        bool
+	Level           Level
+	info, warn, err []*content
+}
+
+type content struct {
+	text    string
+	newLine bool
+	color   *color.Color
 }
 
 // Info print info
 func (l *logger) Info(ctx context.Context, msg string, data ...interface{}) {
 	if l.Level >= Info {
-		l.Printf(l.infoStr+msg, data...)
+		l.info = append(l.info, &content{fmt.Sprintf(msg, data...), true, White})
+
+		for _, item := range l.info {
+			if item.color != nil {
+				if item.newLine {
+					item.color.Fprintln(l.customLogger.Writer(), item.text)
+				} else {
+					item.color.Fprint(l.customLogger.Writer(), item.text)
+				}
+			}
+		}
 	}
 }
 
 // Warn print warn messages
 func (l *logger) Warn(ctx context.Context, msg string, data ...interface{}) {
 	if l.Level >= Warn {
-		l.Printf(l.warnStr+msg, data...)
+		l.warn = append(l.warn, &content{fmt.Sprintf(msg, data...), true, White})
+
+		for _, item := range l.warn {
+			if item.color != nil {
+				if item.newLine {
+					item.color.Fprintln(l.customLogger.Writer(), item.text)
+				} else {
+					item.color.Fprint(l.customLogger.Writer(), item.text)
+				}
+			}
+		}
 	}
 }
 
 // Error print error messages
 func (l *logger) Error(ctx context.Context, msg string, data ...interface{}) {
 	if l.Level >= Error {
-		l.Printf(l.errStr+msg, data...)
+		l.err = append(l.err, &content{fmt.Sprintf(msg, data...), true, White})
+
+		for _, item := range l.err {
+			if item.color != nil {
+				if item.newLine {
+					item.color.Fprintln(l.customLogger.Writer(), item.text)
+				} else {
+					item.color.Fprint(l.customLogger.Writer(), item.text)
+				}
+			}
+		}
 	}
 }
 

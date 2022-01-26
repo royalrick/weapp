@@ -59,6 +59,7 @@ type Server struct {
 	preAuthCodeGetHandler             func(*PreAuthCodeGetResult) *PreAuthCodeGetReturn
 	riderScoreSetHandler              func(*RiderScoreSetResult) *RiderScoreSetReturn
 	subscribeMsgPopupHandler          func(*SubscribeMsgPopupEvent)
+	subscribeMsgSentHandler           func(*SubscribeMsgSentEvent)
 	subscribeMsgChangeHandler         func(*SubscribeMsgChangeEvent)
 }
 
@@ -191,6 +192,11 @@ func (srv *Server) OnRiderScoreSet(fn func(*RiderScoreSetResult) *RiderScoreSetR
 // 当用户触发订阅消息弹框后
 func (srv *Server) OnSubscribeMsgPopup(fn func(*SubscribeMsgPopupEvent)) {
 	srv.subscribeMsgPopupHandler = fn
+}
+
+// 当订阅消息发送结束后触发
+func (srv *Server) OnSubscribeMsgSent(fn func(*SubscribeMsgSentEvent)) {
+	srv.subscribeMsgSentHandler = fn
 }
 
 // 当用户通过设置界面改变订阅消息事件内容
@@ -528,6 +534,15 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 			}
 			if srv.subscribeMsgPopupHandler != nil {
 				srv.subscribeMsgPopupHandler(msg)
+			}
+
+		case EventSubscribeMsgSentEvent:
+			msg := new(SubscribeMsgSentEvent)
+			if err := unmarshal(raw, ctp, msg); err != nil {
+				return nil, err
+			}
+			if srv.subscribeMsgPopupHandler != nil {
+				srv.subscribeMsgSentHandler(msg)
 			}
 
 		case EventSubscribeMsgChange:

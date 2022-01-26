@@ -20,7 +20,7 @@ type SiteSearchResponse struct {
 // 小程序内部搜索API提供针对页面的查询能力，小程序开发者输入搜索词后，将返回自身小程序和搜索词相关的页面。因此，利用该接口，开发者可以查看指定内容的页面被微信平台的收录情况；同时，该接口也可供开发者在小程序内应用，给小程序用户提供搜索能力。
 func (cli *Search) SiteSearch(req *SiteSearchRequest) (*SiteSearchResponse, error) {
 
-	api, err := cli.conbineURI(apiSiteSearch, nil)
+	api, err := cli.conbineURI(apiSiteSearch, nil, true)
 	if err != nil {
 		return nil, err
 	}

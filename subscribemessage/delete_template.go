@@ -11,7 +11,7 @@ type DeleteTemplateRequest struct {
 
 // 删除帐号下的某个模板
 func (cli *SubscribeMessage) DeleteTemplate(req *DeleteTemplateRequest) (*request.CommonError, error) {
-	api, err := cli.conbineURI(apiDeleteTemplate, nil)
+	api, err := cli.conbineURI(apiDeleteTemplate, nil, true)
 	if err != nil {
 		return nil, err
 	}

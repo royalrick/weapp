@@ -8,10 +8,10 @@ type OCR struct {
 	request *request.Request
 	// 组成完整的 URL 地址
 	// 默认包含 AccessToken
-	conbineURI func(url string, req interface{}) (string, error)
+	conbineURI func(url string, req interface{}, withToken bool) (string, error)
 }
 
-func NewOCR(request *request.Request, conbineURI func(url string, req interface{}) (string, error)) *OCR {
+func NewOCR(request *request.Request, conbineURI func(url string, req interface{}, withToken bool) (string, error)) *OCR {
 	sm := OCR{
 		request:    request,
 		conbineURI: conbineURI,
@@ -59,7 +59,7 @@ func (cli *OCR) ocrByFile(api, filename string, mode RecognizeMode, response int
 		Type: mode,
 	}
 
-	url, err := cli.conbineURI(api, &req)
+	url, err := cli.conbineURI(api, &req, true)
 	if err != nil {
 		return err
 	}
@@ -83,7 +83,7 @@ func (cli *OCR) ocrByURL(api, cardURL string, mode RecognizeMode, response inter
 		ImgUrl: cardURL,
 	}
 
-	url, err := cli.conbineURI(api, &req)
+	url, err := cli.conbineURI(api, &req, true)
 	if err != nil {
 		return err
 	}

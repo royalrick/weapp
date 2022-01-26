@@ -20,7 +20,7 @@ type CreateActivityIDResponse struct {
 // 创建被分享动态消息或私密消息的 activity_id。
 func (cli *UpdatableMessage) CreateActivityId(req *CreateActivityIdRequest) (*CreateActivityIDResponse, error) {
 
-	api, err := cli.conbineURI(apiCreateActivityId, req)
+	api, err := cli.conbineURI(apiCreateActivityId, req, true)
 	if err != nil {
 		return nil, err
 	}

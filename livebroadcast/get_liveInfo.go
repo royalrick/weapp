@@ -8,7 +8,7 @@ type PriceType uint8
 
 const (
 	_                 PriceType = iota
-	PriceTypeOne                // 一口价
+	PriceTypeNormal             // 一口价
 	PriceTypeRange              // 区间价格
 	PriceTypeDiscount           // 折扣价格
 )
@@ -24,7 +24,7 @@ type LiveRoomGoods struct {
 	Price int64 `json:"price"`
 	// 商品价格（参考价格类型）
 	Price2 int64 `json:"price2"`
-	// 价格类型，1：一口价（只需要传入price，price2不传） 2：价格区间（price字段为左边界，price2字段为右边界，price和price2必传） 3：显示折扣价（price字段为原价，price2字段为现价， price和price2必传）
+	// 价格类型，1：一口价（只需要传入price，price2不传） 2：价格区间（price字段为左边界，price2字段为右边界，price和price2必填） 3：显示折扣价（price字段为原价，price2字段为现价， price和price2必填）
 	Price_type PriceType `json:"price_type"`
 	// 商品id
 	GoodsID int `json:"goods_id"`
@@ -110,7 +110,7 @@ type RoomInfo struct {
 // 获取直播间列表及直播间信息
 func (cli *LiveBroadcast) GetLiveInfo(req *GetLiveInfoRequest) (*GetLiveInfoResponse, error) {
 
-	api, err := cli.conbineURI(apiGetLiveInfo, nil)
+	api, err := cli.conbineURI(apiGetLiveInfo, nil, true)
 	if err != nil {
 		return nil, err
 	}

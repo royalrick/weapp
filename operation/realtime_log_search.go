@@ -66,7 +66,7 @@ type RealtimelogSearchResponse struct {
 // 实时日志查询
 func (cli *Operation) RealtimelogSearch(req *RealtimelogSearchRequest) (*RealtimelogSearchResponse, error) {
 
-	uri, err := cli.conbineURI(apiRealtimelogSearch, req)
+	uri, err := cli.conbineURI(apiRealtimelogSearch, req, true)
 	if err != nil {
 		return nil, err
 	}
