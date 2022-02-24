@@ -10,11 +10,11 @@ type GetPhoneNumberRequest struct {
 
 type GetPhoneNumberResponse struct {
 	request.CommonError
-	Data []struct {
+	Data struct {
 		PhoneNumber     string `json:"phoneNumber"`     //	用户绑定的手机号（国外手机号会有区号）
 		PurePhoneNumber string `json:"purePhoneNumber"` //	没有区号的手机号
 		CountryCode     string `json:"countryCode"`     //	区号
-		Watermark       []struct {
+		Watermark       struct {
 			Appid     string `json:"appid"`     // 小程序appid
 			Timestamp int64  `json:"timestamp"` // 用户获取手机号操作的时间戳
 		} `json:"watermark"` // 数据水印
