@@ -22,11 +22,12 @@ type Color struct {
 
 // QRCode 小程序码参数
 type QRCode struct {
-	Path      string `json:"path"`
-	Width     int    `json:"width,omitempty"`
-	AutoColor bool   `json:"auto_color,omitempty"`
-	LineColor Color  `json:"line_color,omitempty"`
-	IsHyaline bool   `json:"is_hyaline,omitempty"`
+	Path       string `json:"path"`
+	EnvVersion string `json:"env_version,omitempty"` //要打开的小程序版本
+	Width      int    `json:"width,omitempty"`
+	AutoColor  bool   `json:"auto_color,omitempty"`
+	LineColor  Color  `json:"line_color,omitempty"`
+	IsHyaline  bool   `json:"is_hyaline,omitempty"`
 }
 
 // Get 获取小程序码
@@ -44,12 +45,14 @@ func (code *QRCode) get(api, token string) (*http.Response, *CommonError, error)
 
 // UnlimitedQRCode 小程序码参数
 type UnlimitedQRCode struct {
-	Scene     string `json:"scene"`
-	Page      string `json:"page,omitempty"`
-	Width     int    `json:"width,omitempty"`
-	AutoColor bool   `json:"auto_color,omitempty"`
-	LineColor Color  `json:"line_color,omitempty"`
-	IsHyaline bool   `json:"is_hyaline,omitempty"`
+	Scene      string `json:"scene"`
+	Page       string `json:"page,omitempty"`
+	CheckPath  bool   `json:"check_path,omitempty"`  //检查 page 是否存在
+	EnvVersion string `json:"env_version,omitempty"` //要打开的小程序版本
+	Width      int    `json:"width,omitempty"`
+	AutoColor  bool   `json:"auto_color,omitempty"`
+	LineColor  Color  `json:"line_color,omitempty"`
+	IsHyaline  bool   `json:"is_hyaline,omitempty"`
 }
 
 // Get 获取小程序码
