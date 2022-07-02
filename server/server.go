@@ -679,8 +679,6 @@ func (srv *Server) validateServer(req *http.Request) bool {
 // 加密消息
 func (srv *Server) encryptMsg(message string, timestamp int64) (*EncryptedMsgRequest, error) {
 
-	//不能直接赋值, 底层slice会被修改
-	//key := srv.aesKey
 	key := make([]byte, len(srv.aesKey))
 	copy(key, srv.aesKey)
 
