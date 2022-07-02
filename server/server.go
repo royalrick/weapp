@@ -679,7 +679,10 @@ func (srv *Server) validateServer(req *http.Request) bool {
 // 加密消息
 func (srv *Server) encryptMsg(message string, timestamp int64) (*EncryptedMsgRequest, error) {
 
-	key := srv.aesKey
+	//不能直接赋值, 底层slice会被修改
+	//key := srv.aesKey
+	key := make([]byte, len(srv.aesKey))
+	copy(key, srv.aesKey)
 
 	//获得16位随机字符串，填充到明文之前
 	nonce := randomString(16)
@@ -722,7 +725,10 @@ func randomString(ln int) string {
 // 检验消息的真实性，并且获取解密后的明文.
 func (srv *Server) decryptMsg(encrypted string) ([]byte, error) {
 
-	key := srv.aesKey
+	//不能直接赋值, 底层slice会被修改
+	//key := srv.aesKey
+	key := make([]byte, len(srv.aesKey))
+	copy(key, srv.aesKey)
 
 	ciphertext, err := base64.StdEncoding.DecodeString(encrypted)
 	if err != nil {
