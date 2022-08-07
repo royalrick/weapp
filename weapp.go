@@ -44,7 +44,7 @@ type Client struct {
 }
 
 // 用户自定义获取access_token的方法
-type AccessTokenGetter func() (token string, expireIn uint)
+type AccessTokenGetter func(appid, secret string) (token string, expireIn uint)
 
 // 初始化客户端并用自定义配置替换默认配置
 func NewClient(appid, secret string, opts ...func(*Client)) *Client {
@@ -147,7 +147,7 @@ func (cli *Client) AccessToken() (string, error) {
 	}
 
 	if cli.accessTokenGetter != nil {
-		token, expireIn := cli.accessTokenGetter()
+		token, expireIn := cli.accessTokenGetter(cli.appid, cli.secret)
 		cli.cache.Set(key, token, time.Duration(expireIn)*time.Second)
 		return token, nil
 	} else {
