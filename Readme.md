@@ -5,7 +5,6 @@
 - [v1 版本入口](https://github.com/medivhzhan/weapp/tree/v1)
 - [v2 版本入口](https://github.com/medivhzhan/weapp/tree/v2)
 - [查看完整文档](https://pkg.go.dev/github.com/medivhzhan/weapp/v3)
-- `v3` 版本为测试版本,请斟酌使用;
 - SDK 暂不包含支付相关内容 已有很多优秀的支付相关模块;
 - 微信小程序的功能和接口一直在持续更新迭代,如果遇到没有的接口或者不符合当前实际情况的接口请提交 [issue](https://github.com/royalrick/weapp/issues/new) 或者发起 pull request;
 
@@ -25,11 +24,11 @@ go get -u github.com/medivhzhan/weapp/v3
 package main
 
 import (
-	"github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3"
 )
 
 func main() {
-	sdk := weapp.NewClient("your-appid", "your-secret")
+ sdk := weapp.NewClient("your-appid", "your-secret")
 }
 ```
 
@@ -39,27 +38,27 @@ func main() {
 package main
 
 import (
-	"crypto/tls"
-	"net/http"
-	"time"
+ "crypto/tls"
+ "net/http"
+ "time"
 
-	"github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3"
 )
 
 func main() {
-	cli := &http.Client{
-		Timeout: 10 * time.Second,
-		Transport: &http.Transport{
-			// 跳过安全校验
-			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
-		},
-	}
+ cli := &http.Client{
+  Timeout: 10 * time.Second,
+  Transport: &http.Transport{
+   // 跳过安全校验
+   TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+  },
+ }
 
-	sdk := weapp.NewClient(
-		"your-appid",
-		"your-secret",
-		weapp.WithHttpClient(cli),
-	)
+ sdk := weapp.NewClient(
+  "your-appid",
+  "your-secret",
+  weapp.WithHttpClient(cli),
+ )
 }
 
 ```
@@ -70,24 +69,24 @@ func main() {
 package main
 
 import (
-	"log"
-	"os"
+ "log"
+ "os"
 
-	"github.com/medivhzhan/weapp/v3"
-	"github.com/medivhzhan/weapp/v3/logger"
+ "github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3/logger"
 )
 
 func main() {
-	lgr := logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Info, true)
+ lgr := logger.NewLogger(log.New(os.Stdout, "\r\n", log.LstdFlags), logger.Info, true)
 
-	sdk := weapp.NewClient(
-		"your-appid",
-		"your-secret",
-		weapp.WithLogger(lgr),
-	)
+ sdk := weapp.NewClient(
+  "your-appid",
+  "your-secret",
+  weapp.WithLogger(lgr),
+ )
 
-	// 任意切换日志等级
-	sdk.SetLogLevel(logger.Silent)
+ // 任意切换日志等级
+ sdk.SetLogLevel(logger.Silent)
 }
 
 ```
@@ -98,29 +97,29 @@ func main() {
 package main
 
 import (
-	"time"
+ "time"
 
-	"github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3"
 )
 
 type MyCache struct{}
 
 func (cc *MyCache) Set(key string, val interface{}, timeout time.Duration) {
-	// ...
+ // ...
 }
 
 func (cc *MyCache) Get(key string) (interface{}, bool) {
-	return "your-access-token", true
+ return "your-access-token", true
 }
 
 func main() {
-	cc := new(MyCache)
+ cc := new(MyCache)
 
-	sdk := weapp.NewClient(
-		"your-appid",
-		"your-secret",
-		weapp.WithCache(cc),
-	)
+ sdk := weapp.NewClient(
+  "your-appid",
+  "your-secret",
+  weapp.WithCache(cc),
+ )
 }
 
 ```
@@ -131,23 +130,23 @@ func main() {
 package main
 
 import (
-	"github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3"
 )
 
 func main() {
-	tokenGetter := func() (token string, expireIn uint) {
+ tokenGetter := func() (token string, expireIn uint) {
 
-		expireIn = 1000
-		token = "your-custom-token"
+  expireIn = 1000
+  token = "your-custom-token"
 
-		return token, expireIn
-	}
+  return token, expireIn
+ }
 
-	sdk := weapp.NewClient(
-		"your-appid",
-		"your-secret",
-		weapp.WithAccessTokenSetter(tokenGetter),
-	)
+ sdk := weapp.NewClient(
+  "your-appid",
+  "your-secret",
+  weapp.WithAccessTokenSetter(tokenGetter),
+ )
 }
 
 ```
@@ -162,48 +161,48 @@ func main() {
 package main
 
 import (
-	"fmt"
-	"log"
+ "fmt"
+ "log"
 
-	"github.com/medivhzhan/weapp/v3"
-	"github.com/medivhzhan/weapp/v3/auth"
+ "github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3/auth"
 )
 
 func main() {
-	sdk := weapp.NewClient("your-appid", "your-secret")
+ sdk := weapp.NewClient("your-appid", "your-secret")
 
-	cli := sdk.NewAuth()
+ cli := sdk.NewAuth()
 
     // 用户支付完成后获取该用户的 UnionId
-	rsp, err := cli.GetPaidUnionId(&auth.GetPaidUnionIdRequest{})
-	if err != nil {
-		log.Fatal(err)
-	}
+ rsp, err := cli.GetPaidUnionId(&auth.GetPaidUnionIdRequest{})
+ if err != nil {
+  log.Fatal(err)
+ }
 
     // 检查加密信息是否由微信生成
-	rsp, err := cli.CheckEncryptedData(&auth.CheckEncryptedDataRequest{})
-	if err != nil {
-		log.Fatal(err)
-	}
+ rsp, err := cli.CheckEncryptedData(&auth.CheckEncryptedDataRequest{})
+ if err != nil {
+  log.Fatal(err)
+ }
 
     // 登录凭证校验
-	rsp, err := cli.Code2Session(&auth.Code2SessionRequest{})
-	if err != nil {
-		log.Fatal(err)
-	}
+ rsp, err := cli.Code2Session(&auth.Code2SessionRequest{})
+ if err != nil {
+  log.Fatal(err)
+ }
 
     // 获取小程序全局唯一后台接口调用凭据
-	rsp, err := cli.GetAccessToken(&auth.GetAccessTokenRequest{})
-	if err != nil {
-		log.Fatal(err)
-	}
+ rsp, err := cli.GetAccessToken(&auth.GetAccessTokenRequest{})
+ if err != nil {
+  log.Fatal(err)
+ }
 
     // 检查微信是否返回错误
-	if err := rsp.GetResponseError(); err != nil {
-		log.Println(err)
-	}
+ if err := rsp.GetResponseError(); err != nil {
+  log.Println(err)
+ }
 
-	fmt.Println(rsp)
+ fmt.Println(rsp)
 }
 
 ```
@@ -218,43 +217,43 @@ func main() {
 package main
 
 import (
-	"log"
-	"net/http"
+ "log"
+ "net/http"
 
-	"github.com/medivhzhan/weapp/v3"
-	"github.com/medivhzhan/weapp/v3/server"
+ "github.com/medivhzhan/weapp/v3"
+ "github.com/medivhzhan/weapp/v3/server"
 )
 
 func main() {
-	sdk := weapp.NewClient("your-appid", "your-secret")
+ sdk := weapp.NewClient("your-appid", "your-secret")
 
-	//  通用处理器
-	handler := func(req map[string]interface{}) map[string]interface{} {
-		switch req["MsgType"] {
-		case "text":
-			// Do something cool ...
-		}
+ //  通用处理器
+ handler := func(req map[string]interface{}) map[string]interface{} {
+  switch req["MsgType"] {
+  case "text":
+   // Do something cool ...
+  }
 
-		return nil
-	}
+  return nil
+ }
 
     // HTTP handler
-	http.HandleFunc("/wechat/notify", func(w http.ResponseWriter, r *http.Request) {
-		srv, err := sdk.NewServer("token", "aesKey", "mchID", "apiKey", false, handler)
-		if err != nil {
-			log.Fatalf("init server error: %s", err)
-		}
+ http.HandleFunc("/wechat/notify", func(w http.ResponseWriter, r *http.Request) {
+  srv, err := sdk.NewServer("token", "aesKey", "mchID", "apiKey", false, handler)
+  if err != nil {
+   log.Fatalf("init server error: %s", err)
+  }
 
-		// 调用事件处理器后 通用处理器不再处理该事件
-		srv.OnCustomerServiceTextMessage(func(tmr *server.TextMessageResult) *server.TransferCustomerMessage {
+  // 调用事件处理器后 通用处理器不再处理该事件
+  srv.OnCustomerServiceTextMessage(func(tmr *server.TextMessageResult) *server.TransferCustomerMessage {
 
-			return &server.TransferCustomerMessage{}
-		})
+   return &server.TransferCustomerMessage{}
+  })
 
-		if err := srv.Serve(w, r); err != nil {
-			log.Fatalf("serving error: %s", err)
-		}
-	})
+  if err := srv.Serve(w, r); err != nil {
+   log.Fatalf("serving error: %s", err)
+  }
+ })
 }
 
 ```
