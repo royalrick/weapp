@@ -52,7 +52,7 @@ func (cli *Client) getQRCode(api, token string, code *QRCode) (*http.Response, *
 type UnlimitedQRCode struct {
 	Scene      string `json:"scene"`
 	Page       string `json:"page,omitempty"`
-	CheckPath  bool   `json:"check_path,omitempty"`
+	CheckPath  bool   `json:"check_path"`
 	EnvVersion string `json:"env_version,omitempty"`
 	Width      int    `json:"width,omitempty"`
 	AutoColor  bool   `json:"auto_color,omitempty"`
