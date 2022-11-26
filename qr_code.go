@@ -50,12 +50,14 @@ func (cli *Client) getQRCode(api, token string, code *QRCode) (*http.Response, *
 
 // UnlimitedQRCode 小程序码参数
 type UnlimitedQRCode struct {
-	Scene     string `json:"scene"`
-	Page      string `json:"page,omitempty"`
-	Width     int    `json:"width,omitempty"`
-	AutoColor bool   `json:"auto_color,omitempty"`
-	LineColor Color  `json:"line_color,omitempty"`
-	IsHyaline bool   `json:"is_hyaline,omitempty"`
+	Scene      string `json:"scene"`
+	Page       string `json:"page,omitempty"`
+	CheckPath  bool   `json:"check_path"`
+	EnvVersion string `json:"env_version,omitempty"`
+	Width      int    `json:"width,omitempty"`
+	AutoColor  bool   `json:"auto_color,omitempty"`
+	LineColor  Color  `json:"line_color,omitempty"`
+	IsHyaline  bool   `json:"is_hyaline,omitempty"`
 }
 
 // Get 获取小程序码
