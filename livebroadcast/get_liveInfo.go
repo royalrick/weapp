@@ -116,7 +116,7 @@ func (cli *LiveBroadcast) GetLiveInfo(req *GetLiveInfoRequest) (*GetLiveInfoResp
 	}
 
 	res := new(GetLiveInfoResponse)
-	err = cli.request.Post(api, res, req)
+	err = cli.request.Post(api, req, res)
 	if err != nil {
 		return nil, err
 	}
