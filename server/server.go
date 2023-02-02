@@ -556,7 +556,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 
 		default:
 			msg := make(map[string]interface{})
-			if err := unmarshal(raw, ctp, msg); err != nil {
+			if err := unmarshal(raw, ctp, &msg); err != nil {
 				return nil, err
 			}
 			if srv.handler != nil {
@@ -566,7 +566,7 @@ func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrp
 
 	default:
 		msg := make(map[string]interface{})
-		if err := unmarshal(raw, ctp, msg); err != nil {
+		if err := unmarshal(raw, ctp, &msg); err != nil {
 			return nil, err
 		}
 		if srv.handler != nil {
@@ -603,31 +603,8 @@ func (srv *Server) Serve(w http.ResponseWriter, r *http.Request) error {
 			if err != nil {
 				return err
 			}
-			if isEncrypted {
-				res, err := srv.encryptMsg(string(raw), time.Now().Unix())
-				if err != nil {
-					return err
-				}
-				raw, err = marshal(res, ctp)
-				if err != nil {
-					return err
-				}
-			}
-
 		} else {
 			raw = []byte("success")
-
-			if isEncrypted {
-				res, err := srv.encryptMsg(string(raw), time.Now().Unix())
-				if err != nil {
-					return err
-				}
-				raw, err = marshal(res, ctp)
-				if err != nil {
-					return err
-				}
-			}
-
 		}
 
 		w.WriteHeader(http.StatusOK)
