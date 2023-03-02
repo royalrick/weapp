@@ -129,7 +129,7 @@ func (o *Order) prepare(key string) (order, error) {
 	}
 
 	if o.ProfitSharing != "" {
-		od.ProfitSharing = o.ProfitSharing
+		signData["profit_sharing"] = o.ProfitSharing
 	}
 
 	sign, err := util.SignByMD5(signData, key)
