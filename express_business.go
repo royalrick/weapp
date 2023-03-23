@@ -394,7 +394,7 @@ type QuotaGetter struct {
 // QuotaGetResponse 电子面单余额
 type QuotaGetResponse struct {
 	request.CommonError
-	Number uint // 电子面单余额
+	QuotaNum int `json:"quota_num"` // 电子面单余额
 }
 
 // Get 获取电子面单余额。仅在使用加盟类快递公司时，才可以调用。

@@ -112,6 +112,7 @@ type AddNearbyPoiResult struct {
 type ExpressPathUpdateResult struct {
 	CommonServerResult
 	DeliveryID string `json:"DeliveryID" xml:"DeliveryID"` // 快递公司ID
+	OrderID    string `json:"OrderID" xml:"OrderID"`       // 	传入的唯一标识订单的 ID，由商户生成，原样返回
 	WayBillID  string `json:"WayBillId" xml:"WayBillId"`   // 运单ID
 	Version    uint   `json:"Version" xml:"Version"`       // 轨迹版本号（整型）
 	Count      uint   `json:"Count" xml:"Count"`           // 轨迹节点数（整型）
