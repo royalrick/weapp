@@ -61,9 +61,6 @@ func (cli *Request) GetWithBody(url string) (*http.Response, error) {
 }
 
 func (cli *Request) Post(url string, params interface{}, response interface{}) error {
-	cli.logger().Info(context.Background(), "request url: %s", url)
-	cli.logger().Info(context.Background(), "request params: %+v", params)
-
 	resp, err := cli.PostWithBody(url, params)
 	if err != nil {
 		cli.logger().Error(context.Background(), "post error: %s", err)
