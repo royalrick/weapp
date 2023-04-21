@@ -97,6 +97,7 @@ func (l *logger) Info(ctx context.Context, msg string, data ...interface{}) {
 				}
 			}
 		}
+		l.info = l.info[:1]
 	}
 }
 
@@ -114,6 +115,7 @@ func (l *logger) Warn(ctx context.Context, msg string, data ...interface{}) {
 				}
 			}
 		}
+		l.warn = l.warn[:1]
 	}
 }
 
@@ -131,6 +133,7 @@ func (l *logger) Error(ctx context.Context, msg string, data ...interface{}) {
 				}
 			}
 		}
+		l.err = l.err[:1]
 	}
 }
 
