@@ -7,7 +7,7 @@ import (
 	"encoding/xml"
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"math/rand"
 	"net/http"
 	"reflect"
@@ -268,7 +268,7 @@ func marshal(data interface{}, ctp request.ContentType) ([]byte, error) {
 
 // 处理消息体
 func (srv *Server) handleRequest(w http.ResponseWriter, r *http.Request, isEncrpt bool, ctp request.ContentType) (interface{}, error) {
-	raw, err := ioutil.ReadAll(r.Body)
+	raw, err := io.ReadAll(r.Body)
 	if err != nil {
 		return nil, err
 	}
