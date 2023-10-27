@@ -1,6 +1,7 @@
 package weapp
 
 import (
+	"github.com/medivhzhan/weapp/v3/order"
 	"log"
 	"net/http"
 	"os"
@@ -256,4 +257,9 @@ func (cli *Client) NewSecurity() *security.Security {
 // 手机号
 func (cli *Client) NewPhonenumber() *phonenumber.Phonenumber {
 	return phonenumber.NewPhonenumber(cli.request, cli.conbineURI)
+}
+
+// NewOrder 发货内容管理
+func (cli *Client) NewOrder() *order.Order {
+	return order.NewOrder(cli.request, cli.conbineURI)
 }
