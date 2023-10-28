@@ -276,9 +276,9 @@ type MiniprogramState = string
 
 // developer为开发版；trial为体验版；formal为正式版；默认为正式版
 const (
-	MiniprogramStateDeveloper = "developer"
-	MiniprogramStateTrial     = "trial"
-	MiniprogramStateFormal    = "formal"
+	MiniprogramStateDeveloper MiniprogramState = "developer"
+	MiniprogramStateTrial     MiniprogramState = "trial"
+	MiniprogramStateFormal    MiniprogramState = "formal"
 )
 
 // Send 发送订阅消息
