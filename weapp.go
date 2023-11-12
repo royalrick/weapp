@@ -170,6 +170,40 @@ func (cli *Client) AccessToken() (string, error) {
 	}
 }
 
+// 获取稳定版接口调用凭据
+func (cli *Client) StableAccessToken(forceRefresh bool) (string, error) {
+
+	key := cli.tokenCacheKey()
+	data, ok := cli.cache.Get(key)
+	if ok {
+		return data.(string), nil
+	}
+
+	if cli.accessTokenGetter != nil {
+		token, expireIn := cli.accessTokenGetter(cli.appid, cli.secret)
+		cli.cache.Set(key, token, time.Duration(expireIn)*time.Second)
+		return token, nil
+	} else {
+
+		req := auth.GetStableAccessTokenRequest{
+			Appid:        cli.appid,
+			Secret:       cli.secret,
+			GrantType:    "client_credential",
+			ForceRefresh: forceRefresh,
+		}
+		rsp, err := cli.NewAuth().GetStableAccessToken(&req)
+		if err != nil {
+			return "", err
+		}
+
+		if err := rsp.GetResponseError(); err != nil {
+			return "", err
+		}
+		cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn)*time.Second)
+		return rsp.AccessToken, nil
+	}
+}
+
 // 拼凑完整的 URI
 func (cli *Client) conbineURI(url string, req interface{}, withToken bool) (string, error) {
 

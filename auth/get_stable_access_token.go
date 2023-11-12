@@ -24,7 +24,7 @@ type GetStableAccessTokenResponse struct {
 }
 
 // 获取稳定版接口调用凭据
-// doc: https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/getStableAccessToken.html
+// doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html
 func (cli *Auth) GetStableAccessToken(req *GetStableAccessTokenRequest) (*GetStableAccessTokenResponse, error) {
 
 	api, err := cli.conbineURI(apiGetStableAccessToken, nil, false)
