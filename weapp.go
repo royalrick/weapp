@@ -11,6 +11,7 @@ import (
 	"github.com/medivhzhan/weapp/v3/livebroadcast"
 	"github.com/medivhzhan/weapp/v3/logger"
 	"github.com/medivhzhan/weapp/v3/ocr"
+	"github.com/medivhzhan/weapp/v3/openapi"
 	"github.com/medivhzhan/weapp/v3/operation"
 	"github.com/medivhzhan/weapp/v3/phonenumber"
 	"github.com/medivhzhan/weapp/v3/request"
@@ -179,7 +180,7 @@ func (cli *Client) StableAccessToken(forceRefresh bool) (string, error) {
 		return data.(string), nil
 	}
 
-	if cli.accessTokenGetter != nil {
+	if !forceRefresh && cli.accessTokenGetter != nil {
 		token, expireIn := cli.accessTokenGetter(cli.appid, cli.secret)
 		cli.cache.Set(key, token, time.Duration(expireIn)*time.Second)
 		return token, nil
@@ -255,6 +256,11 @@ func (cli *Client) NewSubscribeMessage() *subscribemessage.SubscribeMessage {
 // 运维中心
 func (cli *Client) NewOperation() *operation.Operation {
 	return operation.NewOperation(cli.request, cli.conbineURI)
+}
+
+// openApi管理
+func (cli *Client) NewOpenApi() *openapi.OpenApi {
+	return openapi.NewOpenApi(cli.request, cli.conbineURI)
 }
 
 // 小程序码
