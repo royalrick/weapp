@@ -24,7 +24,7 @@ type GetSharedCodeResponse struct {
 // 获取直播间分享二维码
 func (cli *LiveBroadcast) GetSharedCode(req *GetSharedCodeRequest) (*GetSharedCodeResponse, error) {
 
-	api, err := cli.conbineURI(apiGetSharedCode, req, true)
+	api, err := cli.combineURI(apiGetSharedCode, req, true)
 	if err != nil {
 		return nil, err
 	}

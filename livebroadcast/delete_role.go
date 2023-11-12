@@ -15,7 +15,7 @@ type DeleteRoleRequest struct {
 // 解除成员角色
 func (cli *LiveBroadcast) DeleteRole(req *DeleteRoleRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiDeleteRole, nil, true)
+	api, err := cli.combineURI(apiDeleteRole, nil, true)
 	if err != nil {
 		return nil, err
 	}

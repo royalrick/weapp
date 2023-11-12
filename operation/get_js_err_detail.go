@@ -65,7 +65,7 @@ type GetJsErrDetailResponse struct {
 // 错误查询详情
 func (cli *Operation) GetJsErrDetail(req *GetJsErrDetailRequest) (*GetJsErrDetailResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetJsErrDetail, nil, true)
+	uri, err := cli.combineURI(apiGetJsErrDetail, nil, true)
 	if err != nil {
 		return nil, err
 	}

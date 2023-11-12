@@ -13,13 +13,13 @@ type WXACode struct {
 	request *request.Request
 	// 组成完整的 URL 地址
 	// 默认包含 AccessToken
-	conbineURI func(url string, req interface{}, withToken bool) (string, error)
+	combineURI func(url string, req interface{}, withToken bool) (string, error)
 }
 
-func NewWXACode(request *request.Request, conbineURI func(url string, req interface{}, withToken bool) (string, error)) *WXACode {
+func NewWXACode(request *request.Request, combineURI func(url string, req interface{}, withToken bool) (string, error)) *WXACode {
 	sm := WXACode{
 		request:    request,
-		conbineURI: conbineURI,
+		combineURI: combineURI,
 	}
 
 	return &sm
@@ -28,7 +28,7 @@ func NewWXACode(request *request.Request, conbineURI func(url string, req interf
 // 生成二维码
 func (cli *WXACode) generate(api string, params interface{}) (*http.Response, *request.CommonError, error) {
 
-	url, err := cli.conbineURI(api, nil, true)
+	url, err := cli.combineURI(api, nil, true)
 	if err != nil {
 		return nil, nil, err
 	}

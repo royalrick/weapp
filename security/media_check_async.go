@@ -27,7 +27,7 @@ type MediaCheckAsyncResponse struct {
 //
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.mediaCheckAsync.html
 func (cli *Security) MediaCheckAsync(req *MediaCheckAsyncRequest) (*MediaCheckAsyncResponse, error) {
-	url, err := cli.conbineURI(apiMediaCheckAsync, nil, true)
+	url, err := cli.combineURI(apiMediaCheckAsync, nil, true)
 	if err != nil {
 		return nil, err
 	}

@@ -14,7 +14,7 @@ type GetCategoryResponse struct {
 
 // 删除帐号下的某个模板
 func (cli *SubscribeMessage) GetCategory() (*GetCategoryResponse, error) {
-	api, err := cli.conbineURI(apiGetCategory, nil, true)
+	api, err := cli.combineURI(apiGetCategory, nil, true)
 	if err != nil {
 		return nil, err
 	}

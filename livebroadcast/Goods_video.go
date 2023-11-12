@@ -20,7 +20,7 @@ type GoodsVideoResponse struct {
 // 更新商品
 func (cli *LiveBroadcast) GoodsVideo(req *GoodsVideoRequest) (*GoodsVideoResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsVideo, nil, true)
+	api, err := cli.combineURI(apiGoodsVideo, nil, true)
 	if err != nil {
 		return nil, err
 	}

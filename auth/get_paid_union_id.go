@@ -24,7 +24,7 @@ type GetPaidUnionIdResponse struct {
 // 用户支付完成后，获取该用户的 UnionId，无需用户授权。
 func (cli *Auth) GetPaidUnionId(req *GetPaidUnionIdRequest) (*GetPaidUnionIdResponse, error) {
 
-	api, err := cli.conbineURI(apiGetPaidUnionId, req, true)
+	api, err := cli.combineURI(apiGetPaidUnionId, req, true)
 	if err != nil {
 		return nil, err
 	}

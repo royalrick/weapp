@@ -110,7 +110,7 @@ type RoomInfo struct {
 // 获取直播间列表及直播间信息
 func (cli *LiveBroadcast) GetLiveInfo(req *GetLiveInfoRequest) (*GetLiveInfoResponse, error) {
 
-	api, err := cli.conbineURI(apiGetLiveInfo, nil, true)
+	api, err := cli.combineURI(apiGetLiveInfo, nil, true)
 	if err != nil {
 		return nil, err
 	}

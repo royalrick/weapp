@@ -24,7 +24,7 @@ type GetPhoneNumberResponse struct {
 // code换取用户手机号。 每个code只能使用一次，code的有效期为5min
 func (cli *Phonenumber) GetPhoneNumber(req *GetPhoneNumberRequest) (*GetPhoneNumberResponse, error) {
 
-	api, err := cli.conbineURI(apiGetPhoneNumber, nil, true)
+	api, err := cli.combineURI(apiGetPhoneNumber, nil, true)
 	if err != nil {
 		return nil, err
 	}

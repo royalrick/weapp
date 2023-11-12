@@ -12,7 +12,7 @@ type DeleteRoomRequest struct {
 // 删除直播间
 func (cli *LiveBroadcast) DeleteRoom(req *DeleteRoomRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiDeleteRoom, nil, true)
+	api, err := cli.combineURI(apiDeleteRoom, nil, true)
 	if err != nil {
 		return nil, err
 	}

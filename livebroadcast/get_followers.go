@@ -23,7 +23,7 @@ type GetFollowersResponse struct {
 // 获取长期订阅用户
 func (cli *LiveBroadcast) GetFollowers(req *GetFollowersRequest) (*GetFollowersResponse, error) {
 
-	api, err := cli.conbineURI(apiGetFollowers, nil, true)
+	api, err := cli.combineURI(apiGetFollowers, nil, true)
 	if err != nil {
 		return nil, err
 	}

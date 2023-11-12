@@ -30,7 +30,7 @@ type GetJsErrListRequest struct {
 // 错误查询列表
 func (cli *Operation) GetJsErrList(req *GetJsErrListRequest) (*request.CommonError, error) {
 
-	uri, err := cli.conbineURI(apiGetJsErrList, nil, true)
+	uri, err := cli.combineURI(apiGetJsErrList, nil, true)
 	if err != nil {
 		return nil, err
 	}

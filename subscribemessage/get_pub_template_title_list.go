@@ -28,7 +28,7 @@ type GetPubTemplateTitleListResponse struct {
 // 获取帐号所属类目下的公共模板标题
 func (cli *SubscribeMessage) GetPubTemplateTitleList(req *GetPubTemplateTitleListRequest) (*GetPubTemplateTitleListResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetPubTemplateTitleList, req, true)
+	uri, err := cli.combineURI(apiGetPubTemplateTitleList, req, true)
 	if err != nil {
 		return nil, err
 	}

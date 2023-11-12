@@ -37,7 +37,7 @@ type GoodsAddResponse struct {
 // 商品添加并提审
 func (cli *LiveBroadcast) GoodsAdd(req *GoodsAddRequest) (*GoodsAddResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsAdd, nil, true)
+	api, err := cli.combineURI(apiGoodsAdd, nil, true)
 	if err != nil {
 		return nil, err
 	}
