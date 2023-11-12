@@ -14,7 +14,7 @@ type NotifyConfirmReceiveRequest struct {
 // NotifyConfirmReceive 确认收货提醒接口
 func (cli *Order) NotifyConfirmReceive(req *IsTradeManagedRequest) (*request.CommonError, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/notify_confirm_receive", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/notify_confirm_receive", nil, true)
 	if err != nil {
 		return nil, err
 	}

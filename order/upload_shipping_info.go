@@ -40,7 +40,7 @@ type UploadShippingInfoRequest struct {
 // UploadShippingInfo 发货信息录入接口
 func (cli *Order) UploadShippingInfo(req *UploadShippingInfoRequest) (*request.CommonError, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/upload_shipping_info", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/upload_shipping_info", nil, true)
 	if err != nil {
 		return nil, err
 	}

@@ -9,7 +9,7 @@ type SetMsgJumpPathRequest struct {
 // SetMsgJumpPath 消息跳转路径设置接口
 func (cli *Order) SetMsgJumpPath(req *SetMsgJumpPathRequest) (*request.CommonError, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/set_msg_jump_path", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/set_msg_jump_path", nil, true)
 	if err != nil {
 		return nil, err
 	}

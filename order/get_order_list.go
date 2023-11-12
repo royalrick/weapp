@@ -25,7 +25,7 @@ type GetOrderListResponse struct {
 // GetOrderList 查询订单列表
 func (cli *Order) GetOrderList(req *GetOrderListRequest) (*GetOrderListResponse, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/get_order_list", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/get_order_list", nil, true)
 	if err != nil {
 		return nil, err
 	}

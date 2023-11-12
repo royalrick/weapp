@@ -50,7 +50,7 @@ type GetOrderResponse struct {
 // GetOrder 查询订单发货状态
 func (cli *Order) GetOrder(req *GetOrderRequest) (*GetOrderResponse, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/get_order", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/get_order", nil, true)
 	if err != nil {
 		return nil, err
 	}

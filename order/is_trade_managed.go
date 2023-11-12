@@ -14,7 +14,7 @@ type IsTradeManagedResponse struct {
 // IsTradeManaged 查询小程序是否已开通发货信息管理服务
 func (cli *Order) IsTradeManaged(req *IsTradeManagedRequest) (*IsTradeManagedResponse, error) {
 
-	url, err := cli.conbineURI("/wxa/sec/order/is_trade_managed", nil, true)
+	url, err := cli.combineURI("/wxa/sec/order/is_trade_managed", nil, true)
 	if err != nil {
 		return nil, err
 	}

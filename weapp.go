@@ -1,11 +1,12 @@
 package weapp
 
 import (
-	"github.com/medivhzhan/weapp/v3/order"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/medivhzhan/weapp/v3/order"
 
 	"github.com/medivhzhan/weapp/v3/auth"
 	"github.com/medivhzhan/weapp/v3/cache"
@@ -301,5 +302,5 @@ func (cli *Client) NewPhonenumber() *phonenumber.Phonenumber {
 
 // NewOrder 发货内容管理
 func (cli *Client) NewOrder() *order.Order {
-	return order.NewOrder(cli.request, cli.conbineURI)
+	return order.NewOrder(cli.request, cli.combineURI)
 }
