@@ -29,7 +29,7 @@ type AddRoleRequest struct {
 // 调用此接口设置小程序直播成员的管理员、运营者和主播角色
 func (cli *LiveBroadcast) AddRole(req *AddRoleRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiAddRole, nil, true)
+	api, err := cli.combineURI(apiAddRole, nil, true)
 	if err != nil {
 		return nil, err
 	}

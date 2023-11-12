@@ -206,7 +206,7 @@ func (cli *Client) StableAccessToken(forceRefresh bool) (string, error) {
 }
 
 // 拼凑完整的 URI
-func (cli *Client) conbineURI(url string, req interface{}, withToken bool) (string, error) {
+func (cli *Client) combineURI(url string, req interface{}, withToken bool) (string, error) {
 
 	output := make(map[string]interface{})
 
@@ -240,7 +240,7 @@ func (cli *Client) conbineURI(url string, req interface{}, withToken bool) (stri
 
 // 用户信息
 func (cli *Client) NewAuth() *auth.Auth {
-	return auth.NewAuth(cli.request, cli.conbineURI)
+	return auth.NewAuth(cli.request, cli.combineURI)
 }
 
 // 微信通知监听服务
@@ -250,50 +250,50 @@ func (cli *Client) NewServer(token, aesKey, mchID, apiKey string, validate bool,
 
 // 订阅消息
 func (cli *Client) NewSubscribeMessage() *subscribemessage.SubscribeMessage {
-	return subscribemessage.NewSubscribeMessage(cli.request, cli.conbineURI)
+	return subscribemessage.NewSubscribeMessage(cli.request, cli.combineURI)
 }
 
 // 运维中心
 func (cli *Client) NewOperation() *operation.Operation {
-	return operation.NewOperation(cli.request, cli.conbineURI)
+	return operation.NewOperation(cli.request, cli.combineURI)
 }
 
 // openApi管理
 func (cli *Client) NewOpenApi() *openapi.OpenApi {
-	return openapi.NewOpenApi(cli.request, cli.conbineURI)
+	return openapi.NewOpenApi(cli.request, cli.combineURI)
 }
 
 // 小程序码
 func (cli *Client) NewWXACode() *wxacode.WXACode {
-	return wxacode.NewWXACode(cli.request, cli.conbineURI)
+	return wxacode.NewWXACode(cli.request, cli.combineURI)
 }
 
 // OCR
 func (cli *Client) NewOCR() *ocr.OCR {
-	return ocr.NewOCR(cli.request, cli.conbineURI)
+	return ocr.NewOCR(cli.request, cli.combineURI)
 }
 
 // 动态消息
 func (cli *Client) NewUpdatableMessage() *updatablemessage.UpdatableMessage {
-	return updatablemessage.NewUpdatableMessage(cli.request, cli.conbineURI)
+	return updatablemessage.NewUpdatableMessage(cli.request, cli.combineURI)
 }
 
 // 小程序搜索
 func (cli *Client) NewSearch() *search.Search {
-	return search.NewSearch(cli.request, cli.conbineURI)
+	return search.NewSearch(cli.request, cli.combineURI)
 }
 
 // 直播
 func (cli *Client) NewLiveBroadcast() *livebroadcast.LiveBroadcast {
-	return livebroadcast.NewLiveBroadcast(cli.request, cli.conbineURI)
+	return livebroadcast.NewLiveBroadcast(cli.request, cli.combineURI)
 }
 
 // 内容安全
 func (cli *Client) NewSecurity() *security.Security {
-	return security.NewSecurity(cli.request, cli.conbineURI)
+	return security.NewSecurity(cli.request, cli.combineURI)
 }
 
 // 手机号
 func (cli *Client) NewPhonenumber() *phonenumber.Phonenumber {
-	return phonenumber.NewPhonenumber(cli.request, cli.conbineURI)
+	return phonenumber.NewPhonenumber(cli.request, cli.combineURI)
 }

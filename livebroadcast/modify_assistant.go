@@ -20,7 +20,7 @@ type ModifyAssistantResponse struct {
 // 修改管理直播间小助手
 func (cli *LiveBroadcast) ModifyAssistant(req *ModifyAssistantRequest) (*ModifyAssistantResponse, error) {
 
-	api, err := cli.conbineURI(apiModifyAssistant, nil, true)
+	api, err := cli.combineURI(apiModifyAssistant, nil, true)
 	if err != nil {
 		return nil, err
 	}

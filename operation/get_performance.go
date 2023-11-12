@@ -32,7 +32,7 @@ type GetPerformanceResponse struct {
 // 性能监控
 func (cli *Operation) GetPerformance(req *GetPerformanceRequest) (*GetPerformanceResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetPerformance, nil, true)
+	uri, err := cli.combineURI(apiGetPerformance, nil, true)
 	if err != nil {
 		return nil, err
 	}

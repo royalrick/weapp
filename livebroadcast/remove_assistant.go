@@ -18,7 +18,7 @@ type RemoveAssistantResponse struct {
 // 删除管理直播间小助手
 func (cli *LiveBroadcast) RemoveAssistant(req *RemoveAssistantRequest) (*RemoveAssistantResponse, error) {
 
-	api, err := cli.conbineURI(apiRemoveAssistant, nil, true)
+	api, err := cli.combineURI(apiRemoveAssistant, nil, true)
 	if err != nil {
 		return nil, err
 	}

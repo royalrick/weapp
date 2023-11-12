@@ -18,7 +18,7 @@ type UpdateKFResponse struct {
 // 开启/关闭客服功能
 func (cli *LiveBroadcast) UpdateKF(req *UpdateKFRequest) (*UpdateKFResponse, error) {
 
-	api, err := cli.conbineURI(apiUpdateKF, nil, true)
+	api, err := cli.combineURI(apiUpdateKF, nil, true)
 	if err != nil {
 		return nil, err
 	}

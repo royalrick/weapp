@@ -16,7 +16,7 @@ type GoodsDeleteResponse struct {
 // 删除商品
 func (cli *LiveBroadcast) GoodsDelete(req *GoodsDeleteRequest) (*GoodsDeleteResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsDelete, nil, true)
+	api, err := cli.combineURI(apiGoodsDelete, nil, true)
 	if err != nil {
 		return nil, err
 	}

@@ -21,7 +21,7 @@ type ClearQuotaByAppSecretResponse struct {
 // doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/clearQuotaByAppSecret.html
 func (cli *OpenApi) ClearQuotaByAppSecret(req *ClearQuotaByAppSecretRequest) (*ClearQuotaByAppSecretResponse, error) {
 
-	uri, err := cli.conbineURI(apiClearQuotaByAppSecret, req, true)
+	uri, err := cli.combineURI(apiClearQuotaByAppSecret, req, true)
 	if err != nil {
 		return nil, err
 	}

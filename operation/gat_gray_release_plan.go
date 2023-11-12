@@ -24,7 +24,7 @@ type GetGrayReleasePlanResponse struct {
 // 查询当前分阶段发布详情
 func (cli *Operation) GetGrayReleasePlan() (*GetGrayReleasePlanResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetGrayReleasePlan, nil, true)
+	uri, err := cli.combineURI(apiGetGrayReleasePlan, nil, true)
 	if err != nil {
 		return nil, err
 	}

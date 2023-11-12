@@ -13,7 +13,7 @@ type ImgSecCheckRequest struct {
 //
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.imgSecCheck.html
 func (cli *Security) ImgSecCheck(req *ImgSecCheckRequest) (*request.CommonError, error) {
-	url, err := cli.conbineURI(apiImgSecCheck, nil, true)
+	url, err := cli.combineURI(apiImgSecCheck, nil, true)
 	if err != nil {
 		return nil, err
 	}

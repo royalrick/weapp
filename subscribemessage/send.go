@@ -35,7 +35,7 @@ const (
 
 // 发送订阅消息
 func (cli *SubscribeMessage) Send(msg *SendRequest) (*request.CommonError, error) {
-	api, err := cli.conbineURI(apiSend, nil, true)
+	api, err := cli.combineURI(apiSend, nil, true)
 	if err != nil {
 		return nil, err
 	}

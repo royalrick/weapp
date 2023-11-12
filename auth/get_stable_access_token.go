@@ -27,7 +27,7 @@ type GetStableAccessTokenResponse struct {
 // doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/mp-access-token/getStableAccessToken.html
 func (cli *Auth) GetStableAccessToken(req *GetStableAccessTokenRequest) (*GetStableAccessTokenResponse, error) {
 
-	api, err := cli.conbineURI(apiGetStableAccessToken, nil, false)
+	api, err := cli.combineURI(apiGetStableAccessToken, nil, false)
 	if err != nil {
 		return nil, err
 	}

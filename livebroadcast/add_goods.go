@@ -14,7 +14,7 @@ type AddGoodsRequest struct {
 // 调用接口往指定直播间导入已入库的商品
 func (cli *LiveBroadcast) AddGoods(req *AddGoodsRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiAddGoods, nil, true)
+	api, err := cli.combineURI(apiAddGoods, nil, true)
 	if err != nil {
 		return nil, err
 	}

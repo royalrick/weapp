@@ -20,7 +20,7 @@ type GetVersionListResponse struct {
 // 获取客户端版本
 func (cli *Operation) GetVersionList() (*GetVersionListResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetVersionList, nil, true)
+	uri, err := cli.combineURI(apiGetVersionList, nil, true)
 	if err != nil {
 		return nil, err
 	}

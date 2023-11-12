@@ -53,7 +53,7 @@ type MsgSecCheckResponse struct {
 //
 // 官方文档: https://developers.weixin.qq.com/miniprogram/dev/api-backend/open-api/sec-check/security.msgSecCheck.html
 func (cli *Security) MsgSecCheck(req *MsgSecCheckRequest) (*MsgSecCheckResponse, error) {
-	url, err := cli.conbineURI(apiMsgSecCheck, nil, true)
+	url, err := cli.combineURI(apiMsgSecCheck, nil, true)
 	if err != nil {
 		return nil, err
 	}

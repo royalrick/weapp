@@ -17,7 +17,7 @@ type GetSubAnchorResponse struct {
 // 获取主播副号
 func (cli *LiveBroadcast) GetSubAnchor(req *GetSubAnchorRequest) (*GetSubAnchorResponse, error) {
 
-	api, err := cli.conbineURI(apiGetSubAnchor, req, true)
+	api, err := cli.combineURI(apiGetSubAnchor, req, true)
 	if err != nil {
 		return nil, err
 	}

@@ -41,7 +41,7 @@ type EditRoomRequest struct {
 // 编辑直播间
 func (cli *LiveBroadcast) EditRoom(req *EditRoomRequest) (*request.CommonError, error) {
 
-	api, err := cli.conbineURI(apiEditRoom, nil, true)
+	api, err := cli.combineURI(apiEditRoom, nil, true)
 	if err != nil {
 		return nil, err
 	}

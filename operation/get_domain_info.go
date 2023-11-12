@@ -41,7 +41,7 @@ type GetDomainInfoResponse struct {
 // 查询域名配置
 func (cli *Operation) GetDomainInfo(req *GetDomainInfoRequest) (*GetDomainInfoResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetDomainInfo, req, true)
+	uri, err := cli.combineURI(apiGetDomainInfo, req, true)
 	if err != nil {
 		return nil, err
 	}

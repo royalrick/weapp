@@ -33,7 +33,7 @@ type GetApiQuotaResponse struct {
 // doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/getApiQuota.html
 func (cli *OpenApi) GetApiQuota(req *GetApiQuotaRequest) (*GetApiQuotaResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetApiQuota, nil, true)
+	uri, err := cli.combineURI(apiGetApiQuota, nil, true)
 	if err != nil {
 		return nil, err
 	}

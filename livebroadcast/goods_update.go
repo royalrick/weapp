@@ -35,7 +35,7 @@ type GoodsUpdateResponse struct {
 // 更新商品
 func (cli *LiveBroadcast) GoodsUpdate(req *GoodsUpdateRequest) (*GoodsUpdateResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsUpdate, nil, true)
+	api, err := cli.combineURI(apiGoodsUpdate, nil, true)
 	if err != nil {
 		return nil, err
 	}

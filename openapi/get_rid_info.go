@@ -28,7 +28,7 @@ type GetRidInfoResponse struct {
 // doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/getRidInfo.html
 func (cli *OpenApi) GetRidInfo(req *GetRidInfoRequest) (*GetRidInfoResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetRidInfo, nil, true)
+	uri, err := cli.combineURI(apiGetRidInfo, nil, true)
 	if err != nil {
 		return nil, err
 	}

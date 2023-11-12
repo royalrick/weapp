@@ -22,7 +22,7 @@ type GetPubTemplateKeyWordsByIdResponse struct {
 // 获取模板标题下的关键词列表
 func (cli *SubscribeMessage) GetPubTemplateKeyWordsById(req *GetPubTemplateKeyWordsByIdRequest) (*GetPubTemplateKeyWordsByIdResponse, error) {
 
-	uri, err := cli.conbineURI(apiGetPubTemplateKeyWordsById, req, true)
+	uri, err := cli.combineURI(apiGetPubTemplateKeyWordsById, req, true)
 	if err != nil {
 		return nil, err
 	}

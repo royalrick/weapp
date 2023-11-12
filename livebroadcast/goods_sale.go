@@ -20,7 +20,7 @@ type GoodsSaleResponse struct {
 // 上下架商品
 func (cli *LiveBroadcast) GoodsSale(req *GoodsSaleRequest) (*GoodsSaleResponse, error) {
 
-	api, err := cli.conbineURI(apiGoodsSale, nil, true)
+	api, err := cli.combineURI(apiGoodsSale, nil, true)
 	if err != nil {
 		return nil, err
 	}

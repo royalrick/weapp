@@ -33,7 +33,7 @@ type GetFeedbackRequest struct {
 // 获取用户反馈列表
 func (cli *Operation) GetFeedback(req *GetFeedbackRequest) (*request.CommonError, error) {
 
-	uri, err := cli.conbineURI(apiGetFeedback, req, true)
+	uri, err := cli.combineURI(apiGetFeedback, req, true)
 	if err != nil {
 		return nil, err
 	}

@@ -19,7 +19,7 @@ type ClearQuotaResponse struct {
 // doc: https://developers.weixin.qq.com/miniprogram/dev/OpenApiDoc/openApi-mgnt/clearQuota.html
 func (cli *OpenApi) ClearQuota(req *ClearQuotaRequest) (*ClearQuotaResponse, error) {
 
-	uri, err := cli.conbineURI(apiClearQuota, nil, true)
+	uri, err := cli.combineURI(apiClearQuota, nil, true)
 	if err != nil {
 		return nil, err
 	}
