@@ -155,12 +155,12 @@ func (cli *Client) AccessToken() (string, error) {
 		return token, nil
 	} else {
 
-		req := auth.GetAccessTokenRequest{
+		req := auth.GetStableAccessTokenRequest{
 			Appid:     cli.appid,
 			Secret:    cli.secret,
 			GrantType: "client_credential",
 		}
-		rsp, err := cli.NewAuth().GetAccessToken(&req)
+		rsp, err := cli.NewAuth().GetStableAccessToken(&req)
 		if err != nil {
 			return "", err
 		}
@@ -168,6 +168,7 @@ func (cli *Client) AccessToken() (string, error) {
 		if err := rsp.GetResponseError(); err != nil {
 			return "", err
 		}
+
 		cli.cache.Set(key, rsp.AccessToken, time.Duration(rsp.ExpiresIn)*time.Second)
 		return rsp.AccessToken, nil
 	}
