@@ -264,11 +264,15 @@ func (cli *Client) getTemplateList(api, token string) (*GetTemplateListResponse,
 
 // SubscribeMessage 订阅消息
 type SubscribeMessage struct {
-	ToUser           string           `json:"touser"`
-	TemplateID       string           `json:"template_id"`
-	Page             string           `json:"page,omitempty"`
-	MiniprogramState MiniprogramState `json:"miniprogram_state,omitempty"`
-	Data             string           `json:"data"`
+	ToUser           string                           `json:"touser"`
+	TemplateID       string                           `json:"template_id"`
+	Page             string                           `json:"page,omitempty"`
+	MiniprogramState MiniprogramState                 `json:"miniprogram_state,omitempty"`
+	Data             map[string]SubscribeMessageValue `json:"data"`
+}
+
+type SubscribeMessageValue struct {
+	Value string `json:"value"`
 }
 
 // MiniprogramState 跳转小程序类型
