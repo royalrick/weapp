@@ -705,7 +705,7 @@ type SubscribeMsgSentEvent struct {
 			// 推送结果状态码（0表示成功）
 			ErrorCode int `json:"ErrorCode" xml:"ErrorCode"`
 			// 推送结果状态码对应的含义
-			ErrorStatus int `json:"ErrorStatus" xml:"ErrorStatus"`
+			ErrorStatus string `json:"ErrorStatus" xml:"ErrorStatus"`
 		} `json:"List" xml:"List"`
 	} `json:"SubscribeMsgSentEvent" xml:"SubscribeMsgSentEvent"`
 }
