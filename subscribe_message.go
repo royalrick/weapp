@@ -285,10 +285,16 @@ const (
 	MiniprogramStateFormal    MiniprogramState = "formal"
 )
 
+// SendSubscribeMsgResponse 模板消息发送响应
+// 定义此结构体获得微信返回的消息 ID msgid 字段
+// 参考 https://developers.weixin.qq.com/miniprogram/dev/framework/open-ability/subscribe-message.html#%E8%AE%A2%E9%98%85%E6%B6%88%E6%81%AF%E8%AF%AD%E9%9F%B3%E6%8F%90%E9%86%92:~:text=%E6%9C%89%E5%A4%9A%E4%B8%AAid%EF%BC%89-,MsgID,%E4%B9%9F%E4%BC%9A%E8%BF%94%E5%9B%9E,-%EF%BC%89
+type SendSubscribeMsgResponse struct {
+	request.CommonError
+	MsgID uint64 `json:"msgid"` //	发送消息的消息 ID. 本身这个发送接口的文档没有介绍这个字段,但是实际上微信会返回,且在调用订阅消息接口发送消息给用户的最终结果的回调里面介绍了这个字段会在发送接口里面返回 参考结构体注释里面的连接
+}
+
 // Send 发送订阅消息
-//
-// token access_token
-func (cli *Client) SendSubscribeMsg(msg *SubscribeMessage) (*request.CommonError, error) {
+func (cli *Client) SendSubscribeMsg(msg *SubscribeMessage) (*SendSubscribeMsgResponse, error) {
 	api := baseURL + apiSendSubscribeMessage
 	token, err := cli.AccessToken()
 	if err != nil {
@@ -298,13 +304,13 @@ func (cli *Client) SendSubscribeMsg(msg *SubscribeMessage) (*request.CommonError
 	return cli.sendSubscribeMsg(api, token, msg)
 }
 
-func (cli *Client) sendSubscribeMsg(api, token string, msg *SubscribeMessage) (*request.CommonError, error) {
+func (cli *Client) sendSubscribeMsg(api, token string, msg *SubscribeMessage) (*SendSubscribeMsgResponse, error) {
 	api, err := tokenAPI(api, token)
 	if err != nil {
 		return nil, err
 	}
 
-	res := new(request.CommonError)
+	res := new(SendSubscribeMsgResponse)
 	if err := cli.request.Post(api, msg, res); err != nil {
 		return nil, err
 	}
